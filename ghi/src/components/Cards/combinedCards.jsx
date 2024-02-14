@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import UserReviewCard from './userReviewCard';
 import ReviewCard from './reviewCard';
 

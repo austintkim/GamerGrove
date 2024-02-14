@@ -73,7 +73,7 @@ class StoresQueries:
                             with conn.cursor() as cur:
                                 good_stores = []
                                 for store in stores:
-                                    if store.get("store_id") in [1,2,3,6]:
+                                    if store.get("store_id") in [1, 2, 3, 6]:
                                         good_stores.append(store)
                                 for store in good_stores:
                                     print("these are good stores:", store)

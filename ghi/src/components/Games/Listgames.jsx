@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Nav from '../Home/Nav.jsx';
 import AllGameCard from '../Cards/allGameCard.jsx';
 import './Listgames.css';
@@ -20,7 +20,7 @@ const Listgames = () => {
 
     const fetchGames = async () => {
       try {
-        const url = 'http://localhost:8000/api/games';
+        const url = `${import.meta.env.VITE_API_HOST}/api/games`;
         const response = await fetch(url);
 
         if (response.ok) {
@@ -44,7 +44,7 @@ const Listgames = () => {
     const platform = data.state
     const fetchGames = async () => {
       try {
-        const url = 'http://localhost:8000/api/games';
+        const url = `${import.meta.env.VITE_API_HOST}/api/games`;
         const response = await fetch(url);
 
         if (response.ok) {

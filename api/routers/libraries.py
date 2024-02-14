@@ -48,7 +48,7 @@ async def get_library(
     return queries.get_library(account_id)
 
 
-@router.get("/api/libraries/{id}", response_model=Union[LibraryOut,HttpError])
+@router.get("/api/libraries/{id}", response_model=Union[LibraryOut, HttpError])
 async def get_library_entry(
     id: int,
     queries: LibraryQueries = Depends(),

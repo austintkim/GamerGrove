@@ -1,9 +1,11 @@
-import {useAuthContext} from "@galvanize-inc/jwtdown-for-react";
-import React, { useState, useEffect, useRef } from 'react';
+import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate, Link } from 'react-router-dom';
 import './gameDetails.css';
-import ReviewCard from '../Cards/reviewCard.jsx';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import SideMenu from '../Home/Menu';
 import Nav from '../Home/Nav';
 import LargeUserReviewCard from '../Cards/largeUserReviewCard';
@@ -13,52 +15,9 @@ import StarRating from './StarRating';
 import parse from 'html-react-parser';
 import { useLocation } from "react-router-dom";
 
-const containerStyle = {
-  minHeight: '100vh',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-const fetchUserName = async () => {
-  const tokenUrl = `http://localhost:8000/token`;
-
-  const fetchConfig = {
-    credentials: 'include',
-  };
-
-  const response = await fetch(tokenUrl, fetchConfig);
-
-  if (response.ok) {
-    const data = await response.json();
-    if (data !== null) {
-    return data.account.username;
-  }
-  }
-};
-
-const saved_username = await fetchUserName();
-
-const fetchAccount = async () => {
-  if(saved_username !== undefined) {
-  const accountUrl = `http://localhost:8000/api/accounts/${saved_username}`;
-
-  const response = await fetch(accountUrl);
-
-  if (response.ok) {
-    const data = await response.json();
-    return data;
-  }
-  }
-};
-
-const account_data = await fetchAccount();
-
-
-function GameDetails() {
-
+const GameDetails = () => {
   const location = useLocation();
-  const place = location.state
+  const place = location.state;
 
   const lastHash = useRef('');
   useEffect(() => {
@@ -76,71 +35,94 @@ function GameDetails() {
     }
   }, [place]);
 
-
-
   const { token } = useAuthContext();
-
   const navigate = useNavigate();
-
   const { id } = useParams();
 
-  const wishListData = {
-    wishlist: true,
-    game_id: id
-  }
-
-  const removeWishListData = {
-    wishlist: false,
-    game_id: id
-  }
-
-
-  const initialReviewData = {
-    title:"",
-    body:"",
+  const [gameData, setGameData] = useState(null);
+  const [wishListText, setWishListText] = useState('Add to Wishlist');
+  const [reviewFormData, setReviewFormData] = useState({
+    title: "",
+    body: "",
     game_id: id,
     rating: ""
-  }
-
-
-
-  const [gameData, setGameData] = useState(null);
-
-  const [wishListText, setWishListText] = useState('Add to Wishlist')
-
-  const [reviewFormData, setReviewFormData] = useState(initialReviewData);
-
-  const[submittedReview, setSubmittedReview] = useState(false);
+  });
+  const [submittedReview, setSubmittedReview] = useState(false);
   const [boards, setBoards] = useState([]);
-const fetchBoards = async () => {
-  if (!account_data || !account_data.id) {
-    return;
-  }
+  const [screenshots, setScreenshots] = useState([])
+  const [savedUsername, setSavedUsername] = useState('');
 
-  const boardUrl = `http://localhost:8000/api/boards/users/${account_data.id}`
-  const fetchConfig = {
-    credentials: 'include'
+  const fetchScreenshots = async (rawg_pk) => {
+    const rawgPk = rawg_pk
+    const url = `${import.meta.env.VITE_API_HOST}/api/screenshots/${rawgPk}`
+    const response = await fetch(url)
+    if (response.ok) {
+      const data = await response.json()
+      setScreenshots(data)
+    }
+  }
+  const fetchUserName = async () => {
+    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+    const fetchConfig = {
+      credentials: 'include',
+    };
+    const response = await fetch(tokenUrl, fetchConfig);
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data !== null) {
+        return data.account.username;
+      }
+    }
   };
 
-  try {
-    const boardResponse = await fetch(boardUrl, fetchConfig)
-    if (boardResponse.ok) {
-      const boardData = await boardResponse.json()
+  const fetchAccount = async (savedUsername) => {
+    if (savedUsername !== undefined) {
+      const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${savedUsername}`;
+      const response = await fetch(accountUrl);
 
-      setBoards(boardData)
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
     }
-  } catch (error) {
-    console.log("Error fetching boards:", error)
-  }
-}
+  };
 
+  const [accountData, setAccountData] = useState({});
 
+  const fetchBoards = async () => {
+    try {
+      const username = await fetchUserName();
+      const account = await fetchAccount(username);
+      setAccountData(account)
+
+      if (!account || !account.id) {
+
+        return;
+      }
+
+      const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${account.id}`;
+      const fetchConfig = {
+        credentials: 'include'
+      };
+
+      const boardResponse = await fetch(boardUrl, fetchConfig);
+
+      if (boardResponse.ok) {
+        const boardData = await boardResponse.json();
+        setBoards(boardData);
+      }
+    } catch (error) {
+      console.log("Error fetching boards:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchGamesData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/games/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games/${id}`);
         const data = await response.json();
+        fetchScreenshots(data.rawg_pk)
         setGameData(data);
       } catch (error) {
         console.error('Error fetching games data:', error);
@@ -148,46 +130,47 @@ const fetchBoards = async () => {
     };
 
     const fetchLibraryData = async () => {
-  if (!account_data || !account_data.id) {
-    console.error('Account data is undefined or missing ID.');
-    return;
-  }
+      try {
+        const username = await fetchUserName();
+        const account = await fetchAccount(username);
 
-  const libraryUrl = `http://localhost:8000/api/users/libraries/${account_data.id}`;
-
-  const fetchConfig = {
-    credentials: 'include'
-  };
-
-  try {
-    const response = await fetch(libraryUrl, fetchConfig);
-
-    if (response.ok) {
-      const data = await response.json();
-      for (const entry of data) {
-        if (entry["account_id"] === account_data.id && entry["game_id"] == id && entry["wishlist"] === true) {
-          setWishListText('Added to Wishlist!');
+        if (!account || !account.id) {
+          console.error('Account data is undefined or missing ID.');
+          return;
         }
+
+        const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${account.id}`;
+        const fetchConfig = {
+          credentials: 'include'
+        };
+
+        const response = await fetch(libraryUrl, fetchConfig);
+
+        if (response.ok) {
+          const data = await response.json();
+          for (const entry of data) {
+            if (entry["account_id"] === account.id && entry["game_id"] == id && entry["wishlist"] === true) {
+              setWishListText('Added to Wishlist!');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching library data', error);
       }
-    }
-  } catch (error) {
-    console.error('Error fetching library data', error);
-  }
-};
+    };
+
     fetchGamesData();
     if (token) {
-    fetchLibraryData();
+      fetchLibraryData();
     }
     fetchBoards();
-  }, [, token]);
-
+  }, [id, token]);
 
   if (!gameData) {
     return null;
   }
 
-
-   const getRecommendation = (rating) => {
+  const getRecommendation = (rating) => {
     if (rating >= 4.3) {
       return "Highly Recommended 🔥🏆 ";
     } else if (rating >= 3.7) {
@@ -201,10 +184,11 @@ const fetchBoards = async () => {
 
   const handleFormChange = (e) => {
     setReviewFormData({
-        ...reviewFormData,
-        [e.target.name]:e.target.value
-    })
-}
+      ...reviewFormData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   const handleStarClick = (selectedRating) => {
     setReviewFormData({
       ...reviewFormData,
@@ -212,13 +196,68 @@ const fetchBoards = async () => {
     });
   };
 
-const handleWishListClick = async () => {
-  if (wishListText === 'Add to Wishlist') {
-    const addEntryUrl = 'http://localhost:8000/api/libraries';
+  const handleWishListClick = async () => {
+    if (wishListText === 'Add to Wishlist') {
+      const addEntryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`;
 
-    const addEntryFetchConfig = {
+      const addEntryFetchConfig = {
+        method: "post",
+        body: JSON.stringify({ wishlist: true, game_id: id }),
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      try {
+        const addEntryResponse = await fetch(addEntryUrl, addEntryFetchConfig);
+        if (addEntryResponse.ok) {
+          setWishListText('Added to Wishlist!');
+        } else {
+          console.error('Failed to add to wishlist. Server response:', addEntryResponse);
+          throw new Error('Failed to add to wishlist');
+        }
+      } catch (error) {
+        console.error('Error adding to wishlist:', error);
+      }
+    }
+  };
+
+  const handleBoardClick = async (event) => {
+    const data = {
+      wishlist: false,
+      game_id: id,
+      board_id: event.target.value
+    };
+
+    const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`;
+    const fetchConfig = {
+      method: 'post',
+      body: JSON.stringify(data),
+      credentials: 'include',
+      headers: {
+        "Content-type": "application/json"
+      }
+    };
+
+    try {
+      const response = await fetch(libraryUrl, fetchConfig);
+      if (response.ok) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log("Error adding to board:", error);
+    }
+  };
+
+  const handleReviewSubmit = async (event) => {
+    event.preventDefault();
+
+    const reviewUrl = `${import.meta.env.VITE_API_HOST}/api/reviews`;
+
+    const fetchConfig = {
       method: "post",
-      body: JSON.stringify(wishListData),
+      body: JSON.stringify(reviewFormData),
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
@@ -226,68 +265,21 @@ const handleWishListClick = async () => {
     };
 
     try {
-      const addEntryResponse = await fetch(addEntryUrl, addEntryFetchConfig);
-      if (addEntryResponse.ok) {
-        setWishListText('Added to Wishlist!');
+      const response = await fetch(reviewUrl, fetchConfig);
+      if (response.ok) {
+        setReviewFormData({ ...reviewFormData, title: "", body: "", rating: "" });
+        setSubmittedReview(true);
       } else {
-        console.error('Failed to add to wishlist. Server response:', response);
-        throw new Error('Failed to add to wishlist');
+        throw new Error('Failed to create review');
       }
     } catch (error) {
-      console.error('Error adding to wishlist:', error);
+      console.error('Error submitting review:', error);
     }
-
   };
-}
-
-const handleBoardClick = async (event) => {
-  const data = {};
-  const libraryUrl = `http://localhost:8000/api/libraries`
-  const board = event.target.value;
-  data.wishlist = false;
-  data.game_id = id;
-  data.board_id = board;
-  const fetchConfig = {
-    method: 'post',
-    body: JSON.stringify(data),
-    credentials: 'include',
-    headers: {
-      "Content-type": "application/json"
-    }
-  }
-  const response = await fetch(libraryUrl, fetchConfig);
-
-  window.location.reload();
-}
-
-const handleReviewSubmit = async (event) => {
-    event.preventDefault();
-
-    const reviewUrl = 'http://localhost:8000/api/reviews'
-
-    const fetchConfig = {
-        method: "post",
-        body: JSON.stringify(reviewFormData),
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-
-    const response = await fetch(reviewUrl, fetchConfig);
-    if (response.ok) {
-        setReviewFormData(initialReviewData);
-        setSubmittedReview(true);
-    } else {
-        throw new Error('Failed to create review')
-    }
-  }
 
   let messageReviewClasses = 'alert alert-success d-none mb-0';
-  let formReviewClasses = '';
   if (submittedReview) {
     messageReviewClasses = 'alert alert-success mb-0';
-    formReviewClasses = 'd-none';
   }
 
   const handleClick = async (platform, rawg_pk) => {
@@ -299,31 +291,44 @@ const handleReviewSubmit = async (event) => {
 
   const fetchStoreUrl = async (platform, rawg_pk) => {
     try {
-
-      const response = await fetch(`http://localhost:8000/api/stores/${rawg_pk}`);
-
+      const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/stores/${rawg_pk}`);
       const data = await response.json();
-
 
       for (const link of data) {
         if (link.platform === platform) {
-          return link.url
+          return link.url;
         }
-
       }
-
-
-
-
     } catch (error) {
-      console.error('Cant find the store you are looking for', error);
+      console.error('Error fetching store URL:', error);
       return null;
     }
   };
 
+  const settings = {
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: false,
+    };
 
-  if (token) {
+  const handleScreenshotClick = () => {
+    document.getElementById("big-screenshots").style.opacity = "100";
+    document.getElementById("big-screenshots").style.zIndex = "1";
+  };
+
+  const handleXbutton = () => {
+    document.getElementById("big-screenshots").style.opacity = "0";
+    document.getElementById("big-screenshots").style.zIndex = "-1";
+  };
+
   return (
+    <div>
+    {token ?
+
+
     <div>
       <SideMenu />
       <Nav />
@@ -447,11 +452,30 @@ const handleReviewSubmit = async (event) => {
                 alt="Divider"
               />
 
-              <div className='screenshotsHero'>
+              <div className='screenshotsHero' onClick={handleScreenshotClick}>
                 <ScreenshotsCard rawgPk={gameData.rawg_pk} />
               </div>
               <div className="container">
                 <p className="rec">Recommendation: {getRecommendation(gameData.rating)}</p>
+              </div>
+              <div id="big-screenshots">
+                  <button onClick={handleXbutton} style={{backgroundColor: "darkgray"}}>❌</button>
+                  <Slider {...settings}>
+                    {screenshots.map((shot) => (
+                        <div key={shot.id}>
+                          <img
+                            src={shot.image_url}
+                            className="d-block"
+                            style={{
+                              maxHeight: '550px',
+                              margin: 'auto',
+
+                              borderRadius: '40px',
+                            }}
+                          />
+                        </div>
+                    ))}
+                  </Slider>
               </div>
             </div>
 
@@ -490,18 +514,15 @@ const handleReviewSubmit = async (event) => {
       </div>
           <h1 className='gamesh1' style={{ textAlign: 'center', textDecoration: 'underline', marginTop: '5px' }}>Reviews</h1>
           <div className='moveright' >
-            <LargeUserReviewCard gameId={gameData.id} accountId={account_data?.id} />
+            <LargeUserReviewCard gameId={gameData.id} accountId={accountData?.id} />
           </div>
 
         </div>
         <br />
       </div>
     </div>
-  );
-}
+    :
 
-  if (!token) {
-    return (
     <div>
       <SideMenu />
       <Nav />
@@ -518,7 +539,7 @@ const handleReviewSubmit = async (event) => {
           <br />
           <br />
           <br />
-          <h3 className='gamesh1'>Games/Popular/{gameData.name}</h3>
+          <h3 className='gamesh1'>Games/{gameData.name}</h3>
           <h5 className='gamesh2'>Buy Here</h5>
           <hr className='gamessolid' />
           <button className='GDButton' style={{color:'black', width: 'fit-content'}} onClick={()=>{
@@ -609,9 +630,30 @@ const handleReviewSubmit = async (event) => {
                 alt="Divider"
               />
 
-              <div className='screenshotsHero'>
-                <ScreenshotsCard rawgPk={gameData.rawg_pk} />
+              <div className='screenshotsHero' onClick={handleScreenshotClick}>
+                <ScreenshotsCard  rawgPk={gameData.rawg_pk} />
               </div>
+              <div id="big-screenshots">
+                  <button onClick={handleXbutton} style={{backgroundColor: "darkgray"}}>❌</button>
+                  <Slider {...settings}>
+                    {screenshots.map((shot) => (
+                        <div key={shot.id}>
+                          <img
+                            src={shot.image_url}
+                            className="d-block w-100"
+                            style={{
+                              maxHeight: '550px',
+                              margin: 'auto',
+
+                              borderRadius: '40px',
+                            }}
+                          />
+                        </div>
+                    ))}
+                  </Slider>
+              </div>
+
+
               <div className="container">
                 <p className="rec">Recommendation: {getRecommendation(gameData.rating)}</p>
               </div>
@@ -645,6 +687,7 @@ const handleReviewSubmit = async (event) => {
           navigate(`/games/${gameData.id}/nonuser`)
         }}>Submit</button>
       </div>
+
           <br />
           <br />
           <br />
@@ -656,12 +699,18 @@ const handleReviewSubmit = async (event) => {
             <LargeNonUserReviewCard gameId={gameData.id} />
           </div>
 
+
         </div>
         <br />
       </div>
+
+
     </div>
-  );
+
+
   }
+  </div>
+  );
 }
 
 export default GameDetails;

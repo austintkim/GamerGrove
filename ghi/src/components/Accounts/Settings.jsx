@@ -1,22 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Settings.css';
 
-const containerStyle = {
-  minHeight: '100vh',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-const centerVertically = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-};
-
 const fetchUserName = async () => {
-  const tokenUrl = `http://localhost:8000/token`;
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
   const fetchConfig = {
     credentials: 'include',
@@ -30,49 +17,65 @@ const fetchUserName = async () => {
       return data.account.username;
   }
   }
-};
-
-const saved_username = await fetchUserName();
-
-const fetchAccount = async () => {
-  if (saved_username!== undefined) {
-  const accountUrl = `http://localhost:8000/api/accounts/${saved_username}`;
-
-  const response = await fetch(accountUrl);
-
-  if (response.ok) {
-    const data = await response.json();
-    return data;
-  }
-  }
-};
-
-const account_data = await fetchAccount();
-
-let initialAccountData = {};
-
-if (account_data) {
-  initialAccountData = {
-    username: saved_username,
-    password: "",
-    first_name: account_data.first_name,
-    last_name: account_data.last_name,
-    email: account_data.email,
-    icon_id: account_data.icon_id,
-  };
 }
-
 function Settings() {
   const navigate = useNavigate();
 
   const [icons, setIcons] = useState([]);
+  const [username, setUsername] = useState('');
+  const [accountData, setAccountData] = useState('')
+
+  const fetchAccount = async (user) => {
+  if (user!== undefined) {
+    const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
+    const response = await fetch(accountUrl);
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+      }
+  }
+};
+
+  const [accountFormData, setAccountFormData] = useState({
+    username: '',
+    password: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    icon_id: ''
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const username = await fetchUserName();
+      setUsername(username);
+      const account = await fetchAccount(username);
+      setAccountData(account);
+      if (account) {
+        setAccountFormData({
+          username: account.username || '',
+          password: '',
+          first_name: account.first_name || '',
+          last_name: account.last_name || '',
+          email: account.email || '',
+          icon_id: account.icon_id || ''
+        });
+      }
+    };
+    fetchData();
+
+  }, []);
+
+
+
+
   const [updatedAccount, setUpdatedAccount] = useState(false);
-  const [accountFormData, setAccountFormData] = useState(initialAccountData);
+
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
   const fetchData = async () => {
-    const url = 'http://localhost:8000/api/icons';
+    const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
     const response = await fetch(url);
 
     if (response.ok) {
@@ -99,17 +102,15 @@ function Settings() {
   };
 
   let warningClasses = 'alert alert-warning d-none mb-0';
-  let passwordClasses = '';
   if (passwordMismatch) {
     warningClasses = 'alert alert-warning mb-0';
-    passwordClasses = 'd-none';
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (passwordConfirm === accountFormData.password) {
-      const updateUrl = `http://localhost:8000/api/accounts/${account_data.id}/${saved_username}`;
+      const updateUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${accountData.id}/${username}`;
 
       const updateFetchConfig = {
         method: 'put',
@@ -140,10 +141,8 @@ function Settings() {
   };
 
   let messageClasses = 'alert alert-success d-none mb-0';
-  let formClasses = '';
   if (updatedAccount) {
     messageClasses = 'alert alert-success mb-0';
-    formClasses = 'd-none';
   }
 
   return (
@@ -163,7 +162,7 @@ function Settings() {
               <div className="settingscard">
                 <h4 className="card-header">Account Settings</h4>
                 <div className={warningClasses} id="warning-message">
-                  Your passwords don't match!
+                  Your passwords do not match!
                 </div>
                 <form onSubmit={handleSubmit} id="create-profile">
                   <div className="settingscard">
@@ -296,7 +295,7 @@ function Settings() {
                   </div>
                   <div className="mb-3">
                     <button style={{ backgroundColor: 'red' }} type="button" onClick={() => {
-                      navigate(`/settings/delete/${account_data.id}/${account_data.username}`)
+                      navigate(`/settings/delete/${accountData.id}/${accountData.username}`)
                     }}>Delete Account</button>
                   </div>
                 </form>

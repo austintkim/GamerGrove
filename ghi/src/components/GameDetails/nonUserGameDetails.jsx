@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import './gameDetails.css';
-import parse from 'html-react-parser';
 
 const containerStyle = {
   minHeight: '100vh',
@@ -9,7 +8,7 @@ const containerStyle = {
   justifyContent: 'center',
 };
 
-function nonUserGameDetails() {
+function NonUserGameDetails() {
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -32,4 +31,4 @@ function nonUserGameDetails() {
 
     }
 
-export default nonUserGameDetails;
+export default NonUserGameDetails;

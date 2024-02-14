@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 from authenticator import authenticator
 from fastapi.middleware.cors import CORSMiddleware
-import os
-from routers import (accounts,boards, icons, screenshots, games, replies,
-                     votes, libraries, stores, reviews)
+from routers import (accounts, boards, icons, screenshots, games, replies, votes, libraries, stores, reviews)
 from seederfile import seed_data
-from queries.screenshots import ScreenshotsQueries
+import os
+
 
 app = FastAPI()
 app.include_router(authenticator.router, tags=["AUTH"])
@@ -29,6 +28,7 @@ def startup_event():
 origins = [
     "http://localhost",
     "http://localhost:5173",
+    os.environ.get('CORS_HOST', '')
 ]
 
 app.add_middleware(
@@ -38,6 +38,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-

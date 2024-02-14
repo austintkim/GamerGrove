@@ -1,5 +1,4 @@
-from fastapi import (APIRouter, Depends, HTTPException, Response,
-                     status)
+from fastapi import (APIRouter, Depends, HTTPException, status)
 from typing import Union
 from queries.reviews import (
     ReviewInBase,
@@ -107,6 +106,7 @@ async def delete_review(
 
     account_id = authenticate_user(review_data)
     return queries.delete_review(id, account_id)
+
 
 @router.put("/api/reviews/{id}/{account_id}", response_model=Union[ReviewOut, HttpError])
 async def update_review(

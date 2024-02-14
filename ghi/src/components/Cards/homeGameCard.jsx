@@ -1,47 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {useAuthContext} from "@galvanize-inc/jwtdown-for-react";
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
 import './homeGameCard.css';
 import { Menu, MenuItem, SubMenu } from "@spaceymonk/react-radial-menu";
 import { useNavigate } from 'react-router-dom';
-import { HashRouter } from 'react-router-dom';
 
 
 
 function HomeGameCard( { games }  ) {
-  const [gameDataList, setGameDataList] = useState([]);
   const [id, setId] = useState('');
   const [show, setShow] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const handleItemClick = (event, index, data) => {
-
-    setShow(false);
-  };
-  const handleSubMenuClick = (event, index, data) => {
+  const handleSubMenuClick = () => {
 
   };
-  const handleDisplayClick = (event, position) => {
+  const handleDisplayClick = () => {
 
   };
   const navigate = useNavigate();
   const { token } = useAuthContext();
 
-
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/games');
-      const data = await response.json();
-      setGameDataList(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
   async function fetchUserName() {
-  const tokenUrl = `http://localhost:8000/token`;
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
   const fetchConfig = {
     credentials: 'include',
     redirect: 'follow',
@@ -61,7 +43,7 @@ function HomeGameCard( { games }  ) {
 
   const fetchBoardData = async (userId) => {
     if (userId !== undefined) {
-    const boardUrl = `http://localhost:8000/api/boards/users/${userId}`;
+    const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userId}`;
     const boardConfig = {
       credentials: 'include',
     };
@@ -75,12 +57,12 @@ function HomeGameCard( { games }  ) {
       }
       setBoardDataList(boards);
     } catch (error) {
+      //empty
     }
     }
   };
 
   useEffect(() => {
-    fetchData();
     const fetchUserData = async () => {
       const userId = await fetchUserName();
       fetchBoardData(userId);
@@ -98,7 +80,7 @@ function HomeGameCard( { games }  ) {
   const fetchStoreUrl = async (platform, rawg_pk) => {
     try {
 
-      const response = await fetch(`http://localhost:8000/api/stores/${rawg_pk}`);
+      const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/stores/${rawg_pk}`);
 
       const data = await response.json();
 
@@ -134,7 +116,7 @@ function HomeGameCard( { games }  ) {
 
   const handleWishClick = async (event, index, data) => {
 
-    const addEntryUrl = 'http://localhost:8000/api/libraries';
+    const addEntryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`;
     const wishListData = {}
     wishListData.wishlist = true;
     wishListData.game_id = data;
@@ -151,7 +133,7 @@ function HomeGameCard( { games }  ) {
     try {
       const addEntryResponse = await fetch(addEntryUrl, addEntryFetchConfig);
       if (addEntryResponse.ok) {
-
+        //empty
       } else {
         console.error('Failed to add to wishlist. Server response:', response);
         throw new Error('Failed to add to wishlist');
@@ -165,7 +147,7 @@ function HomeGameCard( { games }  ) {
 
   const handleBoardClick = async (event, index, data) => {
     const stuff = {};
-    const libraryUrl = `http://localhost:8000/api/libraries`
+    const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`
     const board = data[0];
     stuff.wishlist = false;
     stuff.game_id = data[1];
@@ -180,10 +162,13 @@ function HomeGameCard( { games }  ) {
       }
     }
     const response = await fetch(libraryUrl, fetchConfig);
-    setShow(false)
+    if (response.ok) {
+      setShow(false);
+    }
   }
 
-  const handleNewBoard = (event, index, data) => {
+
+  const handleNewBoard = () => {
     navigate("/boards/create")
   }
 

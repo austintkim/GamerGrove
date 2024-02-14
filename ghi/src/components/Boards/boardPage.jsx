@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+
 import './boardPage.css';
 import '../Cards/boardGameCard.css'
 import SideMenu from '../Home/Menu';
@@ -9,7 +10,7 @@ import BoardGameCard from '../Cards/boardGameCard';
 
 
 async function fetchBoardDetails(boardId) {
-  const boardUrl = `http://localhost:8000/api/boards/${boardId}`;
+  const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/${boardId}`;
   const boardConfig = {
     credentials: 'include',
   };
@@ -24,8 +25,8 @@ async function fetchBoardDetails(boardId) {
   }
 }
 
-async function fetchGamesForBoard(accountId, boardId) {
-  const libraryUrl = `http://localhost:8000/api/users/libraries/${accountId}`;
+async function fetchGamesForBoard(accountId) {
+  const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${accountId}`;
   const libraryConfig = {
     credentials: 'include',
   };
@@ -50,7 +51,7 @@ async function fetchGamesForBoard(accountId, boardId) {
 }
 
 async function fetchGameDetails(gameId) {
-  const gameUrl = `http://localhost:8000/api/games/${gameId}`;
+  const gameUrl = `${import.meta.env.VITE_API_HOST}/api/games/${gameId}`;
   const gameConfig = {
     credentials: 'include',
   };
@@ -66,7 +67,7 @@ async function fetchGameDetails(gameId) {
 }
 
 async function fetchUserName() {
-  const tokenUrl = `http://localhost:8000/token`;
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
   const fetchConfig = {
     credentials: 'include',
   };
@@ -131,7 +132,7 @@ function BoardPage() {
 
   useEffect(() => {
     fetchData();
-  }, [boardId]);
+  }, []);
 
   const handleGameRemoval = async (id, account_id,) => {
     // sending DELETE request to libraries endpoint to remove the instance of game being
@@ -148,10 +149,9 @@ function BoardPage() {
         headers: {
           'Content-Type': 'application/json',
 
-          }
-          };
-        const response = await fetch (url, fetchConfig)
-        const answer = await response.json()
+        }
+        };
+      const response = await fetch (url, fetchConfig)
 
 
       if (response.ok) {

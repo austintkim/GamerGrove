@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './reviewCard.css';
 import { Link } from 'react-router-dom';
 
 async function fetchAccountId() {
-  const tokenUrl = `http://localhost:8000/token`;
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
   const fetchConfig = {
     credentials: 'include',
@@ -30,7 +30,7 @@ function ReviewCard() {
   const [gameDetailsList, setGameDetailsList] = useState([]);
 
   const fetchUserReviews = async (accountId) => {
-    const reviewsUrl = `http://localhost:8000/api/reviews/users/${accountId}`;
+    const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/users/${accountId}`;
 
     try {
       const response = await fetch(reviewsUrl, { credentials: 'include' });
@@ -39,16 +39,16 @@ function ReviewCard() {
         const reviewsData = await response.json();
         setUserReviews(reviewsData);
       } else {
-
+        //empty
       }
     } catch (error) {
-
+      //empty
     }
   };
 
   const fetchGameDetails = async (gameId) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/games/${gameId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games/${gameId}`);
 
       if (response.ok) {
         const gameData = await response.json();
@@ -124,7 +124,7 @@ function ReviewCard() {
               <hr className="rsolid" />
               <div className="side-by-side">
                 <div className="link-container">
-  
+
                 </div>
               </div>
             </div>

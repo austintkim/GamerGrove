@@ -1,4 +1,3 @@
-import React from 'react';
 import dogo from '../../assets/dogo.png';
 
 const Hero = () => {

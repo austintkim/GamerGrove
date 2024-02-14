@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 
 const containerStyle = {
@@ -36,7 +35,7 @@ const DeleteAccountForm = () => {
   const handleLogOut = async (event) => {
     event.preventDefault();
 
-    const logOutUrl = 'http://localhost:8000/token';
+    const logOutUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
     const fetchConfig = {
         method: "delete",
@@ -58,7 +57,7 @@ const DeleteAccountForm = () => {
   const handleDelete = async (event) => {
     event.preventDefault();
 
-    const deleteUrl = `http://localhost:8000/api/accounts/${id}/${username}`;
+    const deleteUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${id}/${username}`;
 
     const deleteConfig = {
       method: "delete",

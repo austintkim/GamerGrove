@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './Rows.css';
 import HomeGameCard from '../Cards/homeGameCard.jsx';
 
-const Rows = ({ selectedGenre, onSelectGenre }) => {
+const Rows = ({ selectedGenre}) => {
   const [gameDataList, setGameDataList] = useState([]);
-  const navigate = useNavigate();
 
     const fetchData = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/games');
+            const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
             const data = await response.json();
             setGameDataList(data);
         } catch (error) {

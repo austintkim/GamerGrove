@@ -1,5 +1,5 @@
 import useToken from "@galvanize-inc/jwtdown-for-react";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Settings.css';
 
@@ -36,7 +36,7 @@ function SignUpForm() {
   const { login } = useToken();
 
   const fetchData = async () => {
-    const url = 'http://localhost:8000/api/icons';
+    const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
     const response = await fetch(url);
 
     if (response.ok) {
@@ -65,17 +65,15 @@ function SignUpForm() {
   }
 
   let warningClasses = 'alert alert-warning d-none mb-0';
-  let passwordClasses = '';
   if (passwordMismatch) {
     warningClasses = 'alert alert-warning mb-0';
-    passwordClasses = 'd-none';
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (passwordConfirm === accountFormData.password) {
-      const accountUrl = 'http://localhost:8000/api/accounts'
+      const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts`
 
       const accountFetchConfig = {
         method: "post",
@@ -123,7 +121,7 @@ function SignUpForm() {
               <div className="offset-2 col-8">
                 <h2 className="card-header" style={{ textAlign: 'center'}}>Create account</h2>
                 <div className={warningClasses} id="warning-message">
-                  Your passwords don't match!
+                  Your passwords do not match!
                 </div>
                 <div style={{ width: '100%'}}>
                   <form onSubmit={handleSubmit} id="create-account">

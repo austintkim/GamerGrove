@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from '../GameDetails/StarRating';
 
 const fetchUserName = async () => {
-  const tokenUrl = `http://localhost:8000/token`;
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
   const fetchConfig = {
     credentials: 'include',
@@ -14,32 +14,28 @@ const fetchUserName = async () => {
   if (response.ok) {
     const data = await response.json();
     if (data !== null) {
-    return data.account.username;
+      return data.account.username;
     }
   }
 };
 
-const saved_username = await fetchUserName();
+const fetchAccount = async (username) => {
+  if (username !== undefined) {
+    const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${username}`;
 
-const fetchAccount = async () => {
-  if (saved_username!== undefined) {
-  const accountUrl = `http://localhost:8000/api/accounts/${saved_username}`;
+    const response = await fetch(accountUrl);
 
-  const response = await fetch(accountUrl);
-
-  if (response.ok) {
-    const data = await response.json();
-    return data;
-  }
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    }
   }
 };
 
-const account_data = await fetchAccount();
-
-async function fetchReviews(id) {
-  const reviewUrl = `http://localhost:8000/api/reviews/${id}`;
+const fetchReviews = async (id) => {
+  const reviewUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/${id}`;
   const reviewConfig = {
-    credentials: 'include'
+    credentials: 'include',
   };
 
   const response = await fetch(reviewUrl, reviewConfig);
@@ -48,7 +44,7 @@ async function fetchReviews(id) {
     const data = await response.json();
     return data;
   }
-}
+};
 
 function UpdateReviewForm() {
   const navigate = useNavigate();
@@ -57,12 +53,20 @@ function UpdateReviewForm() {
     title: '',
     body: '',
     game_id: `${game_id}`,
-    rating: ''
+    rating: '',
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const username = await fetchUserName();
+        const accountData = await fetchAccount(username);
+
+        if (!accountData || !accountData.id) {
+          console.error('Account data is undefined or missing ID.');
+          return;
+        }
+
         const reviewData = await fetchReviews(review_id);
 
         if (reviewData) {
@@ -70,7 +74,7 @@ function UpdateReviewForm() {
             title: reviewData.title || '',
             body: reviewData.body || '',
             game_id: reviewData.game_id,
-            rating: reviewData.rating || ''
+            rating: reviewData.rating || '',
           });
         }
       } catch (error) {
@@ -81,7 +85,7 @@ function UpdateReviewForm() {
     fetchData();
   }, [review_id]);
 
-    const handleStarClick = (selectedRating) => {
+  const handleStarClick = (selectedRating) => {
     setFormData({
       ...formData,
       rating: selectedRating,
@@ -91,30 +95,42 @@ function UpdateReviewForm() {
   const handleFormChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const reviewsUrl = `http://localhost:8000/api/reviews/${review_id}/${account_data.id}`;
+    try {
+      const username = await fetchUserName();
+      const accountData = await fetchAccount(username);
 
-    const fetchConfig = {
-      method: 'put',
-      body: JSON.stringify(formData),
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
+      if (!accountData || !accountData.id) {
+        console.error('Account data is undefined or missing ID.');
+        return;
       }
-    };
 
-    const response = await fetch(reviewsUrl, fetchConfig);
+      const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/${review_id}/${accountData.id}`;
 
-    if (response.ok) {
-      navigate(`/games/${game_id}`);
-    } else {
-      console.error('Failed to update review');
+      const fetchConfig = {
+        method: 'put',
+        body: JSON.stringify(formData),
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const response = await fetch(reviewsUrl, fetchConfig);
+
+      if (response.ok) {
+        navigate(`/games/${game_id}`);
+      } else {
+        console.error('Failed to update review');
+      }
+    } catch (error) {
+      console.error('Error submitting review:', error);
     }
   };
 

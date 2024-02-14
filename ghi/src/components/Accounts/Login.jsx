@@ -1,9 +1,7 @@
-import {useAuthContext} from "@galvanize-inc/jwtdown-for-react";
 import useToken from "@galvanize-inc/jwtdown-for-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {useNavigate} from 'react-router-dom';
 import Hero from "./Hero";
-import { useRef } from "react";
 
 import './Hero.css'
 
@@ -20,13 +18,12 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [incorrectLogin, setIncorrectLogin] = useState(false);
   const { login } = useToken();
-  const { token } = useAuthContext();
   const navigate = useNavigate();
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const loginUrl = `http://localhost:8000/token`;
+    const loginUrl = `${import.meta.env.VITE_API_HOST}/token`;
     const form = new FormData();
     form.append("username", username);
     form.append("password", password);
@@ -46,10 +43,8 @@ const LoginForm = () => {
   };
 
   let messageClasses = 'alert alert-danger d-none mb-0';
-  let formClasses = '';
   if (incorrectLogin) {
     messageClasses = 'alert alert-danger mb-0';
-    formClasses = 'd-none';
   }
 
   return (

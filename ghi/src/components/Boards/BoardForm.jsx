@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const initialData = {
@@ -22,7 +22,7 @@ function BoardForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const boardUrl = 'http://localhost:8000/api/boards'
+    const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards`
 
 
 

@@ -4,7 +4,7 @@ import StarRating from '../GameDetails/StarRating';
 import {useNavigate} from 'react-router-dom';
 
 async function fetchAccountId() {
-  const tokenUrl = `http://localhost:8000/token`;
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
   const fetchConfig = {
     credentials: 'include',
@@ -32,7 +32,7 @@ function UserReviewCard() {
   const [userReviews, setUserReviews] = useState([]);
 
   const fetchUserReviews = async (accountId) => {
-    const reviewsUrl = `http://localhost:8000/api/reviews/users/${accountId}`;
+    const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/users/${accountId}`;
 
     try {
       const response = await fetch(reviewsUrl, { credentials: 'include' });

@@ -4,7 +4,7 @@
 .largercard {
     background-color: #222222;
     width: 800px;
-    height: 250px;
+    height: auto;
     border: 1px solid black;
     border-radius: 10px;
     overflow: hidden;
@@ -136,4 +136,10 @@
     text-align: right;
     margin-right: 88px;
     position: relative;
+}
+
+.divthumbsnouser {
+    margin-left: 10px;
+    position: relative;
+
 }

@@ -1,17 +1,14 @@
 import {useAuthContext} from "@galvanize-inc/jwtdown-for-react";
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Nav.css';
 import logo from '../../assets/logo.gif';
-import { render } from 'react-dom';
-import SearchResults from '../SearchResults/SearchResults';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 import Icon from "../Icon/icon.jsx";
 
 
 
 const Nav = () => {
-  const [display, handleDisplay] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const { token } = useAuthContext();
 
@@ -19,15 +16,6 @@ const Nav = () => {
   const navigate = useNavigate();
   const [searching, setSearching] = useState(false);
 
-
-
-  const transitionNavBar = () => {
-    handleDisplay(window.scrollY > 100);
-  };
-
-  const toggleDropdown = () => {
-    setShowDropdown((prev) => !prev);
-  };
 
   const closeDropdown = (e) => {
     if (avatarContainerRef.current && !avatarContainerRef.current.contains(e.target)) {
@@ -52,7 +40,7 @@ const Nav = () => {
     const searchResults = [];
     const RAWG_API_KEY = import.meta.env.VITE_RAWG_API_KEY;
     const searchUrl = `https://api.rawg.io/api/games?key=${RAWG_API_KEY}&search=${searchTerms}&page=1&page_size=5`;
-    const gamesUrl = 'http://localhost:8000/api/games';
+    const gamesUrl = `${import.meta.env.VITE_API_HOST}/api/games`;
 
     const answer = await fetch(gamesUrl);
     if (answer.ok) {
@@ -132,14 +120,7 @@ const Nav = () => {
                 }
                 const postGames = await fetch(gamesUrl, fetchConfig);
                 if (postGames.ok) {
-
-                  const screenshotUrl = `http://localhost:8000/api/screenshots/${gameData.rawg_pk}`
-
-                  const screenshotResults = await fetch(screenshotUrl)
-
-                  const storesUrl = `http://localhost:8000/api/stores/${gameData.rawg_pk}`
-                  const storeResults = await fetch(storesUrl)
-
+                  continue
                 }
               } catch(error) {
                 continue
@@ -171,14 +152,14 @@ const Nav = () => {
     };
   }, [showDropdown]);
 
-  
+
   const handleDropdownClick = () => {
     setShowDropdown(true);
   };
 
 
   const handleLogOut = async () => {
-      const logOutUrl = 'http://localhost:8000/token';
+      const logOutUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
       const fetchConfig = {
           method: "delete",
@@ -189,21 +170,18 @@ const Nav = () => {
       };
 
       const response = await fetch (logOutUrl, fetchConfig);
+      if (response.ok){
+        navigate('/');
+        window.location.reload();
+      }
       if (!response.ok) {
           throw new Error('Failed to log out');
       }
   }
 
-
-
-
-
-
-
-
   if (token) {
     return (
-    <div className={`nav ${display && 'nav__black'}`}>
+    <div className='nav'>
       <nav>
         <div className='nav__contents'>
           <div className='ncontainer expanded'>
@@ -227,12 +205,12 @@ const Nav = () => {
             <Icon />
             {showDropdown && (
               <div className='nav__dropdown' onClick={stopPropagation}>
-                <a href="http://localhost:5173/dashboard">
+                <Link to="/dashboard">
                   <div className='nav__dropdown-item, font-drop'>Dashboard</div>
-                </a>
-                <a href="http://localhost:5173/" onClick={() => { handleLogOut(); }}>
+                </Link>
+                <Link to="/" onClick={() => { handleLogOut(); }}>
                   <div className='nav__dropdown-item, font-drop'>Logout</div>
-                </a>
+                </Link>
               </div>
             )}
           </div>
@@ -245,7 +223,7 @@ const Nav = () => {
   );
   } else {
   return (
-    <div className={`nav ${display && 'nav__black'}`}>
+    <div className='nav'>
       <nav>
         <div className='nav__contents'>
           <div className='ncontainer expanded'>
@@ -265,12 +243,12 @@ const Nav = () => {
             <Icon />
             {showDropdown && (
               <div className='nav__dropdown' onClick={stopPropagation}>
-                <a href="http://localhost:5173/login">
+                <Link to="/login">
                 <div className='nav__dropdown-item, font-drop'>Login</div>
-                </a>
-                <a href="http://localhost:5173/signup">
+                </Link>
+                <Link to="/signup">
                 <div className='nav__dropdown-item, font-drop'>Sign Up</div>
-                </a>
+                </Link>
               </div>
             )}
           </div>
@@ -280,8 +258,8 @@ const Nav = () => {
         <PacmanLoader color="#faff06" size={115} loading={searching} aria-label={"Loading Spinner"}/>
       </div>
     </div>
-  );
-};
+  )
+}
 }
 
 export default Nav;

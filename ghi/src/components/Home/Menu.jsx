@@ -1,25 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState, } from 'react';
 import './Menu.css';
-import { useNavigate } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 
-const SideMenu = ({ onSelectGenre, onSelectPlatform }) => {
+const SideMenu = ({  }) => {
 
-    const [platforms, setPlatforms] = useState([]);
-
-
-    const [menuWidth, setMenuWidth] = useState(250);
-    const navigate = useNavigate();
-    const updateMenuWidth = () => {
-        if (window.innerWidth <= 768) {
-            setMenuWidth(window.innerWidth);
-        } else {
-            setMenuWidth(250);
-        }
-    };
     const [genres, setGenres] = useState([]);
     const fetchGenres = async () => {
-        const url = `http://localhost:8000/api/games`;
+        const url = `${import.meta.env.VITE_API_HOST}/api/games`;
         const response = await fetch(url)
         if (response.ok) {
             const gameGenres = []
@@ -35,26 +22,18 @@ const SideMenu = ({ onSelectGenre, onSelectPlatform }) => {
         }
     }
 
-
     useEffect(() => {
-        updateMenuWidth();
-        window.addEventListener('resize', updateMenuWidth);
         fetchGenres();
 
-        return () => {
-            window.removeEventListener('resize', updateMenuWidth);
-        };
-    }, []);
-
-
+}, []);
 
     return (
             <div className="side-menu">
                 <ul>
 
-                    <a href="http://localhost:5173/">
+                    <Link to="/">
                     <h5 className='home' style={{ fontFamily: 'K2D'}}>Home Page</h5>
-                    </a>
+                    </Link>
                     <div className="small-space"></div>
 
                     <hr className='solid' />

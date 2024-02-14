@@ -284,3 +284,26 @@ label[for='rating'] {
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 20px;
 }
+
+
+#big-screenshots {
+  text-align: right;
+  background-color: rgba(29, 29, 30, 0.816);
+  opacity: 0;
+  z-index: -1;
+  position: fixed;
+  left: 400px;
+  width: 60%;
+  height: max-content;
+  top: 150px;
+  border-radius: 20px;
+  padding: 15px;
+}
+
+.screenshotsHero:hover {
+  cursor: pointer;
+}
+
+.d-block {
+  height: min-content;
+}

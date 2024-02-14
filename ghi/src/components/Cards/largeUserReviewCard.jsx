@@ -1,23 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './largeUserReviewCard.css';
 import StarRating from '../GameDetails/StarRating';
 
 
 function LargeUserReviewCard({ gameId, accountId }) {
-  const { token } = useAuthContext();
   const navigate = useNavigate();
   const [userReviews, setUserReviews] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isUpvoted, setIsUpvoted] = useState(false);
-  const [isDownvoted, setIsDownvoted] = useState(false);
-  const [userVotes, setUserVotes] = useState([])
   const [voted, setVoted] = useState(false)
 
     const fetchReviewsForGame = async (gameId) => {
     const votes = await fetchVotesForUser();
-    const reviewsUrl = `http://localhost:8000/api/reviews/games/${gameId}`;
+    const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/games/${gameId}`;
 
     try {
       const response = await fetch(reviewsUrl);
@@ -37,9 +31,12 @@ function LargeUserReviewCard({ gameId, accountId }) {
               if (v.upvote) {
                 r.upvote = true
                 r.downvote = false
-              } else {
+              } else if (v.downvote) {
                 r.upvote = false
                 r.downvote = true
+              } else {
+                r.upvote = false
+                r.downvote = false
               }
             }
           }
@@ -57,14 +54,12 @@ function LargeUserReviewCard({ gameId, accountId }) {
       }
     } catch (error) {
       console.error('Error fetching reviews:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const fetchVotesForUser = async () => {
     const user = await fetchUserName();
-    const votesUrl = `http://localhost:8000/api/votes/users/${user}`;
+    const votesUrl = `${import.meta.env.VITE_API_HOST}/api/votes/users/${user}`;
 
     const votesConfig = {
       credentials: 'include'
@@ -86,7 +81,6 @@ function LargeUserReviewCard({ gameId, accountId }) {
         return 0
       }
 
-
   };
 
   useEffect(() => {
@@ -95,7 +89,7 @@ function LargeUserReviewCard({ gameId, accountId }) {
   }, [gameId, accountId]);
 
   async function fetchUserName() {
-  const tokenUrl = `http://localhost:8000/token`;
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
   const fetchConfig = {
     credentials: 'include',
     redirect: 'follow',
@@ -120,8 +114,8 @@ function LargeUserReviewCard({ gameId, accountId }) {
       "downvote": false
     }
     if (user) {
-      const voteUrl = `http://localhost:8000/api/votes/users/${user}`
-      const postUrl = 'http://localhost:8000/api/votes'
+      const voteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/users/${user}`
+      const postUrl = `${import.meta.env.VITE_API_HOST}/api/votes`
       const response = await fetch(voteUrl, { credentials: 'include' });
       if (response.ok) {
         const votes = await response.json()
@@ -131,11 +125,32 @@ function LargeUserReviewCard({ gameId, accountId }) {
         for (const v of votes) {
           if (v.account_id == user && v.review_id == reviewId ) {
             if (v.upvote == true) {
+              const noVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+              const noVoteData = {
+                "review_id": reviewId,
+                "upvote": false,
+                "downvote": false
+              }
+              const fetchConfig = {
+                method: 'put',
+                body: JSON.stringify(noVoteData),
+                credentials: 'include',
+                headers: {
+                  "Content-Type": 'application/json'
+                }
+              }
+              const noVoteResponse = await fetch(noVoteUrl, fetchConfig)
+              if (noVoteResponse.ok) {
+
+                fetchReviewsForGame(gameId)
+                return
+
+              }
 
               return
 
             } else {
-              const upVoteUrl = `http://localhost:8000/api/votes/${v.id}/${user}`;
+              const upVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
               const fetchConfig = {
                 method: 'put',
                 body: JSON.stringify(upVoteData),
@@ -189,8 +204,8 @@ function LargeUserReviewCard({ gameId, accountId }) {
       "downvote": true
     }
     if (user) {
-      const voteUrl = `http://localhost:8000/api/votes/users/${user}`
-      const postUrl = 'http://localhost:8000/api/votes'
+      const voteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/users/${user}`
+      const postUrl = `${import.meta.env.VITE_API_HOST}/api/votes`
       const response = await fetch(voteUrl, { credentials: 'include' });
       if (response.ok) {
         const votes = await response.json()
@@ -200,9 +215,28 @@ function LargeUserReviewCard({ gameId, accountId }) {
         for (const v of votes) {
           if (v.account_id == user && v.review_id == reviewId ) {
             if (v.downvote == true) {
+              const noVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+              const noVoteData = {
+                "review_id": reviewId,
+                "upvote": false,
+                "downvote": false
+              }
+              const fetchConfig = {
+                method: 'put',
+                body: JSON.stringify(noVoteData),
+                credentials: 'include',
+                headers: {
+                  "Content-Type": 'application/json'
+                }
+              }
+              const noVoteResponse = await fetch(noVoteUrl, fetchConfig)
+              if (noVoteResponse.ok) {
+                fetchReviewsForGame(gameId)
+                return
+              }
               return
             } else {
-              const downVoteUrl = `http://localhost:8000/api/votes/${v.id}/${user}`
+              const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`
               const fetchConfig = {
                 method: 'put',
                 body: JSON.stringify(downVoteData),
@@ -287,9 +321,8 @@ function LargeUserReviewCard({ gameId, accountId }) {
                 <p>{review.body}</p>
               </div>
               <div className="lurcard-date">
-                  <p>Rating: {review.rating}</p>
                   <div className="rating-container">
-                    <div className="star-rating" style={{ marginRight: '-30px', marginBottom: '-250px', position: 'relative'}}>
+                    <div className="star-rating" style={{marginTop: '75px'}}>
                       <StarRating rating={review.rating} />
                     </div>
                   </div>

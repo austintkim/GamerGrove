@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './boardCard.css';
-import { useNavigate} from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 
 async function fetchUserName() {
-  const tokenUrl = `http://localhost:8000/token`;
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
   const fetchConfig = {
     credentials: 'include',
     redirect: 'follow',
@@ -18,7 +18,7 @@ async function fetchUserName() {
 }
 
 async function fetchGamesForBoard(boardId) {
-  const gamesUrl = `http://localhost:8000/api/users/libraries/${boardId}`;
+  const gamesUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${boardId}`;
   const gamesConfig = {
     credentials: 'include',
   };
@@ -39,7 +39,7 @@ async function fetchGamesForBoard(boardId) {
 }
 
 async function fetchGameDetails(gameId) {
-  const gameUrl = `http://localhost:8000/api/games/${gameId}`;
+  const gameUrl = `${import.meta.env.VITE_API_HOST}/api/games/${gameId}`;
   const gameConfig = {
     credentials: 'include',
   };
@@ -66,7 +66,7 @@ function BoardCard() {
   const [userSavedBoards, setUserSavedBoards] = useState([]);
 
   const fetchData = async (userId) => {
-    const boardUrl = `http://localhost:8000/api/boards/users/${userId}`;
+    const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userId}`;
     const boardConfig = {
       credentials: 'include',
     };
@@ -162,9 +162,9 @@ function BoardCard() {
       <div key={boardData.id} className='card' style={{ width: '20rem' }}>
         <img src={boardData.cover_photo} className='card-img-top' alt={`Board Cover for ${boardData.board_name}`} style={{ borderRadius: '20px 20px 0 0 ' }} />
         <div className='card-body'>
-          <a href={`/boards/${boardData.id}`} className='board-link'>
+          <Link to={`/boards/${boardData.id}`} className='board-link'>
             <h5 className='card-title1'>{boardData.board_name}</h5>
-          </a>
+          </Link>
           <hr className='bsolid' />
           <p className='card-text1'>{`${boardData.game_count} Games`}</p>
           <div className={`flex-container ${boardData.alignment}`}>

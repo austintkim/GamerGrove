@@ -30,17 +30,17 @@ async def create_vote(
     review_dict = review_queries.get_review(review_id).dict()
     del review_dict["id"]
 
-    if vote_dict["upvote"] == True:
+    if vote_dict["upvote"] is True:
         review_dict["upvote_count"] += 1
-    elif vote_dict["downvote"] == True:
+    elif vote_dict["downvote"] is True:
         review_dict["upvote_count"] -= 1
 
     try:
         vote_history = queries.get_user_votes(account_id)
-        if vote_dict["upvote"] == False and vote_dict["downvote"] == False:
+        if vote_dict["upvote"] is False and vote_dict["downvote"] is False:
             if vote_history[-1].upvote:
                 review_dict["upvote_count"] -= 1
-            elif vote_history[-1].downvote == True:
+            elif vote_history[-1].downvote is True:
                 review_dict["upvote_count"] += 1
     except Exception as e:
         if isinstance(e, HTTPException) and e.status_code == status.HTTP_404_NOT_FOUND:
@@ -90,9 +90,9 @@ async def update_vote(
     review_dict = review_queries.get_review(review_id).dict()
     del review_dict["id"]
 
-    if vote_dict["upvote"] == True:
+    if vote_dict["upvote"] is True and vote_details["upvote"] is False:
         review_dict["upvote_count"] += 1
-    elif vote_dict["downvote"] == True:
+    elif vote_dict["upvote"] is False and vote_details["upvote"] is True:
         review_dict["upvote_count"] -= 1
     review_queries.update_review(review_id, review_dict)
 

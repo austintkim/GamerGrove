@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Landing.css';
 import './Menu';
 import './Rows';
@@ -11,7 +12,7 @@ const Landing = () => {
 
   useEffect(() => {
 
-    fetch('http://localhost:8000/api/games')
+    fetch(`${import.meta.env.VITE_API_HOST}/api/games`)
       .then(response => response.json())
       .then(data => {
 
@@ -42,7 +43,7 @@ const Landing = () => {
       <Slider {...settings}>
         {games.map((game, index) => (
             <div key={index}>
-              <a href={`/games/${game.id}`}>
+              <Link to={`/games/${game.id}`}>
               <img
                 src={game.background_img}
                 className="d-block w-100"
@@ -58,7 +59,7 @@ const Landing = () => {
                   marginTop: '10px',
                 }}
               />
-            </a>
+            </Link>
               <div className="caption-container">
               <div className="caption">
                 <h5>{game.name}</h5>

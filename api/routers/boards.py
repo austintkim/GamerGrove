@@ -1,4 +1,4 @@
-from fastapi import (APIRouter, Depends, Request, Response)
+from fastapi import (APIRouter, Depends, Response)
 from typing import Union, List
 from authenticator import authenticator
 from queries.boards import (

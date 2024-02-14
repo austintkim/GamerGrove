@@ -20,7 +20,7 @@ const SearchResults = () => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
     async function fetchUserName() {
-    const tokenUrl = `http://localhost:8000/token`;
+    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
     const fetchConfig = {
         credentials: 'include',
         redirect: 'follow',
@@ -38,16 +38,16 @@ const SearchResults = () => {
 
     const [boardDataList, setBoardDataList] = useState([]);
 
-    const handleDisplayClick = (event, position) => {
+    const handleDisplayClick = () => {
 
   };
 
-    const handleSubMenuClick = (event, index, data) => {
+    const handleSubMenuClick = () => {
 
     };
 
     const fetchBoardData = async (userId) => {
-        const boardUrl = `http://localhost:8000/api/boards/users/${userId}`;
+        const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userId}`;
         const boardConfig = {
         credentials: 'include',
         };
@@ -75,7 +75,7 @@ const SearchResults = () => {
     const fetchData = async () => {
         try {
         const games = []
-        const response = await fetch('http://localhost:8000/api/games');
+        const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
         const data = await response.json();
         for (const d of data) {
             if (rawg_pks.includes(d.rawg_pk)) {
@@ -111,7 +111,7 @@ useEffect(() => {
   const fetchStoreUrl = async (platform, rawg_pk) => {
     try {
 
-      const response = await fetch(`http://localhost:8000/api/stores/${rawg_pk}`);
+      const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/stores/${rawg_pk}`);
 
       const data = await response.json();
 
@@ -147,7 +147,7 @@ useEffect(() => {
 
     const handleWishClick = async (event, index, data) => {
 
-        const addEntryUrl = 'http://localhost:8000/api/libraries';
+        const addEntryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`;
         const wishListData = {}
         wishListData.wishlist = true;
         wishListData.game_id = data;
@@ -164,8 +164,9 @@ useEffect(() => {
         try {
         const addEntryResponse = await fetch(addEntryUrl, addEntryFetchConfig);
         if (addEntryResponse.ok) {
+          //empty
         } else {
-            console.error('Failed to add to wishlist. Server response:', response);
+            console.error('Failed to add to wishlist. Server response:', addEntryResponse);
             throw new Error('Failed to add to wishlist');
         }
         } catch (error) {
@@ -176,26 +177,28 @@ useEffect(() => {
     };
 
     const handleBoardClick = async (event, index, data) => {
-        const stuff = {};
-        const libraryUrl = `http://localhost:8000/api/libraries`
-        const board = data[0];
-        stuff.wishlist = false;
-        stuff.game_id = data[1];
-        stuff.board_id = board;
+      const stuff = {};
+      const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`
+      const board = data[0];
+      stuff.wishlist = false;
+      stuff.game_id = data[1];
+      stuff.board_id = board;
 
-        const fetchConfig = {
+      const fetchConfig = {
         method: 'post',
         body: JSON.stringify(stuff),
         credentials: 'include',
         headers: {
-            "Content-type": "application/json"
+          "Content-type": "application/json"
         }
-        }
-        const response = await fetch(libraryUrl, fetchConfig);
-        setShow(false)
-    }
+      }
+      const response = await fetch(libraryUrl, fetchConfig);
+      if (response.ok) {
+        setShow(false);
+      }
+  }
 
-    const handleNewBoard = (event, index, data) => {
+    const handleNewBoard = () => {
         navigate("/boards/create")
     }
 
@@ -412,17 +415,18 @@ useEffect(() => {
                   <div>{parse(gameData.description.slice(0, 100))}</div>
                 </div>
                 <div className="shgbutton">
-                  <button>
+                  <button onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`/games/${gameData.id}/nonuser`)
+                  }}>
                     <b>Options</b>
                   </button>
                 </div>
               </div>
             ))}
           </div>
-
         </div>
       </div>
-
     </div>
   );
 }
