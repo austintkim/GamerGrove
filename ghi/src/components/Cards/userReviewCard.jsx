@@ -65,7 +65,7 @@ function UserReviewCard() {
   return (
     <div>
       {userReviews.length === 0 ? (
-        <p style={{color:'white'}}>No user reviews available.</p>
+        <p style={{color:'white'}}>No reviews created yet.</p>
       ) : (
         userReviews.map((review) => (
           <div key={review.id} className="urcard">

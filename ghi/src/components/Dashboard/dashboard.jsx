@@ -41,7 +41,7 @@ function Dashboard() {
       <SideMenu />
       <Nav />
       <main>
-        <h1 style={{color: 'white'}} >{saved_username}'s Dashboard 🎛️ 🖥️ 📟</h1>
+        <h1 style={{color:'white'}} >{savedUsername}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
 
         <input id="radio1" type="radio" name="css-tabs" defaultChecked />
         <input id="radio2" type="radio" name="css-tabs" />
@@ -49,11 +49,11 @@ function Dashboard() {
         <input id="radio4" type="radio" name="css-tabs" />
         <input id="radio5" type="radio" name="css-tabs" />
         <div id="tabs">
-          <label style={{color: 'white'}} htmlFor="radio1" id="tab1">Boards</label>
-          <label style={{color: 'white'}} htmlFor="radio2" id="tab2">Reviews</label>
-          <label style={{color: 'white'}} htmlFor="radio3" id="tab3">Games</label>
-          <label style={{color: 'white'}} htmlFor="radio4" id="tab4">Wishlist</label>
-          <label style={{color: 'white'}} htmlFor="radio5" id="tab5">Settings</label>
+          <label style={{color:'white'}} htmlFor="radio1" id="tab1">Boards</label>
+          <label style={{color:'white'}} htmlFor="radio2" id="tab2">Reviews</label>
+          <label style={{color:'white'}} htmlFor="radio3" id="tab3">Games</label>
+          <label style={{color:'white'}} htmlFor="radio4" id="tab4">Wishlist</label>
+          <label style={{color:'white'}} htmlFor="radio5" id="tab5">Settings</label>
         </div>
         <div id="content">
           <section id="content1">
