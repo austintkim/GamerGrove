@@ -100,10 +100,6 @@ function ReviewCard() {
     }
   }, [userReviews]);
 
-  if (gameDetailsList.length === 0) {
-    return <p style={{color:'white'}}>No reviews available.</p>;
-  }
-
   const handleLinkClick = (e) => {
 
     e.stopPropagation();
