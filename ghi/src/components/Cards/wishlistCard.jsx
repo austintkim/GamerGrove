@@ -122,7 +122,7 @@ return (
     <div>
       {wishlistGames.map((game, index) => (
         <div key={`${game.id}-${index}`} className="wishlistcard">
-          <div className="wcard-content">
+          <div  className="wcard-content">
             <div className="wcard-details">
 
                 <div className='wcontent-capsules'>
@@ -179,7 +179,7 @@ return (
                     />
                     )}
                 </div>
-                  <p className='gamename'>{game.name}</p>
+                  <p style={{color:'white'}} className='gamename'>{game.name}</p>
                 <Link to={`/games/${game.id}`}>
                   <div className="wcard-photo" style={{ position: 'relative' }}>
                     <img src={game.background_img} alt={game.name} />
