@@ -6,7 +6,7 @@
 
 GamerGrove – a grove for gamers.
 
-## UI Screenshots For Code Sample for Airbnb Reviewers
+## UI Screenshots For Code Sample for LinkedIn Reviewers
 
 ![Alt text](<User Dashboard Created Boards.png>)
 ![Alt text](<Games Added to Board.png>)
