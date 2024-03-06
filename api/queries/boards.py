@@ -83,6 +83,7 @@ class BoardQueries:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 try:
+                    # Inserting input board dictionary into database
                     result = db.execute(
                         """
                         INSERT INTO boards (
@@ -113,6 +114,9 @@ class BoardQueries:
                         record = {}
                         for i, column in enumerate(db.description):
                             record[column.name] = row[i]
+                        # Converting the dictionary into a Pydantic objec that matches the shape of
+                        # our BoardOut Pydantic model so that when it is returned in the router
+                        # we get back a 200 server response
                         return BoardOut(**record)
                 except ValueError:
                     raise HTTPException(
