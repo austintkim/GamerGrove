@@ -16,9 +16,7 @@ class BoardInBase(BaseModel):
     description: str
     cover_photo: str
 
-# Inherits the values inputted by the user and also
-# takes in the default game_count of 0 and the account_id
-# of the currently logged in user
+# Inherits the values inputted by the user and also takes in the default game_count of 0 and the account_id of the currently logged in user
 class BoardIn(BoardInBase):
     game_count: int
     account_id: int
@@ -116,8 +114,7 @@ class BoardQueries:
                         record = {}
                         for i, column in enumerate(db.description):
                             record[column.name] = row[i]
-                        # Converting the dictionary into a Pydantic objec that matches the shape of
-                        # our BoardOut Pydantic model so that when it is returned in the router
+                        # Converting the dictionary into a Pydantic object that matches the shape of our BoardOut Pydantic model so that when it is returned in the router
                         # we get back a 200 server response
                         return BoardOut(**record)
                 except ValueError:
