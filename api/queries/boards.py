@@ -10,16 +10,19 @@ pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 class HttpError(BaseModel):
     detail: str
 
+
 # Shape of the request body inputted by the user
 class BoardInBase(BaseModel):
     board_name: str
     description: str
     cover_photo: str
 
+
 # Inherits the values inputted by the user and also takes in the default game_count of 0 and the account_id of the currently logged in user
 class BoardIn(BoardInBase):
     game_count: int
     account_id: int
+
 
 # Same as BoardIn except it includes the auto-generated id of the created Board object
 class BoardOut(BaseModel):
