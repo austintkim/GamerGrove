@@ -31,6 +31,7 @@ class GameIn(BaseModel):
     reviews_count: int
 
 
+
 class GameOut(BaseModel):
     id: int
     name: str
@@ -48,6 +49,9 @@ class GameOut(BaseModel):
     developers: str
     rawg_pk: int
     reviews_count: int
+
+class GamesList(BaseModel):
+    games: list[GameOut]
 
 
 class GameQueries:

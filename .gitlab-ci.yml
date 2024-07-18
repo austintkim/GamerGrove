@@ -49,9 +49,34 @@ build-api-image:
   script:
     - docker build --tag $GITLAB_IMAGE:latest ./api
     - docker push $GITLAB_IMAGE:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "heroku"'
   only:
     - main
 
+deploy-to-heroku:
+  stage: deploy
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  script:
+    - echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
+    - docker pull ${CI_REGISTRY_IMAGE}/api:latest
+    - docker tag ${CI_REGISTRY_IMAGE}/api:latest registry.heroku.com/gamergrove/web
+    - docker push registry.heroku.com/gamergrove/web
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "heroku"'
+$CI_COMMIT_BRANCH == "heroku"'
+
+release-api-to-heroku:
+  stage: deploy
+  image: node:14
+  before_script:
+  - npm install -g heroku
+  script:
+  - heroku container:release web --app $HEROKU_APP_NAME
+  rules:
+  - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "heroku"'
 # # Build the React/JavaScript front-end
 build-front-end-job:
   stage: build
@@ -65,13 +90,13 @@ build-front-end-job:
     # GROUP_NAME, PROJECT_NAME, & WEBSERVICE_NAME below.
     # Don't forget to also replace PROJECT NAME in the npm run build line as well
     VITE_PUBLIC_URL: https://gamer-grove-gamergrove-e4b66709a0ca1018f06e6423b03cd88c405f322b.gitlab.io/
-    VITE_API_HOST: https://oct-2023-7-et-api.mod3projects.com
+    VITE_API_HOST: https://git.heroku.com/gamergrove.git
     VITE_RAWG_API_KEY: 0c4556270545498782c9a942f38cb48a
   script:
     - cd ghi
     - npm install
     - npm run lint
-    - npm run build
+    - npm run build -- --base=/gamer-grove/
     # The following line creates a _redirects file to redirect all URLs to index.html
     # Documentation: https://docs.gitlab.com/ee/gamergrove/gamergrove/pages/redirects.html#rewrite-all-requests-to-a-root-indexhtml
     - echo "/* /index.html 200" > dist/_redirects
@@ -93,3 +118,7 @@ pages:
   artifacts:
     paths:
       - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "heroku"'
+  variables:
+    GITLAB_PAGES_HTTP: "true"
