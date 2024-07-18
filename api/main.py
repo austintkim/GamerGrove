@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from authenticator import authenticator
 from fastapi.middleware.cors import CORSMiddleware
 from routers import (accounts, boards, icons, screenshots, games, replies, votes, libraries, stores, reviews)
-from seederfile import seed_data
+# from seederfile import seed_data
 import os
 
 
