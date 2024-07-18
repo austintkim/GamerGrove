@@ -66,7 +66,6 @@ deploy-to-heroku:
     - docker push registry.heroku.com/gamergrove/web
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "heroku"'
-      $CI_COMMIT_BRANCH == "heroku"'
 
 release-api-to-heroku:
   stage: deploy
