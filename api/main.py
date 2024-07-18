@@ -24,7 +24,6 @@ app.include_router(votes.router, tags=["Votes"])
 def startup_event():
     seed_data()
 
-
 origins = [
     "http://localhost",
     "http://localhost:5173",
