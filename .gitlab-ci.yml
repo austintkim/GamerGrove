@@ -51,7 +51,7 @@ build-api-image:
     - docker push $GITLAB_IMAGE:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "heroku"'
- 
+
 
 deploy-to-heroku:
   stage: deploy
@@ -72,7 +72,7 @@ release-api-to-heroku:
   before_script:
   - npm install -g heroku
   script:
-  - heroku container:release web --app $HEROKU_APP_NAME
+  - heroku container:release web --app gamergrove
   rules:
   - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "heroku"'
 # # Build the React/JavaScript front-end
