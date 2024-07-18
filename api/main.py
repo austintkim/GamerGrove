@@ -20,9 +20,9 @@ app.include_router(replies.router, tags=["Replies"])
 app.include_router(votes.router, tags=["Votes"])
 
 
-@app.on_event("startup")
-def startup_event():
-    seed_data()
+# @app.on_event("startup")
+# def startup_event():
+#     seed_data()
 
 
 origins = [
