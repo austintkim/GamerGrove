@@ -28,4 +28,5 @@ COPY migrations migrations
 EXPOSE 80
 
 # Runs migrations and starts the FastAPI application with uvicorn
-CMD python -m migrations up && uvicorn main:app --host 0.0.0.0 --port 80 --forwarded-allow-ips "*"
+CMD python -m migrations up
+CMD uvicorn main:app --host 0.0.0.0 --port 80 --forwarded-allow-ips "*"
