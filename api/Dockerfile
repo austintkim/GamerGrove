@@ -29,4 +29,4 @@ EXPOSE 80
 
 # Runs migrations and starts the FastAPI application with uvicorn
 CMD python -m migrations up
-CMD web: uvicorn main:app --host 0.0.0.0 --port 8000 --forwarded-allow-ips "*"
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "$PORT", "--forwarded-allow-ips", "*"]
