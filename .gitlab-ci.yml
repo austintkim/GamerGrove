@@ -58,6 +58,8 @@ deploy-to-heroku:
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
+  variables:
+    PORT: 8000
   script:
     - echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
     - docker build -f api/Dockerfile -t ${CI_REGISTRY_IMAGE}/api:latest ./api
