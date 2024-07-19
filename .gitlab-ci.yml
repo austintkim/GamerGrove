@@ -60,7 +60,7 @@ deploy-to-heroku:
     - docker:20.10.16-dind
   script:
     - echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
-    - docker build -f api/Dockerfile -t ${CI_REGISTRY_IMAGE}/api:latest .
+    - docker build -f api/Dockerfile -t ${CI_REGISTRY_IMAGE}/api:latest ./api
     - docker tag ${CI_REGISTRY_IMAGE}/api:latest registry.heroku.com/gamergrove/web
     - docker push registry.heroku.com/gamergrove/web
   rules:
