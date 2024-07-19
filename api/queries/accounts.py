@@ -58,8 +58,11 @@ class AccountQueries:
                     record = {}
                     for i, column in enumerate(db.description):
                         record[column.name] = row[i]
+                    conn.close()
+                    pool.close()
                     return AccountOutWithPassword(**record)
-
+                conn.close()
+                pool.close()
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Could not find an account with that username"
