@@ -285,5 +285,4 @@ def seed_data():
                     ('https://store.steampowered.com/app/1272080/PAYDAY_3/', '502116', 'PC');
                     """
                     )
-                pool.close()
                 return result

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from authenticator import authenticator
 from fastapi.middleware.cors import CORSMiddleware
 from routers import (accounts, boards, icons, screenshots, games, replies, votes, libraries, stores, reviews)
-# from seederfile import seed_data
+from seederfile import seed_data
 import os
 
 
@@ -20,14 +20,15 @@ app.include_router(replies.router, tags=["Replies"])
 app.include_router(votes.router, tags=["Votes"])
 
 
-# @app.on_event("startup")
-# def startup_event():
-#     seed_data()
+@app.on_event("startup")
+def startup_event():
+    seed_data()
 
 
 origins = [
     "http://localhost",
     "http://localhost:5173",
+    "https://gamergrove.gitlab.io",
     os.environ.get('CORS_HOST', '')
 ]
 
