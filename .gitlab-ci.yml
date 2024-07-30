@@ -85,3 +85,29 @@ pages:
   variables:
     GITLAB_PAGES_HTTP: "true"
     VITE_RAWG_API_KEY: 0c4556270545498782c9a942f38cb48a
+
+deploy-to-ec2:
+  stage: deploy
+  image: docker:20.10.11  # Use an image with Docker pre-installed
+  variables:
+    GITLAB_IMAGE: ${CI_REGISTRY_IMAGE}/api
+    DATABASE_URL: "postgresql://postgres:password@gamergrove.cbcwysw6wh0u.us-east-1.rds.amazonaws.com/postgres"
+
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - || (echo "Failed to add SSH key" && exit 1)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "StrictHostKeyChecking no" > ~/.ssh/config
+    - ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts || (echo "Failed to ssh-keyscan" && exit 1)
+  script:
+    - echo "$GITLAB_IMAGE" || (echo "Failed to output" && exit 1)
+    - echo "$GITLAB_IMAGE:latest" || (echo "Failed to output" && exit 1)
+    - echo "$DATABASE_URL" || (echo "Failed to output" && exit 1)
+    - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token registry.gitlab.com --password-stdin || (echo "Failed to login to Docker registry" && exit 1)
+    - ssh -v ubuntu@$EC2_HOST "docker pull $GITLAB_IMAGE:latest" || (echo "Failed to pull Docker image" && exit 1)
+    - ssh -v ubuntu@$EC2_HOST "docker stop my-api || true && docker rm my-api || true" || (echo "Failed to stop and remove container" && exit 1)
+    - ssh -v ubuntu@$EC2_HOST "docker run -d --name my-api -e DATABASE_URL=$DATABASE_URL -p 80:80 $GITLAB_IMAGE" || (echo "Failed to run Docker container" && exit 1)
+  only:
+    - main
