@@ -91,7 +91,7 @@ pages:
 
 deploy-to-ec2:
   stage: deploy
-  image: docker:20.10.11  # Use an image with Docker pre-installed
+  image: docker:20.10.11
   variables:
     GITLAB_IMAGE: ${CI_REGISTRY_IMAGE}/api
     DATABASE_URL: "postgresql://$PG_USER:$PG_PASSWORD@gamergrove.cbcwysw6wh0u.us-east-1.rds.amazonaws.com/postgres"
@@ -103,7 +103,8 @@ deploy-to-ec2:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - echo "StrictHostKeyChecking no" > ~/.ssh/config
-    - ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts || (echo "Failed to ssh-keyscan" && exit 1)
+    # Retry mechanism for ssh-keyscan
+    - for i in $(seq 1 5); do ssh-keyscan -v $EC2_HOST >> ~/.ssh/known_hosts && break || echo "Retrying ssh-keyscan..."; sleep 5; done || (echo "Failed to ssh-keyscan" && exit 1)
   script:
     - echo "$GITLAB_IMAGE" || (echo "Failed to output" && exit 1)
     - echo "$GITLAB_IMAGE:latest" || (echo "Failed to output" && exit 1)
@@ -114,3 +115,4 @@ deploy-to-ec2:
     - ssh -v ubuntu@$EC2_HOST "docker run -d --name my-api -e DATABASE_URL=$DATABASE_URL -p 80:80 $GITLAB_IMAGE" || (echo "Failed to run Docker container" && exit 1)
   only:
     - main
+
