@@ -103,8 +103,7 @@ deploy-to-ec2:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - echo "StrictHostKeyChecking no" > ~/.ssh/config
-    # Retry mechanism for ssh-keyscan
-    - for i in $(seq 1 5); do ssh-keyscan -v $EC2_HOST >> ~/.ssh/known_hosts && break || echo "Retrying ssh-keyscan..."; sleep 5; done || (echo "Failed to ssh-keyscan" && exit 1)
+    - ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts || (echo "Failed to ssh-keyscan" && exit 1)
   script:
     - echo "$GITLAB_IMAGE" || (echo "Failed to output" && exit 1)
     - echo "$GITLAB_IMAGE:latest" || (echo "Failed to output" && exit 1)
