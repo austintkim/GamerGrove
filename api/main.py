@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 app = FastAPI()
 app.include_router(authenticator.router, tags=["AUTH"])
 app.include_router(accounts.router, tags=["Accounts"])
@@ -33,7 +32,7 @@ origins = [
     "http://localhost:5173",
     "https://gamergrove.gitlab.io",
     "https://gamergrove.gitlab.io/gamer-grove/",
-    os.environ.get('CORS_HOST', ''),
+    # os.environ.get('CORS_HOST', ''),
     os.getenv('IP_ADDRESS', '')
 ]
 
