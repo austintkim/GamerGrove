@@ -6,27 +6,20 @@ RUN python -m pip install --upgrade pip
 # Sets the working directory inside the container where our app will run
 WORKDIR /app
 
-# Copy the top-level files in your service's directory
+# Copy the necessary files
 COPY requirements.txt requirements.txt
 COPY main.py main.py
 COPY authenticator.py authenticator.py
 COPY queries queries
 COPY routers routers
 COPY seederfile.py seederfile.py
-
-# Copy all of the subdirectories in your service's directory
-# COPY queries queries
-# COPY routers routers
+COPY migrations migrations
 
 # Installs all the python packages listed in our requirements.txt file
 RUN python -m pip install -r requirements.txt
 
-# Copies the migrations directory
-COPY migrations migrations
+# Expose the port your application will run on
+EXPOSE 8000
 
-# Expose port 80
-EXPOSE 80
-
-# Runs migrations and starts the FastAPI application with uvicorn
-CMD python -m migrations up
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--forwarded-allow-ips", "*"]
+# Run migrations and start the FastAPI application
+CMD ["sh", "-c", "python -m migrations up && uvicorn main:app --host 0.0.0.0 --port 8000 --forwarded-allow-ips '*'"]
