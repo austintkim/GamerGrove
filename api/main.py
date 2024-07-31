@@ -33,7 +33,7 @@ origins = [
     "https://gamergrove.gitlab.io",
     "https://gamergrove.gitlab.io/gamer-grove/",
     # os.environ.get('CORS_HOST', ''),
-    os.getenv('IP_ADDRESS', '')
+    f"http://{os.getenv('IP_ADDRESS', '')}"
 ]
 
 app.add_middleware(
