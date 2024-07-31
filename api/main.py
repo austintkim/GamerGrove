@@ -4,6 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import (accounts, boards, icons, screenshots, games, replies, votes, libraries, stores, reviews)
 from seederfile import seed_data
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 app = FastAPI()
@@ -30,7 +33,8 @@ origins = [
     "http://localhost:5173",
     "https://gamergrove.gitlab.io",
     "https://gamergrove.gitlab.io/gamer-grove/",
-    os.environ.get('CORS_HOST', '')
+    os.environ.get('CORS_HOST', ''),
+    os.getenv('IP_ADDRESS', '')
 ]
 
 app.add_middleware(
