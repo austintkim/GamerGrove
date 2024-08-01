@@ -8,6 +8,7 @@ stages:
 
 variables:
   EC2_HOST: "3.86.15.203"
+  SIGNING_KEY: '${SIGNING_KEY_FROM_ENV_FILE}'
 
 # Run flake8 to check for code quality
 # And also optionally run unit tests
@@ -96,6 +97,7 @@ deploy-to-ec2:
     GITLAB_IMAGE: ${CI_REGISTRY_IMAGE}/api
     DATABASE_URL: "postgresql://$PG_USER:$PG_PASSWORD@gamergrove.cbcwysw6wh0u.us-east-1.rds.amazonaws.com/postgres"
 
+
   before_script:
     - apk add --no-cache openssh-client
     - eval $(ssh-agent -s)
@@ -114,4 +116,3 @@ deploy-to-ec2:
     - ssh -v ubuntu@$EC2_HOST "docker run -d --name my-api -e DATABASE_URL=$DATABASE_URL -p 80:80 $GITLAB_IMAGE" || (echo "Failed to run Docker container" && exit 1)
   only:
     - main
-
