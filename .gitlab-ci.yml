@@ -8,7 +8,6 @@ stages:
 
 variables:
   EC2_HOST: "3.86.15.203"
-  SIGNING_KEY: '${SIGNING_KEY_FROM_ENV_FILE}'
 
 # Run flake8 to check for code quality
 # And also optionally run unit tests
@@ -107,6 +106,7 @@ deploy-to-ec2:
     - echo "StrictHostKeyChecking no" > ~/.ssh/config
     - ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts || (echo "Failed to ssh-keyscan" && exit 1)
   script:
+    - export SIGNING_KEY=$SIGNING_KEY || (echo "Failed to export" && exit 1)
     - echo "$GITLAB_IMAGE" || (echo "Failed to output" && exit 1)
     - echo "$GITLAB_IMAGE:latest" || (echo "Failed to output" && exit 1)
     - echo "$DATABASE_URL" || (echo "Failed to output" && exit 1)
