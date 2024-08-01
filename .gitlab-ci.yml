@@ -97,6 +97,7 @@ deploy-to-ec2:
   variables:
     GITLAB_IMAGE: ${CI_REGISTRY_IMAGE}/api
     DATABASE_URL: "postgresql://$PG_USER:$PG_PASSWORD@gamergrove.cbcwysw6wh0u.us-east-1.rds.amazonaws.com/postgres"
+    SIGNING_KEY: $SIGNING_KEY
 
 
   before_script:
