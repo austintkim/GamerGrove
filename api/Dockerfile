@@ -18,8 +18,5 @@ COPY migrations migrations
 # Installs all the python packages listed in our requirements.txt file
 RUN python -m pip install -r requirements.txt
 
-# Expose the port your application will run on
-EXPOSE 8000
-
 # Run migrations and start the FastAPI application
-CMD ["sh", "-c", "python -m migrations up && uvicorn main:app --host 0.0.0.0 --port 8000 --forwarded-allow-ips '*'"]
+CMD ["sh", "-c", "python -m migrations up && uvicorn main:app --host 0.0.0.0 --port 80 --forwarded-allow-ips '*'"]
