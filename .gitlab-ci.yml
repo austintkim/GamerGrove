@@ -66,8 +66,7 @@ build-front-end-job:
     - cd ghi
     - npm install
     - npm run lint
-    - VITE_API_HOST="https://gamergroveapi.com"  npm run build -- --base=/demodeployment
-  artifacts:
+    - VITE_API_HOST="https://gamergroveapi.com"  npm run build
     paths:
       - ghi/dist/
 
