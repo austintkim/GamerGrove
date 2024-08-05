@@ -31,7 +31,6 @@ origins = [
     "http://localhost",
     "http://localhost:5173",
     "https://gamergrove.gitlab.io",
-    "https://gamergrove.gitlab.io/gamer-grove/",
     # os.environ.get('CORS_HOST', ''),
     f"http://{os.getenv('EC2_IP_ADDRESS', '')}"
 ]
