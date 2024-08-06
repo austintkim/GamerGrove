@@ -88,7 +88,6 @@ pages:
   variables:
     GITLAB_PAGES_HTTP: "true"
     VITE_RAWG_API_KEY: 0c4556270545498782c9a942f38cb48a
-    VITE_PUBLIC_URL: https://gamergrove.gitlab.io/"
 
 deploy-to-ec2:
   stage: deploy
