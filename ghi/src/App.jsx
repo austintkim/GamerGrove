@@ -42,14 +42,14 @@ if (!API_HOST) {
 * @returns {React.ReactNode}
 */
 
-const domain = /https:\/\/[^/]+/;
-const basename = import.meta.env.VITE_PUBLIC_URL.replace(domain, '');
+// const domain = /https:\/\/[^/]+/;
+// const basename = import.meta.env.VITE_PUBLIC_URL.replace(domain, '');
 
 function App() {
 
     return (
         <AuthProvider baseUrl = {API_HOST}>
-            <BrowserRouter basename={basename}>
+            <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/signup" element={<SignUpForm />} />
