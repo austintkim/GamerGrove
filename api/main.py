@@ -27,18 +27,18 @@ def startup_event():
     seed_data()
 
 
-# origins = [
-#     "http://localhost",
-#     "http://localhost:5173",
-#     "https://gamergrove.gitlab.io",
-#     # os.environ.get('CORS_HOST', ''),
-#     f"http://{os.getenv('EC2_IP_ADDRESS', '')}"
-# ]
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+    "https://gamergrove.gitlab.io",
+    # os.environ.get('CORS_HOST', ''),
+    f"http://{os.getenv('EC2_IP_ADDRESS', '')}"
+]
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
