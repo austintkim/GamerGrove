@@ -11,7 +11,7 @@ const SideMenu = ({  }) => {
         if (response.ok) {
             const gameGenres = []
             const data = await response.json()
-            for (const game of data) {
+            for (const game of data.games) {
                 if (gameGenres.includes(game.genre)) {
                     continue
                 } else {
