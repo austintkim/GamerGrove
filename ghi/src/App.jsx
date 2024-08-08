@@ -49,7 +49,7 @@ function App() {
 
     return (
         <AuthProvider baseUrl = {API_HOST}>
-            <BrowserRouter>
+            <BrowserRouter basename='/gamer-grove'>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/signup" element={<SignUpForm />} />
