@@ -45,10 +45,13 @@ if (!API_HOST) {
 // const domain = /https:\/\/[^/]+/;
 // const basename = import.meta.env.VITE_PUBLIC_URL.replace(domain, '');
 
+const MODE = import.meta.env.MODE
+
 function App() {
 
     return (
         <AuthProvider baseUrl = {API_HOST}>
+            { MODE === 'production' ? (
             <BrowserRouter basename='/gamer-grove'>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -70,9 +73,33 @@ function App() {
                     <Route path="/boards/update/:id" element={<UpdateBoardForm />} />
                     <Route path="/search" element={<SearchResults />} />
                     <Route path="/dogo" element={<Hero />} />
-
+                </Routes>
+            </BrowserRouter>)
+            : (<BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/signup" element={<SignUpForm />} />
+                    <Route path="/signup/welcome" element={<Welcome />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/login/welcomeback" element={<WelcomeBack />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/settings/delete/:id/:username" element={<DeleteAccountForm />} />
+                    <Route path="/boards/create" element={<BoardForm />} />
+                    <Route path="/boards/delete/:id" element={<DeleteBoardForm />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/reviews/update/:review_id/:game_id" element={<UpdateReviewForm />} />
+                    <Route path="/reviews/delete/:id" element={<DeleteReviewForm />} />
+                    <Route path="/games" element={<Listgames />} />
+                    <Route path="/games/:id" element={<GameDetails />} />
+                    <Route path="/games/:id/nonuser" element={<NonUserGameDetails />} />
+                    <Route path="/boards/:id" element={<BoardPage />} />
+                    <Route path="/boards/update/:id" element={<UpdateBoardForm />} />
+                    <Route path="/search" element={<SearchResults />} />
+                    <Route path="/dogo" element={<Hero />} />
                 </Routes>
             </BrowserRouter>
+            )
+        }
         </AuthProvider>
     )
 }
