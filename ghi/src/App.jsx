@@ -27,13 +27,16 @@ import UpdateBoardForm from './components/Boards/UpdateBoardForm';
 
 
 // All your environment variables in vite are in this object
+console.log('Reached App.jsx!');
 console.table(import.meta.env)
 // When using environment variables, you should do a check to see if
 // they are defined or not and throw an appropriate error message
 const API_HOST = import.meta.env.VITE_API_HOST
+console.log('Reached App.jsx again!');
 if (!API_HOST) {
     throw new Error('VITE_API_HOST is not defined')
 }
+console.log('Reached App.jsx again again!');
 /**
 * This is an example of using JSDOC to define types for your component
 * @typedef {{module: number, week: number, day: number, min: number, hour: number}} LaunchInfo
@@ -49,7 +52,7 @@ function App() {
 
     return (
         <AuthProvider baseUrl = {API_HOST}>
-            <BrowserRouter>
+            <BrowserRouter basename='/gamer-grove'>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/signup" element={<SignUpForm />} />
