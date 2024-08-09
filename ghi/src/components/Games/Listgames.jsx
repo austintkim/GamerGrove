@@ -17,6 +17,7 @@ const Listgames = () => {
 
   if (platforms.includes(data.state) === false && data.state) {
     const genre = data.state;
+    const formattedGenre = data.state.charAt(0).toUpperCase() + data.state.slice(1);
 
     const fetchGames = async () => {
       try {
@@ -25,9 +26,8 @@ const Listgames = () => {
 
         if (response.ok) {
           const fetchedGames = await response.json();
-          const filteredGames = fetchedGames.games.filter((game) => game.genre === genre)
-
-          setTitle(genre);
+          const filteredGames = fetchedGames.games.filter((game) => game.genre === genre);
+          setTitle(formattedGenre);
           setGames(filteredGames);
         }
       } catch (error) {
@@ -40,7 +40,8 @@ const Listgames = () => {
       fetchGames();
     }, [genre]);
   } else if (platforms.includes(data.state)) {
-    const platform = data.state
+    const platform = data.state;
+    const formattedPlatform = data.state.charAt(0).toUpperCase() + data.state.slice(1);
     const fetchGames = async () => {
       try {
         const url = `${import.meta.env.VITE_API_HOST}/api/games`;
@@ -49,7 +50,7 @@ const Listgames = () => {
         if (response.ok) {
           const fetchedGames = await response.json();
           const filteredGames = fetchedGames.games.filter((game) => game[`${platform}`] === true)
-          setTitle(platform);
+          setTitle(formattedPlatform);
           setGames(filteredGames);
         }
       } catch (error) {
@@ -69,6 +70,7 @@ const Listgames = () => {
         if (response.ok) {
           const fetchedGames = await response.json();
           setGames(fetchedGames.games);
+          setTitle('All Games')
         }
       } catch (error) {
         console.error('Error fetching games:', error);
@@ -81,13 +83,12 @@ const Listgames = () => {
 
   }
 
-  console.log(games);
-
+  console.log(title);
 
   return (
     <div>
       <Nav />
-      <h1 className='titlegames'>Games/{title ? title : 'All Games'}</h1>
+      <h1 className="titlegames" style={{ textDecoration: 'underline', textDecorationThickness: '1px' }}>{title}</h1>
 
       <div className='allgamesbody'>
 
