@@ -15,8 +15,8 @@ const Listgames = () => {
 
   const platforms = ['xbox', 'playstation', 'pc', 'nintendo'];
 
-  if (platforms.includes(data.state) === false) {
-    const genre = data?.state || '';
+  if (platforms.includes(data.state) === false && data.state) {
+    const genre = data.state;
 
     const fetchGames = async () => {
       try {
@@ -25,9 +25,8 @@ const Listgames = () => {
 
         if (response.ok) {
           const fetchedGames = await response.json();
-          const filteredGames = genre.length > 2
-          ? fetchedGames.filter((game) => game.genre === genre)
-          : fetchedGames;
+          const filteredGames = fetchedGames.games.filter((game) => game.genre === genre)
+
           setTitle(genre);
           setGames(filteredGames);
         }
@@ -49,9 +48,7 @@ const Listgames = () => {
 
         if (response.ok) {
           const fetchedGames = await response.json();
-          const filteredGames = platform.length > 2
-            ? fetchedGames.filter((game) => game[`${platform}`] === true)
-            : fetchedGames;
+          const filteredGames = fetchedGames.games.filter((game) => game[`${platform}`] === true)
           setTitle(platform);
           setGames(filteredGames);
         }
@@ -64,7 +61,28 @@ const Listgames = () => {
     useEffect(() => {
       fetchGames();
     }, [platform]);
+  } else {
+    const fetchGames = async () => {
+      try {
+        const url = `${import.meta.env.VITE_API_HOST}/api/games`;
+        const response = await fetch(url);
+        if (response.ok) {
+          const fetchedGames = await response.json();
+          setGames(fetchedGames.games);
+        }
+      } catch (error) {
+        console.error('Error fetching games:', error);
+      }
+    };
+
+    useEffect(() => {
+      fetchGames();
+    },[data]);
+
   }
+
+  console.log(games);
+
 
   return (
     <div>
