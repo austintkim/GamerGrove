@@ -61,7 +61,8 @@ build-front-end-job:
   image: node:lts-bullseye
   # needs:
   #   - tests
-
+  variables:
+    - VITE_RAWG_API_KEY: 0c4556270545498782c9a942f38cb48a
   script:
     - cd ghi
     - npm install
