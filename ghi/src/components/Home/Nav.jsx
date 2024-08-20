@@ -134,7 +134,6 @@ const Nav = () => {
       }
 
       navigate("/search", { state: searchResults });
-      window.location.reload()
     }
 
 
