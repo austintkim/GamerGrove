@@ -101,11 +101,6 @@ function Settings() {
     setPasswordConfirm(e.target.value);
   };
 
-  let warningClasses = 'alert alert-warning d-none mb-0';
-  if (passwordMismatch) {
-    warningClasses = 'alert alert-warning mb-0';
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -145,6 +140,11 @@ function Settings() {
     messageClasses = 'alert alert-success mb-0';
   }
 
+  let warningClasses = 'alert alert-warning d-none mb-0';
+  if (passwordMismatch) {
+    warningClasses = 'alert alert-warning mb-0';
+  }
+
   return (
     <div>
       <div style={{ alignItems: 'center' }}>
@@ -161,9 +161,6 @@ function Settings() {
             >
               <div className="settingscard">
                 <h4 className="card-header">Account Settings</h4>
-                <div className={warningClasses} id="warning-message">
-                  Your passwords do not match!
-                </div>
                 <form onSubmit={handleSubmit} id="create-profile">
                   <div className="settingscard">
                     <label htmlFor="username">Username</label>
@@ -303,6 +300,9 @@ function Settings() {
               <div className={messageClasses} id="success-message">
                 Your settings have been updated!
               </div>
+              <div className={warningClasses} id="warning-message">
+                  Your passwords do not match!
+                </div>
             </div>
           </div>
         </div>
