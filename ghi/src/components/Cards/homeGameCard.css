@@ -113,8 +113,8 @@
 
 
         .menu-wrapper {
-            --__reactRadialMenu__menu-bgColor: hsl(0deg 78.24% 17.32%);
-            --__reactRadialMenu__separator-color: hsl(0, 0, 0);
+            --__reactRadialMenu__menu-bgColor: hsla(272, 62%, 61%, 0.852);
+            --__reactRadialMenu__separator-color: hsl(0, 0%, 100%);
             --__reactRadialMenu__item-color: rgb(0, 0, 0);
             --__reactRadialMenu__activeItem-color: rgb(0, 0, 0);
             --__reactRadialMenu__activeItem-bgColor: rgba(90, 47, 111, 0.603);
