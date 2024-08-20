@@ -83,8 +83,6 @@ const Listgames = () => {
 
   }
 
-  console.log(title);
-
   return (
     <div>
       <Nav />

@@ -46,7 +46,7 @@ const Nav = () => {
     if (answer.ok) {
       const answerData = await answer.json();
       const ourGames = [];
-      for (const game of answerData) {
+      for (const game of answerData.games) {
         ourGames.push(game.rawg_pk)
       }
       const response = await fetch(searchUrl);

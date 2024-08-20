@@ -77,7 +77,7 @@ const SearchResults = () => {
         const games = []
         const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
         const data = await response.json();
-        for (const d of data) {
+        for (const d of data.games) {
             if (rawg_pks.includes(d.rawg_pk)) {
                 games.push(d)
             }
