@@ -12,7 +12,7 @@ import './SearchResults.css';
 const SearchResults = () => {
     const location = useLocation();
     const rawg_pks = location.state
-    const [searchGames, setSearchGames] = useState([]);
+    const [searchGames, setSearchGames] = useState([])
     const navigate = useNavigate();
     const { token } = useAuthContext();
     const [id, setId] = useState('');

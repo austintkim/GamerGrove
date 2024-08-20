@@ -83,6 +83,7 @@ pages:
     - build-front-end-job
   script:
     - mv ghi/dist/ public
+    - cp 404.html public/
   artifacts:
     paths:
       - public
