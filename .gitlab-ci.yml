@@ -83,6 +83,7 @@ pages:
     - build-front-end-job
   script:
     - mv ghi/dist/ public
+    - echo '/* /index.html 200' > public/_redirects
   artifacts:
     paths:
       - public
