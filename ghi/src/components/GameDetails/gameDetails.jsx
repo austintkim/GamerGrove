@@ -41,6 +41,7 @@ const GameDetails = () => {
 
   const [gameData, setGameData] = useState(null);
   const [wishListText, setWishListText] = useState('Add to Wishlist');
+  const [addToBoardText, setAddToBoardText] = useState('Add to Board');
   const [reviewFormData, setReviewFormData] = useState({
     title: "",
     body: "",
@@ -243,7 +244,8 @@ const GameDetails = () => {
     try {
       const response = await fetch(libraryUrl, fetchConfig);
       if (response.ok) {
-        window.location.reload();
+        let selectedBoard = boards.filter((board) => board.id === Number(data.board_id));
+        setAddToBoardText(`Added to ${selectedBoard[0].board_name}!`);
       }
     } catch (error) {
       console.log("Error adding to board:", error);
@@ -356,8 +358,8 @@ const GameDetails = () => {
           >{wishListText}</button>
           <label >
 
-            <select onChange={handleBoardClick} className='GDButton' style={{color:'black', width: 'fit-content'}}>
-              <option value="">Add to Board</option>
+            <select value = {addToBoardText} onChange={handleBoardClick} className='GDButton' style={{color:'black', width: 'fit-content'}}>
+              <option value="">{addToBoardText}</option>
               {boards.map(board => {
                 return(
                   <option key={board.id} value={board.id}>{board.board_name}</option>
