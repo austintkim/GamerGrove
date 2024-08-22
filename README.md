@@ -4,7 +4,9 @@
 - Kyle Hodges
 - Cameron Ross
 
-GamerGrove – a grove for gamers.
+GamerGrove – A grove for gamers.
+
+Deployed Website Link: https://gamergrove.gitlab.io/gamer-grove
 
 ## Design
 - [API design](docs/apis.md)
