@@ -42,10 +42,26 @@ const LoginForm = () => {
 
   };
 
-  let messageClasses = 'alert alert-danger d-none mb-0';
-  if (incorrectLogin) {
-    messageClasses = 'alert alert-danger mb-0 d-flex justify-content-between align-items-center';
-  }
+  const handleDismiss = () => {
+    const alertElement = document.getElementById('failure-message');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setIncorrectLogin(false), 300);
+  };
+
+  const alertStyle = {
+  minWidth: '280px',
+  padding: '5px 15px',
+  fontSize: '16px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  display: incorrectLogin ? 'flex' : 'none',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  position: 'relative',
+  opacity: incorrectLogin ? '1' : '0',
+  transition: 'opacity 0.3s ease',
+  };
 
   return (
     <div style={{ position: 'relative' }}>
@@ -98,21 +114,9 @@ const LoginForm = () => {
           <div>
             <input style={{ marginBottom: '15px' }} type="submit" value="Login" />
           </div>
-          <div className={messageClasses} id="failure-message" style={{
-            minWidth: '280px',
-            padding: '5px 15px',
-            fontSize: '16px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            position: 'relative',
-            }}>
-
+          <div className="alert alert-danger mb-0" id="failure-message" style={alertStyle}>
             Incorrect username or password...
-            <button onClick = {() => { setIncorrectLogin(false); }}
+            <button onClick = {handleDismiss}
               type="button"
               className="close"
               style = {{
