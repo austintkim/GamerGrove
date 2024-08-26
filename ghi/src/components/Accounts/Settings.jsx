@@ -288,28 +288,28 @@ function Settings() {
                     />
                   </div>
               <div
-                className={warningClasses} id="warning-message" style={{
-                display: 'inline-block',
-                maxWidth: '250px',
-                padding: '10px',
-                color: 'black',
-                border: '1px solid #ffeeba',
-                borderRadius: '4px',
-                position: 'relative',
-                whiteSpace: 'nowrap',
+                className={warningClasses} id="warning-message"
+                style={{
+                  display: 'inline-block',
+                  maxWidth: '250px',
+                  padding: '10px',
+                  color: 'black',
+                  border: '1px solid #ffeeba',
+                  borderRadius: '4px',
+                  position: 'relative',
+                  whiteSpace: 'nowrap',
               }}
-
               >
                 Your passwords do not match!
                 <button onClick = {() => { setPasswordMismatch(false); }}
-                type="button"
-                className="close"
-                style = {{
-                  position: 'absolute',
-                  top: '0',
-                  right: '5px',
-                  fontSize: '16px',
-                  }}
+                  type="button"
+                  className="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>

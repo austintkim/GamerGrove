@@ -281,7 +281,7 @@ const GameDetails = () => {
 
   let messageReviewClasses = 'alert alert-success d-none mb-0';
   if (submittedReview) {
-    messageReviewClasses = 'alert alert-success mb-0';
+    messageReviewClasses = 'alert alert-success mb-0 d-flex justify-content-between align-items-center';
   }
 
   const handleClick = async (platform, rawg_pk) => {
@@ -510,8 +510,29 @@ const GameDetails = () => {
           <br />
           <br />
       <div className='rcontainer' id='review' style={{marginTop: '10px'}}>
-        <div className={messageReviewClasses} id="success-message">
+        <div
+        className={messageReviewClasses} id="success-message"
+        style={{
+          display: 'block',
+          maxWidth: '270px',
+          margin: '0 auto',
+          padding: '10px',
+          textAlign: 'center'
+        }}
+        >
             Your review has been submitted!
+            <button onClick = {() => { setSubmittedReview(false); }}
+              type="button"
+              className="close"
+              style = {{
+                position: 'absolute',
+                top: '0',
+                right: '5px',
+                fontSize: '16px',
+                }}
+            >
+                  <span aria-hidden="true">&times;</span>
+                </button>
         </div>
       </div>
           <h1 className='gamesh1' style={{ textAlign: 'center', textDecoration: 'underline', marginTop: '5px' }}>Reviews</h1>
