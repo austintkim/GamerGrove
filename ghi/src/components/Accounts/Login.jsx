@@ -71,7 +71,6 @@ const LoginForm = () => {
         style={{
         textAlign: 'center',
         fontSize: '36px',
-        textAlign: 'center',
         }}
       >
         Login
@@ -115,7 +114,7 @@ const LoginForm = () => {
             Incorrect username or password...
             <button onClick = {() => { setIncorrectLogin(false); }}
               type="button"
-              class="close"
+              className="close"
               style = {{
                 position: 'absolute',
                 top: '0',

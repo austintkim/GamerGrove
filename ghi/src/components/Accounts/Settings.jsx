@@ -287,6 +287,21 @@ function Settings() {
                       style={{ marginBottom: '15px' }}
                     />
                   </div>
+              <div className={warningClasses} id="warning-message" style={{ width: '100%', whiteSpace: 'nowrap' }} >
+                Your passwords do not match!
+                <button onClick = {() => { setPasswordMismatch(false); }}
+                type="button"
+                class="close"
+                style = {{
+                  position: 'absolute',
+                  top: '0',
+                  right: '5px',
+                  fontSize: '16px',
+                  }}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
                   <div className="mb-3">
                     <button>Update</button>
                   </div>
@@ -300,9 +315,6 @@ function Settings() {
               <div className={messageClasses} id="success-message">
                 Your settings have been updated!
               </div>
-              <div className={warningClasses} id="warning-message">
-                  Your passwords do not match!
-                </div>
             </div>
           </div>
         </div>

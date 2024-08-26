@@ -138,7 +138,7 @@ function SignUpForm() {
                   Your passwords do not match!
                   <button onClick = {() => { setPasswordMismatch(false); }}
                   type="button"
-                  class="close"
+                  className="close"
                   style = {{
                     position: 'absolute',
                     top: '0',
