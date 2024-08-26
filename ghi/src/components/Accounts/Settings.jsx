@@ -142,7 +142,7 @@ function Settings() {
 
   let warningClasses = 'alert alert-warning d-none mb-0';
   if (passwordMismatch) {
-    warningClasses = 'alert alert-warning mb-0';
+    warningClasses = 'alert alert-warning mb-0 d-flex justify-content-between align-items-center';
   }
 
   return (
@@ -287,11 +287,23 @@ function Settings() {
                       style={{ marginBottom: '15px' }}
                     />
                   </div>
-              <div className={warningClasses} id="warning-message" style={{ width: '100%', whiteSpace: 'nowrap' }} >
+              <div
+                className={warningClasses} id="warning-message" style={{
+                display: 'inline-block',
+                maxWidth: '250px',
+                padding: '10px',
+                color: 'black',
+                border: '1px solid #ffeeba',
+                borderRadius: '4px',
+                position: 'relative',
+                whiteSpace: 'nowrap',
+              }}
+
+              >
                 Your passwords do not match!
                 <button onClick = {() => { setPasswordMismatch(false); }}
                 type="button"
-                class="close"
+                className="close"
                 style = {{
                   position: 'absolute',
                   top: '0',
@@ -303,7 +315,7 @@ function Settings() {
                 </button>
               </div>
                   <div className="mb-3">
-                    <button>Update</button>
+                    <button style = {{ marginTop: '16px'}}>Update</button>
                   </div>
                   <div className="mb-3">
                     <button style={{ backgroundColor: 'red' }} type="button" onClick={() => {
