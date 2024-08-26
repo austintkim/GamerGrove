@@ -66,7 +66,7 @@ function SignUpForm() {
 
   let warningClasses = 'alert alert-warning d-none mb-0';
   if (passwordMismatch) {
-    warningClasses = 'alert alert-warning mb-0';
+    warningClasses = 'alert alert-warning mb-0 d-flex justify-content-between align-items-center';
   }
 
   const handleSubmit = async (event) => {
@@ -120,9 +120,6 @@ function SignUpForm() {
             <div className="row" style={{ backgroundColor: 'transparent', paddingLeft: '11%', marginLeft: '0%', marginRight: '7%' }}>
               <div className="offset-2 col-8">
                 <h2 className="card-header" style={{ textAlign: 'center'}}>Create account</h2>
-                <div className={warningClasses} id="warning-message">
-                  Your passwords do not match!
-                </div>
                 <div style={{ width: '100%'}}>
                   <form onSubmit={handleSubmit} id="create-account">
                     <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
@@ -137,6 +134,21 @@ function SignUpForm() {
                       <label htmlFor="password">Password Confirmation</label>
                       <input onChange={passwordConfirmChange} required type="password" name="password-confirm" id="password-confirm" className="form-control" style={{ marginBottom: '15px' }} />
                     </div>
+                <div className={warningClasses} id="warning-message" style={{ width: '100%', whiteSpace: 'nowrap' }}>
+                  Your passwords do not match!
+                  <button onClick = {() => { setPasswordMismatch(false); }}
+                  type="button"
+                  class="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
                     <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
                       <label htmlFor="first_name">First name</label>
                       <input onChange={handleFormChange} required type="text" name="first_name" id="first_name" className="form-control" value={accountFormData.first_name} />
