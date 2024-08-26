@@ -44,7 +44,7 @@ const LoginForm = () => {
 
   let messageClasses = 'alert alert-danger d-none mb-0';
   if (incorrectLogin) {
-    messageClasses = 'alert alert-danger mb-0';
+    messageClasses = 'alert alert-danger mb-0 d-flex justify-content-between align-items-center';
   }
 
   return (
@@ -67,7 +67,15 @@ const LoginForm = () => {
 
     <div className="card text-bg-light mb-3">
       <div className="offset-3 col-6">
-      <h5 className="card-header">Login</h5>
+      <h5 className="card-header"
+        style={{
+        textAlign: 'center',
+        fontSize: '36px',
+        textAlign: 'center',
+        }}
+      >
+        Login
+      </h5>
       <div className="card-body">
         <form onSubmit={(e) => handleSubmit(e)}>
           <div className="mb-3">
@@ -91,8 +99,33 @@ const LoginForm = () => {
           <div>
             <input style={{ marginBottom: '15px' }} type="submit" value="Login" />
           </div>
-          <div className={messageClasses} id="failure-message">
+          <div className={messageClasses} id="failure-message" style={{
+            minWidth: '280px',
+            padding: '5px 15px',
+            fontSize: '16px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            position: 'relative',
+            }}>
+
             Incorrect username or password...
+            <button onClick = {() => { setIncorrectLogin(false); }}
+              type="button"
+              class="close"
+              style = {{
+                position: 'absolute',
+                top: '0',
+                right: '5px',
+                fontSize: '16px',
+                }}
+              >
+              <span aria-hidden="true">&times;</span>
+              </button>
+
           </div>
         </form>
       </div>
