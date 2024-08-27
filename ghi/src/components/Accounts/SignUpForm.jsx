@@ -64,11 +64,6 @@ function SignUpForm() {
     )
   }
 
-  let warningClasses = 'alert alert-warning d-none mb-0';
-  if (passwordMismatch) {
-    warningClasses = 'alert alert-warning mb-0 d-flex justify-content-between align-items-center';
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -100,6 +95,27 @@ function SignUpForm() {
       throw new Error('Passwords did not match up')
     }
   }
+
+  const handleDismiss = () => {
+    const alertElement = document.getElementById('warning-message');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setPasswordMismatch(false), 300);
+  };
+
+  const alertStyle = {
+    minWidth: '280px',
+    padding: '5px 15px',
+    fontSize: '16px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    display: passwordMismatch ? 'flex' : 'none',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'relative',
+    opacity: passwordMismatch ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
 
   return (
     <div style={{ position: 'relative', ...containerStyle }}>
@@ -134,9 +150,9 @@ function SignUpForm() {
                       <label htmlFor="password">Password Confirmation</label>
                       <input onChange={passwordConfirmChange} required type="password" name="password-confirm" id="password-confirm" className="form-control" style={{ marginBottom: '15px' }} />
                     </div>
-                <div className={warningClasses} id="warning-message" style={{ width: '100%', whiteSpace: 'nowrap' }}>
+                <div className="alert alert-warning mb-0" id="warning-message" style={alertStyle}>
                   Your passwords do not match!
-                  <button onClick = {() => { setPasswordMismatch(false); }}
+                  <button onClick = {handleDismiss}
                   type="button"
                   className="close"
                   style = {{
