@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const initialData = {
   board_name: "",
   description: "",
-  cover_photo: "https://cdn.prod.website-files.com/5b89f678902f3d785fa66429/5f2fef09e806c60aba496f47_Blog%20Images_1.jpg"
+  cover_photo: "https://img.freepik.com/premium-photo/gaming-computer-table-video-game-room-with-purple-color-neon-lighting-against-window-background-3d-illustration_76964-5151.jpg"
 }
 
 function BoardForm() {
