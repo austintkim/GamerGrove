@@ -25,6 +25,7 @@ function Settings() {
   const [icons, setIcons] = useState([]);
   const [username, setUsername] = useState('');
   const [accountData, setAccountData] = useState('');
+  const [incorrectLogin, setIncorrectLogin] = useState(false);
 
   const fetchAccount = async (user) => {
     if (user !== undefined) {
@@ -99,8 +100,22 @@ function Settings() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (passwordConfirm === accountFormData.password) {
+      const loginUrl = `${import.meta.env.VITE_API_HOST}/token`;
+      const form = new FormData();
+      form.append("username", username);
+      form.append("password", accountFormData.password);
+      const loginConfig = {
+        method: 'post',
+        body: form
+      }
+
+      const loginResponse = await fetch(loginUrl, loginConfig);
+      if (!loginResponse.ok) {
+        setIncorrectLogin(true);
+        throw new Error('Incorrect password')
+      }
+
       const updateUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${accountData.id}/${username}`;
 
       const updateFetchConfig = {
@@ -128,11 +143,27 @@ function Settings() {
     }
   };
 
+  const handleDismissIncorrectLogin = () => {
+    const loginAlert = document.getElementById('failure-message');
+    if (loginAlert) {
+      loginAlert.style.opacity = '0';
+    }
+    setTimeout(() => {
+      setIncorrectLogin(false);
+    }, 300);
+  };
+
   const handleDismissWarning = () => {
     const alertElement = document.getElementById('warning-message');
     alertElement.style.opacity = '0';
     setTimeout(() => setPasswordMismatch(false), 300);
   };
+
+  const handleDismissSuccess = () => {
+    const successElement = document.getElementById('success-message');
+    successElement.style.opacity = '0';
+    setTimeout(() => setUpdatedAccount(false), 300);
+  }
 
   const alertStyle = {
     display: passwordMismatch ? 'inline-block' : 'none',
@@ -145,6 +176,29 @@ function Settings() {
     position: 'relative',
     whiteSpace: 'nowrap',
     opacity: passwordMismatch ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+
+const failureStyle = {
+  display: incorrectLogin ? 'flex' : 'none',
+  maxWidth: '175px',
+  margin: '0 auto',
+  padding: '10px',
+  color: 'black',
+  border: '1px solid #ffeeba',
+  borderRadius: '4px',
+  position: 'relative',
+  whiteSpace: 'nowrap',
+  opacity: incorrectLogin ? '1' : '0',
+  transition: 'opacity 0.3s ease',
+};
+
+  const successStyle = {
+    display: updatedAccount ? 'block' : 'none',
+    maxWidth: '280px',
+    margin: '0 auto',
+    padding: '10px',
+    opacity: updatedAccount ? '1' : '0',
     transition: 'opacity 0.3s ease',
   };
 
@@ -173,7 +227,7 @@ function Settings() {
               }}
             >
               <div className="settingscard">
-                <h4 className="card-header">Account Settings</h4>
+                <h4 className="card-header" style = {{textAlign:'center'}}>Account Settings</h4>
                 <form onSubmit={handleSubmit} id="create-profile">
                   <div className="settingscard">
                     <label htmlFor="username">Username</label>
@@ -320,6 +374,21 @@ function Settings() {
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
+                  <div className="alert alert-danger mb-0" id="failure-message" style={failureStyle}>
+                    Incorrect password...
+                    <button onClick={handleDismissIncorrectLogin}
+                      type="button"
+                      className="close"
+                      style={{
+                        position: 'absolute',
+                        top: '0',
+                        right: '5px',
+                        fontSize: '16px',
+                      }}
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
                   <div className="mb-3">
                     <button style={{ marginTop: '16px' }}>Update</button>
                   </div>
@@ -336,8 +405,22 @@ function Settings() {
                   </div>
                 </form>
               </div>
-              <div className={messageClasses} id="success-message">
+              <div className={messageClasses} id="success-message"
+              style={successStyle}
+              >
                 Your settings have been updated!
+                <button onClick = {handleDismissSuccess}
+                  type="button"
+                  className="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
             </div>
           </div>

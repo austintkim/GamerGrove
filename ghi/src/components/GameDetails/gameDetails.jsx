@@ -541,8 +541,8 @@ const GameDetails = () => {
                 fontSize: '16px',
                 }}
             >
-                  <span aria-hidden="true">&times;</span>
-                </button>
+              <span aria-hidden="true">&times;</span>
+            </button>
         </div>
       </div>
           <h1 className='gamesh1' style={{ textAlign: 'center', textDecoration: 'underline', marginTop: '5px' }}>Reviews</h1>
