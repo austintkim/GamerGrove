@@ -135,16 +135,15 @@ function Settings() {
   };
 
   const alertStyle = {
-    minWidth: '280px',
-    padding: '5px 15px',
-    fontSize: '16px',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    display: passwordMismatch ? 'flex' : 'none',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    display: passwordMismatch ? 'inline-block' : 'none',
+    maxWidth: '250px',
+    margin: '0 auto',
+    padding: '10px',
+    color: 'black',
+    border: '1px solid #ffeeba',
+    borderRadius: '4px',
     position: 'relative',
+    whiteSpace: 'nowrap',
     opacity: passwordMismatch ? '1' : '0',
     transition: 'opacity 0.3s ease',
   };

@@ -333,7 +333,6 @@ const GameDetails = () => {
     maxWidth: '270px',
     margin: '0 auto',
     padding: '10px',
-    textAlign: 'center',
     opacity: submittedReview ? '1' : '0',
     transition: 'opacity 0.3s ease',
   };

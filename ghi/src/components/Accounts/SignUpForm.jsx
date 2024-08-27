@@ -103,16 +103,10 @@ function SignUpForm() {
   };
 
   const alertStyle = {
-    minWidth: '280px',
-    padding: '5px 15px',
-    fontSize: '16px',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
     display: passwordMismatch ? 'flex' : 'none',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    position: 'relative',
+    maxWidth: '280px',
+    padding: '5px 15px',
+    whiteSpace: 'nowrap',
     opacity: passwordMismatch ? '1' : '0',
     transition: 'opacity 0.3s ease',
   };
