@@ -279,10 +279,6 @@ const GameDetails = () => {
     }
   };
 
-  let messageReviewClasses = 'alert alert-success d-none mb-0';
-  if (submittedReview) {
-    messageReviewClasses = 'alert alert-success mb-0 d-flex justify-content-between align-items-center';
-  }
 
   const handleClick = async (platform, rawg_pk) => {
     const storeUrl = await fetchStoreUrl(platform, rawg_pk);
@@ -308,13 +304,13 @@ const GameDetails = () => {
   };
 
   const settings = {
-      dots: true,
-      infinite: true,
-      speed: 500,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      autoplay: false,
-    };
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: false,
+  };
 
   const handleScreenshotClick = () => {
     document.getElementById("big-screenshots").style.opacity = "100";
@@ -325,6 +321,27 @@ const GameDetails = () => {
     document.getElementById("big-screenshots").style.opacity = "0";
     document.getElementById("big-screenshots").style.zIndex = "-1";
   };
+
+  const handleDismissSuccess = () => {
+    const alertElement = document.getElementById('success-message');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setSubmittedReview(true), 300);
+  };
+
+  const alertStyle = {
+    display: submittedReview ? 'block' : 'none',
+    maxWidth: '270px',
+    margin: '0 auto',
+    padding: '10px',
+    textAlign: 'center',
+    opacity: submittedReview ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+
+  let messageReviewClasses = 'alert alert-success d-none mb-0';
+  if (submittedReview) {
+    messageReviewClasses = 'alert alert-success mb-0 d-flex justify-content-between align-items-center';
+  }
 
   return (
     <div>
@@ -512,16 +529,10 @@ const GameDetails = () => {
       <div className='rcontainer' id='review' style={{marginTop: '10px'}}>
         <div
         className={messageReviewClasses} id="success-message"
-        style={{
-          display: 'block',
-          maxWidth: '270px',
-          margin: '0 auto',
-          padding: '10px',
-          textAlign: 'center'
-        }}
+        style={alertStyle}
         >
             Your review has been submitted!
-            <button onClick = {() => { setSubmittedReview(false); }}
+            <button onClick = {handleDismissSuccess}
               type="button"
               className="close"
               style = {{
