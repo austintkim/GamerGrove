@@ -15,26 +15,27 @@ const fetchUserName = async () => {
     const data = await response.json();
     if (data !== null) {
       return data.account.username;
-  }
+    }
   }
 }
+
 function Settings() {
   const navigate = useNavigate();
 
   const [icons, setIcons] = useState([]);
   const [username, setUsername] = useState('');
-  const [accountData, setAccountData] = useState('')
+  const [accountData, setAccountData] = useState('');
 
   const fetchAccount = async (user) => {
-  if (user!== undefined) {
-    const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
-    const response = await fetch(accountUrl);
-    if (response.ok) {
-      const data = await response.json();
-      return data;
+    if (user !== undefined) {
+      const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
+      const response = await fetch(accountUrl);
+      if (response.ok) {
+        const data = await response.json();
+        return data;
       }
-  }
-};
+    }
+  };
 
   const [accountFormData, setAccountFormData] = useState({
     username: '',
@@ -63,14 +64,9 @@ function Settings() {
       }
     };
     fetchData();
-
   }, []);
 
-
-
-
   const [updatedAccount, setUpdatedAccount] = useState(false);
-
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
@@ -122,10 +118,7 @@ function Settings() {
         setAccountFormData(accountFormData);
         setPasswordConfirm('');
         setUpdatedAccount(true);
-
         document.getElementById('password-confirm').value = '';
-
-
       } else {
         throw new Error('Failed to update account settings');
       }
@@ -133,6 +126,27 @@ function Settings() {
       setPasswordMismatch(true);
       throw new Error('Passwords did not match up');
     }
+  };
+
+  const handleDismissWarning = () => {
+    const alertElement = document.getElementById('warning-message');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setPasswordMismatch(false), 300);
+  };
+
+  const alertStyle = {
+    minWidth: '280px',
+    padding: '5px 15px',
+    fontSize: '16px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    display: passwordMismatch ? 'flex' : 'none',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'relative',
+    opacity: passwordMismatch ? '1' : '0',
+    transition: 'opacity 0.3s ease',
   };
 
   let messageClasses = 'alert alert-success d-none mb-0';
@@ -287,40 +301,39 @@ function Settings() {
                       style={{ marginBottom: '15px' }}
                     />
                   </div>
-              <div
-                className={warningClasses} id="warning-message"
-                style={{
-                  display: 'inline-block',
-                  maxWidth: '250px',
-                  padding: '10px',
-                  color: 'black',
-                  border: '1px solid #ffeeba',
-                  borderRadius: '4px',
-                  position: 'relative',
-                  whiteSpace: 'nowrap',
-              }}
-              >
-                Your passwords do not match!
-                <button onClick = {() => { setPasswordMismatch(false); }}
-                  type="button"
-                  className="close"
-                  style = {{
-                    position: 'absolute',
-                    top: '0',
-                    right: '5px',
-                    fontSize: '16px',
-                    }}
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-                  <div className="mb-3">
-                    <button style = {{ marginTop: '16px'}}>Update</button>
+                  <div
+                    className={warningClasses}
+                    id="warning-message"
+                    style={alertStyle}
+                  >
+                    Your passwords do not match!
+                    <button
+                      onClick={handleDismissWarning}
+                      type="button"
+                      className="close"
+                      style={{
+                        position: 'absolute',
+                        top: '0',
+                        right: '5px',
+                        fontSize: '16px',
+                      }}
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
                   </div>
                   <div className="mb-3">
-                    <button style={{ backgroundColor: 'red' }} type="button" onClick={() => {
-                      navigate(`/settings/delete/${accountData.id}/${accountData.username}`)
-                    }}>Delete Account</button>
+                    <button style={{ marginTop: '16px' }}>Update</button>
+                  </div>
+                  <div className="mb-3">
+                    <button
+                      style={{ backgroundColor: 'red' }}
+                      type="button"
+                      onClick={() => {
+                        navigate(`/settings/delete/${accountData.id}/${accountData.username}`)
+                      }}
+                    >
+                      Delete Account
+                    </button>
                   </div>
                 </form>
               </div>
