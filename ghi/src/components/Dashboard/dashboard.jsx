@@ -8,7 +8,7 @@ import Nav from '../Home/Nav';
 import CombinedCards from '../Cards/combinedCards';
 import Settings from '../Accounts/Settings.jsx';
 
-const fetchUserName = async () => {
+const fetchUserData = async () => {
   const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
   const fetchConfig = {
@@ -20,20 +20,50 @@ const fetchUserName = async () => {
   if (response.ok) {
     const data = await response.json();
     if (data !== null) {
-    return data.account.username;
+    return data.account;
     }
   }
 };
 
 function Dashboard() {
-  const[savedUsername, setSavedUsername] = useState('');
+  const[savedUserData, setSavedUserData] = useState('');
+  const[savedUserGameIDs, setSavedUserGameIDs] = useState([]);
+  const[savedGameDetails, setSavedGameDetails] = useState([]);
+
+  const fetchUserGames = async(userId) => {
+    const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userId}`;
+    const libraryConfig = {
+        credentials: 'include',
+      };
+
+    try {
+      const response = await fetch(libraryUrl, libraryConfig);
+      const libraryData = await response.json();
+
+      if (libraryData.detail) {
+        return [];
+      }
+      setSavedUserGameIDs(libraryData.map((item) => item.game_id));
+
+      const gameDetailsPromises = libraryData.map((item) =>
+        fetch(`${import.meta.env.VITE_API_HOST}/api/games/${item.game_id}`).then((response) =>
+          response.json()
+        )
+      );
+      const gameDetails = await Promise.all(gameDetailsPromises);
+      setSavedGameDetails(gameDetails);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+};
 
   useEffect(() => {
     const fetchData = async () => {
-      const username = await fetchUserName();
-      setSavedUsername(username);
+      const userData = await fetchUserData();
+      setSavedUserData(userData);
     };
   fetchData();
+  fetchUserGames(savedUserData.id);
   }, []);
 
   return (
@@ -41,7 +71,7 @@ function Dashboard() {
       <SideMenu />
       <Nav />
       <main>
-        <h1 style={{color:'white'}} >{savedUsername}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
+        <h1 style={{color:'white'}} >{savedUserData.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
 
         <input id="radio1" type="radio" name="css-tabs" defaultChecked />
         <input id="radio2" type="radio" name="css-tabs" />
@@ -75,7 +105,7 @@ function Dashboard() {
           </section>
           <section id="content3">
              <div className='gcard-container'>
-             <GameCard />
+             <GameCard games = {savedGameDetails} />
 
             </div>
           </section>
