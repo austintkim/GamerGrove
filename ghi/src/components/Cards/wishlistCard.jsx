@@ -32,7 +32,7 @@ async function fetchUserName() {
       return null;
     }
   };
-function WishlistCard() {
+function WishlistCard( { onGameRemoved }) {
   const [wishlistGames, setWishlistGames] = useState([]);
   const [lastGameRemoved, setLastGameRemoved] = useState(false);
   const [userLibrary, setUserLibrary] = useState([]);
@@ -108,8 +108,8 @@ function WishlistCard() {
     };
     const response = await fetch(url, fetchConfig);
     if (response.ok) {
-
       fetchData(userId);
+      onGameRemoved();
     } else {
       throw new Error('Failed to remove game from wishlist');
     }

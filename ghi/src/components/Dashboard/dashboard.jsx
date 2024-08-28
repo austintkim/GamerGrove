@@ -8,27 +8,26 @@ import Nav from '../Home/Nav';
 import CombinedCards from '../Cards/combinedCards';
 import Settings from '../Accounts/Settings.jsx';
 
-const fetchUserData = async () => {
-  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
-
-  const fetchConfig = {
-    credentials: 'include',
-  };
-
-  const response = await fetch(tokenUrl, fetchConfig);
-
-  if (response.ok) {
-    const data = await response.json();
-    if (data !== null) {
-    return data.account;
-    }
-  }
-};
-
 function Dashboard() {
   const[savedUserData, setSavedUserData] = useState('');
-  const[savedUserGameIDs, setSavedUserGameIDs] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
+
+  const fetchUserData = async () => {
+    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+
+    const fetchConfig = {
+      credentials: 'include',
+    };
+
+    const response = await fetch(tokenUrl, fetchConfig);
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data !== null) {
+      return data.account;
+      }
+    }
+  };
 
   const fetchUserGames = async(userId) => {
     const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userId}`;
@@ -41,9 +40,8 @@ function Dashboard() {
       const libraryData = await response.json();
 
       if (libraryData.detail) {
-        return [];
+        setSavedGameDetails([]);
       }
-      setSavedUserGameIDs(libraryData.map((item) => item.game_id));
 
       const gameDetailsPromises = libraryData.map((item) =>
         fetch(`${import.meta.env.VITE_API_HOST}/api/games/${item.game_id}`).then((response) =>
@@ -61,10 +59,16 @@ function Dashboard() {
     const fetchData = async () => {
       const userData = await fetchUserData();
       setSavedUserData(userData);
+      if (userData?.id) {
+        await fetchUserGames(userData.id);
+      }
     };
   fetchData();
-  fetchUserGames(savedUserData.id);
   }, []);
+
+  const handleGameRemoved = () => {
+    fetchUserGames(savedUserData.id);
+  };
 
   return (
     <div>
@@ -111,7 +115,7 @@ function Dashboard() {
           </section>
           <section id="content4">
             <div>
-            <WishlistCard />
+            <WishlistCard onGameRemoved={handleGameRemoved} />
 
             </div>
           </section>
