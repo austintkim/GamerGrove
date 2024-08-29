@@ -9,8 +9,10 @@ import CombinedCards from '../Cards/combinedCards';
 import Settings from '../Accounts/Settings.jsx';
 
 function Dashboard() {
-  const[savedUserData, setSavedUserData] = useState('');
+  const[userDataDetails, setUserDataDetails] = useState('');
+  const[userLibraryEntries, setUserLibraryEntries] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
+  const[wishListGameDetails, setWishListGameDetails] = useState([]);
 
   const fetchUserData = async () => {
     const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
@@ -41,24 +43,32 @@ function Dashboard() {
 
       if (libraryData.detail) {
         setSavedGameDetails([]);
+        setWishListGameDetails([]);
+        return;
+      } else {
+        setUserLibraryEntries(libraryData);
       }
 
-      const gameDetailsPromises = libraryData.map((item) =>
-        fetch(`${import.meta.env.VITE_API_HOST}/api/games/${item.game_id}`).then((response) =>
-          response.json()
-        )
+      const gameDetails = await Promise.all(
+        libraryData.map(async (item) => {
+          const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games/${item.game_id}`);
+          const gamesData = await response.json();
+          gamesData['wishlist'] = item.wishlist;
+          return gamesData;
+      })
       );
-      const gameDetails = await Promise.all(gameDetailsPromises);
       setSavedGameDetails(gameDetails);
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+
 };
 
   useEffect(() => {
     const fetchData = async () => {
       const userData = await fetchUserData();
-      setSavedUserData(userData);
+      setUserDataDetails(userData);
       if (userData?.id) {
         await fetchUserGames(userData.id);
       }
@@ -66,8 +76,14 @@ function Dashboard() {
   fetchData();
   }, []);
 
+  useEffect(() => {
+    const wishListGames = savedGameDetails.filter((item) => item.wishlist === true);
+    setWishListGameDetails(wishListGames);
+  }, [savedGameDetails]);
+
+
   const handleGameRemoved = () => {
-    fetchUserGames(savedUserData.id);
+    fetchUserGames(userDataDetails.id);
   };
 
   return (
@@ -75,7 +91,7 @@ function Dashboard() {
       <SideMenu />
       <Nav />
       <main>
-        <h1 style={{color:'white'}} >{savedUserData.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
+        <h1 style={{color:'white'}} >{userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
 
         <input id="radio1" type="radio" name="css-tabs" defaultChecked />
         <input id="radio2" type="radio" name="css-tabs" />
@@ -115,7 +131,12 @@ function Dashboard() {
           </section>
           <section id="content4">
             <div>
-            <WishlistCard onGameRemoved={handleGameRemoved} />
+            <WishlistCard
+            onGameRemoved={handleGameRemoved}
+            libraryEntries = {userLibraryEntries}
+            userData = {userDataDetails}
+            wishListGames = {wishListGameDetails}
+            />
 
             </div>
           </section>

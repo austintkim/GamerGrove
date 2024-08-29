@@ -1,23 +1,13 @@
-import { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import './wishlistCard.css';
-async function fetchUserName() {
-  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
-  const fetchConfig = {
-    credentials: 'include',
-  };
-  const response = await fetch(tokenUrl, fetchConfig);
-  if (response.ok) {
-    const data = await response.json();
-    return data.account.id;
-  }
-}
+function WishlistCard( { userData, libraryEntries, wishListGames, onGameRemoved }) {
   const handleClick = async (platform, rawg_pk) => {
     const storeUrl = await fetchStoreUrl(platform, rawg_pk);
     if (storeUrl) {
       window.location.href = storeUrl;
     }
   };
+
   const fetchStoreUrl = async (platform, rawg_pk) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/stores/${rawg_pk}`);
@@ -32,87 +22,32 @@ async function fetchUserName() {
       return null;
     }
   };
-function WishlistCard( { onGameRemoved }) {
-  const [wishlistGames, setWishlistGames] = useState([]);
-  const [lastGameRemoved, setLastGameRemoved] = useState(false);
-  const [userLibrary, setUserLibrary] = useState([]);
-  const [userWishlistGames, setUserWishlistGames] = useState([]);
-  const fetchData = async (userId) => {
-    try {
-      const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userId}`;
-      const libraryConfig = {
-        credentials: 'include',
-      };
-      const response = await fetch(libraryUrl, libraryConfig);
-      if (response.ok) {
-      const libraryData = await response.json();
-      setUserLibrary(libraryData);
-      const wishlistGameIds = libraryData
-        .filter((item) => item.wishlist === true)
-        .map((item) => item.game_id);
-      const uniqueGameIds = Array.from(new Set(wishlistGameIds));
-      const gameDetailsPromises = uniqueGameIds.map((gameId) =>
-        fetch(`${import.meta.env.VITE_API_HOST}/api/games/${gameId}`).then((response) =>
-          response.json()
-        )
-      );
-      const wishlistGames = await Promise.all(gameDetailsPromises);
-      setWishlistGames(wishlistGames);
-      setUserWishlistGames(libraryData.map((entry) => entry.id));
-      } else {
-          setLastGameRemoved(true);
-    }
-    } catch (error) {
-      console.error('Error fetching:', error);
-    }
-  };
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userId = await fetchUserName();
-      await fetchData(userId);
-    };
-    fetchUserData();
-  }, []);
-  if(lastGameRemoved === true){
+
+  if (wishListGames.length === 0) {
     return (
       <p style={{color:'white'}}> No games saved to your wishlist yet. </p>
     )
   }
-  const filteredUserLibrary = userLibrary.filter((libraryData) =>
-    userWishlistGames.includes(libraryData.id) && libraryData.wishlist === true
-  );
-  if (filteredUserLibrary.length === 0) {
-    return (
-      <p style={{color:'white'}}> No games saved to your wishlist yet. </p>
-    )
-  }
+
   const handleRemove = async (gameId) => {
-     try {
-    const userId = await fetchUserName();
-    const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userId}`;
-    const libraryConfig = {
-      credentials: 'include',
-    };
-    const libraryResponse = await fetch(libraryUrl, libraryConfig);
-    const libraryData = await libraryResponse.json();
-    const filteredLibraryData = libraryData.filter((libraryEntry) =>
-      libraryEntry.game_id === gameId && libraryEntry.wishlist === true
-    );
-    const url = `${import.meta.env.VITE_API_HOST}/api/libraries/${filteredLibraryData[0].id}/${userId}`;
-    const fetchConfig = {
-      method: 'delete',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    const response = await fetch(url, fetchConfig);
-    if (response.ok) {
-      fetchData(userId);
-      onGameRemoved();
-    } else {
-      throw new Error('Failed to remove game from wishlist');
-    }
+    try {
+      const filteredLibraryData = libraryEntries.filter((libraryEntry) =>
+        libraryEntry.game_id === gameId && libraryEntry.wishlist === true
+      );
+      const url = `${import.meta.env.VITE_API_HOST}/api/libraries/${filteredLibraryData[0].id}/${userData.id}`;
+      const fetchConfig = {
+        method: 'delete',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const response = await fetch(url, fetchConfig);
+      if (response.ok) {
+        onGameRemoved();
+      } else {
+        throw new Error('Failed to remove game from wishlist');
+      }
   } catch (error) {
     console.error('Error removing game from wishlist:', error);
   }
@@ -120,7 +55,7 @@ function WishlistCard( { onGameRemoved }) {
 
 return (
     <div>
-      {wishlistGames.map((game, index) => (
+      {wishListGames.map((game, index) => (
         <div key={`${game.id}-${index}`} className="wishlistcard">
           <div  className="wcard-content">
             <div className="wcard-details">
@@ -194,7 +129,7 @@ return (
                       margin: '10px',
                     }}
                   >
-                      <button onClick={() => handleRemove(game.id, fetchUserName())}>
+                      <button onClick={() => handleRemove(game.id)}>
                         Remove
                       </button>
                   </div>
