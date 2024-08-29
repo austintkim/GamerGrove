@@ -4,7 +4,7 @@ import './largeUserReviewCard.css';
 import StarRating from '../GameDetails/StarRating';
 
 
-function LargeUserReviewCard({ gameId, accountId }) {
+function LargeUserReviewCard({ gameId, accountId, newReview }) {
   const navigate = useNavigate();
   const [userReviews, setUserReviews] = useState([]);
   const [voted, setVoted] = useState(false)
@@ -86,7 +86,7 @@ function LargeUserReviewCard({ gameId, accountId }) {
   useEffect(() => {
     fetchReviewsForGame(gameId);
     fetchVotesForUser();
-  }, [gameId, accountId]);
+  }, [gameId, accountId, newReview]);
 
   async function fetchUserName() {
   const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;

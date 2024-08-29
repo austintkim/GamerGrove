@@ -50,7 +50,8 @@ const GameDetails = () => {
   });
   const [submittedReview, setSubmittedReview] = useState(false);
   const [boards, setBoards] = useState([]);
-  const [screenshots, setScreenshots] = useState([])
+  const [screenshots, setScreenshots] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [savedUsername, setSavedUsername] = useState('');
 
   const fetchScreenshots = async (rawg_pk) => {
@@ -117,6 +118,21 @@ const GameDetails = () => {
       console.log("Error fetching boards:", error);
     }
   };
+
+//   const fetchReviews = async(gameId) => {
+//     const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/games/${id}`;
+//     try {
+//       const response = await fetch(reviewsUrl);
+//       if (response.status === 404) {
+//         setReviews([]);
+//       } else {
+//         const reviewsData = await response.json();
+//         setReviews(reviewsData)
+//       }
+//     } catch (error) {
+//       console.error('Error fetching reviews:', error);
+//   }
+// };
 
   useEffect(() => {
     const fetchGamesData = async () => {
@@ -547,7 +563,7 @@ const GameDetails = () => {
       </div>
           <h1 className='gamesh1' style={{ textAlign: 'center', textDecoration: 'underline', marginTop: '5px' }}>Reviews</h1>
           <div className='moveright' >
-            <LargeUserReviewCard gameId={gameData.id} accountId={accountData?.id} />
+            <LargeUserReviewCard newReview = {submittedReview} gameId={gameData.id} accountId={accountData?.id} />
           </div>
 
         </div>
