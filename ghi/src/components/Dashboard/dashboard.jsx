@@ -11,6 +11,7 @@ import Settings from '../Accounts/Settings.jsx';
 function Dashboard() {
   const[userDataDetails, setUserDataDetails] = useState('');
   const[userLibraryEntries, setUserLibraryEntries] = useState([]);
+  const [libraryGameDetails, setLibraryGameDetails] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
   const[wishListGameDetails, setWishListGameDetails] = useState([]);
 
@@ -57,7 +58,19 @@ function Dashboard() {
           return gamesData;
       })
       );
-      setSavedGameDetails(gameDetails);
+
+      setLibraryGameDetails(gameDetails);
+
+      const seenIds = new Set();
+      const uniqueGameDetails = gameDetails.filter(item => {
+        if (seenIds.has(item.id)) {
+          return false;
+        }
+        seenIds.add(item.id);
+          return true
+      });
+
+      setSavedGameDetails(uniqueGameDetails);
 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -77,9 +90,9 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const wishListGames = savedGameDetails.filter((item) => item.wishlist === true);
+    const wishListGames = libraryGameDetails.filter((item) => item.wishlist === true);
     setWishListGameDetails(wishListGames);
-  }, [savedGameDetails]);
+  }, [libraryGameDetails]);
 
 
   const handleGameRemoved = () => {
