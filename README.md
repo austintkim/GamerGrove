@@ -1,7 +1,7 @@
 # GamerGrove
-- Clarke Carpenter
 - Austin Kim
 - Kyle Hodges
+- Clarke Carpenter
 - Cameron Ross
 
 GamerGrove – A grove for gamers.
@@ -36,24 +36,37 @@ We are targeting gamer enthusiasts who are looking for an easy and user-friendly
   - can access any of the above features from either a user dashboard or
    an 'options' pointer menu
 
-## Project Initialization
+## Getting Started
 To fully enjoy this application on your local machine, please make sure to follow these steps:
-pull from branch
-make env
-1. Clone the repository down to your local machine
-2. CD into the new project directory
-3. Run `docker volume create postgres-data`
-4. Run `docker volume create pg-admin`
-5. Run `docker compose build`
-6. Run `docker compose up`
-7. Run `docker exec -it gamer-grove-ghi-1 bash`
-8. Run `npm i html-react-parser`
-9. Run `npm install @spaceymonk/react-radial-menu`
-10. Run `npm install @galvanize-inc/jwtdown-for-react`
-11. Run `npm install react-bootstrap`
-12. Run `npm install react-slick slick-carousel`
-13. Run `npm create vite@latest`
-14. Exit the container's CLI, and enjoy GamerGrove to its fullest!
 
-To run this application successfully, you will need the following 3rd Party API source:
+**Make sure you have Docker, Git, and Node.js 18.2 or above**
+
+1. Clone the repository down to your local machine:
+```
+git clone https://github.com/austintkim/GamerGrove.git
+```
+
+2. CD into the new project directory
+
+3. Run the following commands in the terminal:
+```
+docker volume create postgres-data
+docker volume create pg-admin
+docker compose build
+docker compose up
+docker exec -it gamer-grove-ghi-1 bash
+npm i html-react-parser
+npm install @spaceymonk/react-radial-menu
+npm install @galvanize-inc/jwtdown-for-react
+npm install react-bootstrap
+npm install react-slick slick-carousel
+npm create vite@latest
+```
+4. Exit out of the container's CLI
+
+5. View the project in the browser: http://localhost:5173/
+
+6. Explore and enjoy!
+
+Note that to run this application successfully, you will need the following 3rd Party API source:
 - https://rawg.io/apidocs
