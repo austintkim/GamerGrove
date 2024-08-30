@@ -9,9 +9,9 @@ GamerGrove – A grove for gamers.
 Deployed Website Link: https://gamergrove.gitlab.io/gamer-grove
 
 ## Design
-- [API design](docs/apis.md)
-- [SQL model](docs/data-model.md)
-- [GHI](docs/ghi.md)
+- [API Design](docs/api-design.md)
+- [SQL Tables Schema](docs/data-model-design.md)
+- [GHI Design](docs/ghi-design.md)
 - [Integrations](docs/integrations.md)
 
 ## Intended market
