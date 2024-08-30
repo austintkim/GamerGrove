@@ -6,7 +6,7 @@ The following is the design to our project GamerGrove.
 
 ## Home Page
 
-This will be the first page visitors arrive to on the website.
+This is the first page visitors arrive to on the website.
 There will be game cards populated based on seeder data. Organized by genre and popularity. The icons at the top indicate whether a user is logged in or out. A logged in user will have a personally choosen icon on display. The hero carousel shows games with a rating over 4.35.
 
 LOGGED OUT
