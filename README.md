@@ -4,9 +4,9 @@
 - Clarke Carpenter
 - Cameron Ross
 
-GamerGrove – A grove for gamers.
+GamerGrove – A grove for gamers
 
-Deployed Website Link: https://gamergrove.gitlab.io/gamer-grove
+**Deployed Website Link:** https://gamergrove.gitlab.io/gamer-grove
 
 ## Design
 - [API Design](docs/api-design.md)
