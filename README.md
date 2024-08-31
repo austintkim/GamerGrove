@@ -48,25 +48,48 @@ git clone https://github.com/austintkim/GamerGrove.git
 
 2. CD into the new project directory
 
-3. Run the following commands in the terminal:
+3. Create an .env file at the root level of this project directory with the following information:
+```
+SIGNING_KEY_FROM_ENV_FILE=5jkl3n43iojo5dsa
+DATABASE_URL_FROM_ENV_FILE=postgresql://gamergrove:password@postgres/gamergrove_db
+RAWG_API_KEY=0c4556270545498782c9a942f38cb48a
+VITE_API_HOST=http://localhost:5173/
+```
+
+![alt text](image-1.png)
+
+4. CD into the ghi directory and create an .env file with the following information:
+```
+VITE_API_HOST=http://localhost:8000
+VITE_RAWG_API_KEY=0c4556270545498782c9a942f38cb48a
+VITE_PUBLIC_URL=
+
+```
+
+![alt text](image-2.png)
+
+5. Run the following commands in the terminal:
 ```
 docker volume create postgres-data
 docker volume create pg-admin
 docker compose build
 docker compose up
-docker exec -it gamer-grove-ghi-1 bash
+docker exec -it gamergrove-ghi-1 bash
 npm i html-react-parser
 npm install @spaceymonk/react-radial-menu
 npm install @galvanize-inc/jwtdown-for-react
 npm install react-bootstrap
 npm install react-slick slick-carousel
-npm create vite@latest
 ```
-4. Exit out of the container's CLI
+6. Exit out of the container's CLI
 
-5. View the project in the browser: http://localhost:5173/
+7. View the project in the browser: http://localhost:5173/
 
-6. Explore and enjoy!
+8. Explore and enjoy!
 
-Note that to run this application successfully, you will need the following 3rd Party API source:
-- https://rawg.io/apidocs
+**Important Note**:
+- To run this application successfully, you will need the following 3rd Party API source:** https://rawg.io/apidocs
+- In steps 3 and 4 of the "Getting Started" section above, I have provided my personal API key for your convenience
+  - Note that I am subscribed to the basic plan, which allows for up to 1,000 requests a day (30,000 requests per month)
+- Feel free to use the link provided above to obtain your own Rawg API key and use that value in the two aforementioned .env files that you must add to the codebase before creating your Docker containers and launching the application in the browser
+  - No card or payment details are required.
