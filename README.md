@@ -1,8 +1,8 @@
 # GamerGrove
 - Austin Kim
-- Kyle Hodges
-- Clarke Carpenter
 - Cameron Ross
+- Clarke Carpenter
+- Kyle Hodges
 
 GamerGrove – A grove for gamers
 
