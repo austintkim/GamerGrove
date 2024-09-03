@@ -11,10 +11,13 @@ async function fetchUserName() {
 
   const response = await fetch(tokenUrl, fetchConfig);
 
-  if (response.ok) {
-    const data = await response.json();
+  const data = await response.json();
+  if (data) {
     return data.account.id;
+  } else {
+    throw new Error('No active token')
   }
+
 }
 
 async function fetchGamesForBoard(boardId) {

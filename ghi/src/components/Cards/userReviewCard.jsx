@@ -10,19 +10,12 @@ async function fetchAccountId() {
     credentials: 'include',
   };
 
-  try {
-    const response = await fetch(tokenUrl, fetchConfig);
-
-    if (response.ok) {
-      const data = await response.json();
-      return data.account.id;
-    } else {
-      console.error('Error fetching account ID:', response.status);
-      return null;
-    }
-  } catch (error) {
-    console.error('Error fetching account ID:', error);
-    return null;
+  const response = await fetch(tokenUrl, fetchConfig);
+  const data = await response.json();
+  if (data) {
+    return data.account.id
+  } else {
+    throw new Error ('No active token')
   }
 }
 
