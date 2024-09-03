@@ -41,6 +41,7 @@ const GameDetails = () => {
 
   const [gameData, setGameData] = useState(null);
   const [wishListText, setWishListText] = useState('Add to Wishlist');
+  const [addToBoardText, setAddToBoardText] = useState('Add to Board');
   const [reviewFormData, setReviewFormData] = useState({
     title: "",
     body: "",
@@ -49,7 +50,8 @@ const GameDetails = () => {
   });
   const [submittedReview, setSubmittedReview] = useState(false);
   const [boards, setBoards] = useState([]);
-  const [screenshots, setScreenshots] = useState([])
+  const [screenshots, setScreenshots] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [savedUsername, setSavedUsername] = useState('');
 
   const fetchScreenshots = async (rawg_pk) => {
@@ -116,6 +118,21 @@ const GameDetails = () => {
       console.log("Error fetching boards:", error);
     }
   };
+
+//   const fetchReviews = async(gameId) => {
+//     const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/games/${id}`;
+//     try {
+//       const response = await fetch(reviewsUrl);
+//       if (response.status === 404) {
+//         setReviews([]);
+//       } else {
+//         const reviewsData = await response.json();
+//         setReviews(reviewsData)
+//       }
+//     } catch (error) {
+//       console.error('Error fetching reviews:', error);
+//   }
+// };
 
   useEffect(() => {
     const fetchGamesData = async () => {
@@ -243,7 +260,8 @@ const GameDetails = () => {
     try {
       const response = await fetch(libraryUrl, fetchConfig);
       if (response.ok) {
-        window.location.reload();
+        let selectedBoard = boards.filter((board) => board.id === Number(data.board_id));
+        setAddToBoardText(`Added to ${selectedBoard[0].board_name}!`);
       }
     } catch (error) {
       console.log("Error adding to board:", error);
@@ -277,10 +295,6 @@ const GameDetails = () => {
     }
   };
 
-  let messageReviewClasses = 'alert alert-success d-none mb-0';
-  if (submittedReview) {
-    messageReviewClasses = 'alert alert-success mb-0';
-  }
 
   const handleClick = async (platform, rawg_pk) => {
     const storeUrl = await fetchStoreUrl(platform, rawg_pk);
@@ -306,13 +320,13 @@ const GameDetails = () => {
   };
 
   const settings = {
-      dots: true,
-      infinite: true,
-      speed: 500,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      autoplay: false,
-    };
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: false,
+  };
 
   const handleScreenshotClick = () => {
     document.getElementById("big-screenshots").style.opacity = "100";
@@ -323,6 +337,26 @@ const GameDetails = () => {
     document.getElementById("big-screenshots").style.opacity = "0";
     document.getElementById("big-screenshots").style.zIndex = "-1";
   };
+
+  const handleDismissSuccess = () => {
+    const alertElement = document.getElementById('success-message');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setSubmittedReview(true), 300);
+  };
+
+  const alertStyle = {
+    display: submittedReview ? 'block' : 'none',
+    maxWidth: '270px',
+    margin: '0 auto',
+    padding: '10px',
+    opacity: submittedReview ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+
+  let messageReviewClasses = 'alert alert-success d-none mb-0';
+  if (submittedReview) {
+    messageReviewClasses = 'alert alert-success mb-0 d-flex justify-content-between align-items-center';
+  }
 
   return (
     <div>
@@ -356,8 +390,8 @@ const GameDetails = () => {
           >{wishListText}</button>
           <label >
 
-            <select onChange={handleBoardClick} className='GDButton' style={{color:'black', width: 'fit-content'}}>
-              <option value="">Add to Board</option>
+            <select value = {addToBoardText} onChange={handleBoardClick} className='GDButton' style={{color:'black', width: 'fit-content'}}>
+              <option value="">{addToBoardText}</option>
               {boards.map(board => {
                 return(
                   <option key={board.id} value={board.id}>{board.board_name}</option>
@@ -414,7 +448,7 @@ const GameDetails = () => {
           {gameData.pc && (
           <img
             className='GDIcon'
-            src="https://imgtr.ee/images/2024/01/29/85a2afdfc48ffb6bf795b565eba3de63.png"
+            src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
             width="35px"
             height="35px"
             alt="Icon 4"
@@ -508,13 +542,28 @@ const GameDetails = () => {
           <br />
           <br />
       <div className='rcontainer' id='review' style={{marginTop: '10px'}}>
-        <div className={messageReviewClasses} id="success-message">
+        <div
+        className={messageReviewClasses} id="success-message"
+        style={alertStyle}
+        >
             Your review has been submitted!
+            <button onClick = {handleDismissSuccess}
+              type="button"
+              className="close"
+              style = {{
+                position: 'absolute',
+                top: '0',
+                right: '5px',
+                fontSize: '16px',
+                }}
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
         </div>
       </div>
           <h1 className='gamesh1' style={{ textAlign: 'center', textDecoration: 'underline', marginTop: '5px' }}>Reviews</h1>
           <div className='moveright' >
-            <LargeUserReviewCard gameId={gameData.id} accountId={accountData?.id} />
+            <LargeUserReviewCard newReview = {submittedReview} gameId={gameData.id} accountId={accountData?.id} />
           </div>
 
         </div>
@@ -594,7 +643,7 @@ const GameDetails = () => {
           {gameData.pc && (
           <img
             className='GDIcon'
-            src="https://imgtr.ee/images/2024/01/29/85a2afdfc48ffb6bf795b565eba3de63.png"
+            src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
             width="35px"
             height="35px"
             alt="Icon 4"

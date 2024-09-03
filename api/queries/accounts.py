@@ -59,7 +59,6 @@ class AccountQueries:
                     for i, column in enumerate(db.description):
                         record[column.name] = row[i]
                     return AccountOutWithPassword(**record)
-
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Could not find an account with that username"

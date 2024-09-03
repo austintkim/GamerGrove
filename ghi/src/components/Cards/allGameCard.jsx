@@ -230,7 +230,7 @@ if (token) {
             )}
             {gameData.pc && (
               <img
-                src="https://imgtr.ee/images/2024/01/29/85a2afdfc48ffb6bf795b565eba3de63.png"
+                src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
                 width="15px"
                 height="15px"
                 alt="Icon 4"
@@ -361,7 +361,7 @@ if (token) {
             )}
             {gameData.pc && (
               <img
-                src="https://imgtr.ee/images/2024/01/29/85a2afdfc48ffb6bf795b565eba3de63.png"
+                src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
                 width="15px"
                 height="15px"
                 alt="Icon 4"

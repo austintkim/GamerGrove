@@ -4,7 +4,8 @@ from queries.games import (
     GameIn,
     GameOut,
     GameQueries,
-    HttpError
+    HttpError,
+    GamesList
 )
 
 
@@ -25,11 +26,11 @@ async def create_game(
     return created_game
 
 
-@router.get("/api/games", response_model=Union[List[GameOut], HttpError])
+@router.get("/api/games", response_model=Union[GamesList, HttpError])
 async def get_all_games(
     queries: GameQueries = Depends()
 ):
-    return queries.get_all_games()
+    return {'games': queries.get_all_games()}
 
 
 @router.get("/api/games/{id}", response_model=GameOut)

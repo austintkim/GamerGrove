@@ -15,26 +15,28 @@ const fetchUserName = async () => {
     const data = await response.json();
     if (data !== null) {
       return data.account.username;
-  }
+    }
   }
 }
+
 function Settings() {
   const navigate = useNavigate();
 
   const [icons, setIcons] = useState([]);
   const [username, setUsername] = useState('');
-  const [accountData, setAccountData] = useState('')
+  const [accountData, setAccountData] = useState('');
+  const [incorrectLogin, setIncorrectLogin] = useState(false);
 
   const fetchAccount = async (user) => {
-  if (user!== undefined) {
-    const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
-    const response = await fetch(accountUrl);
-    if (response.ok) {
-      const data = await response.json();
-      return data;
+    if (user !== undefined) {
+      const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
+      const response = await fetch(accountUrl);
+      if (response.ok) {
+        const data = await response.json();
+        return data;
       }
-  }
-};
+    }
+  };
 
   const [accountFormData, setAccountFormData] = useState({
     username: '',
@@ -63,14 +65,9 @@ function Settings() {
       }
     };
     fetchData();
-
   }, []);
 
-
-
-
   const [updatedAccount, setUpdatedAccount] = useState(false);
-
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
@@ -101,15 +98,24 @@ function Settings() {
     setPasswordConfirm(e.target.value);
   };
 
-  let warningClasses = 'alert alert-warning d-none mb-0';
-  if (passwordMismatch) {
-    warningClasses = 'alert alert-warning mb-0';
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (passwordConfirm === accountFormData.password) {
+      const loginUrl = `${import.meta.env.VITE_API_HOST}/token`;
+      const form = new FormData();
+      form.append("username", username);
+      form.append("password", accountFormData.password);
+      const loginConfig = {
+        method: 'post',
+        body: form
+      }
+
+      const loginResponse = await fetch(loginUrl, loginConfig);
+      if (!loginResponse.ok) {
+        setIncorrectLogin(true);
+        throw new Error('Incorrect password')
+      }
+
       const updateUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${accountData.id}/${username}`;
 
       const updateFetchConfig = {
@@ -127,10 +133,7 @@ function Settings() {
         setAccountFormData(accountFormData);
         setPasswordConfirm('');
         setUpdatedAccount(true);
-
         document.getElementById('password-confirm').value = '';
-
-
       } else {
         throw new Error('Failed to update account settings');
       }
@@ -140,9 +143,73 @@ function Settings() {
     }
   };
 
+  const handleDismissIncorrectLogin = () => {
+    const loginAlert = document.getElementById('failure-message');
+    if (loginAlert) {
+      loginAlert.style.opacity = '0';
+    }
+    setTimeout(() => {
+      setIncorrectLogin(false);
+    }, 300);
+  };
+
+  const handleDismissWarning = () => {
+    const alertElement = document.getElementById('warning-message');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setPasswordMismatch(false), 300);
+  };
+
+  const handleDismissSuccess = () => {
+    const successElement = document.getElementById('success-message');
+    successElement.style.opacity = '0';
+    setTimeout(() => setUpdatedAccount(false), 300);
+  }
+
+  const alertStyle = {
+    display: passwordMismatch ? 'inline-block' : 'none',
+    maxWidth: '250px',
+    margin: '0 auto',
+    padding: '10px',
+    color: 'black',
+    border: '1px solid #ffeeba',
+    borderRadius: '4px',
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    opacity: passwordMismatch ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+
+const failureStyle = {
+  display: incorrectLogin ? 'flex' : 'none',
+  maxWidth: '175px',
+  margin: '0 auto',
+  padding: '10px',
+  color: 'black',
+  border: '1px solid #ffeeba',
+  borderRadius: '4px',
+  position: 'relative',
+  whiteSpace: 'nowrap',
+  opacity: incorrectLogin ? '1' : '0',
+  transition: 'opacity 0.3s ease',
+};
+
+  const successStyle = {
+    display: updatedAccount ? 'block' : 'none',
+    maxWidth: '280px',
+    margin: '0 auto',
+    padding: '10px',
+    opacity: updatedAccount ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+
   let messageClasses = 'alert alert-success d-none mb-0';
   if (updatedAccount) {
     messageClasses = 'alert alert-success mb-0';
+  }
+
+  let warningClasses = 'alert alert-warning d-none mb-0';
+  if (passwordMismatch) {
+    warningClasses = 'alert alert-warning mb-0 d-flex justify-content-between align-items-center';
   }
 
   return (
@@ -160,10 +227,7 @@ function Settings() {
               }}
             >
               <div className="settingscard">
-                <h4 className="card-header">Account Settings</h4>
-                <div className={warningClasses} id="warning-message">
-                  Your passwords do not match!
-                </div>
+                <h4 className="card-header" style = {{textAlign:'center'}}>Account Settings</h4>
                 <form onSubmit={handleSubmit} id="create-profile">
                   <div className="settingscard">
                     <label htmlFor="username">Username</label>
@@ -290,18 +354,73 @@ function Settings() {
                       style={{ marginBottom: '15px' }}
                     />
                   </div>
-                  <div className="mb-3">
-                    <button>Update</button>
+                  <div
+                    className={warningClasses}
+                    id="warning-message"
+                    style={alertStyle}
+                  >
+                    Your passwords do not match!
+                    <button
+                      onClick={handleDismissWarning}
+                      type="button"
+                      className="close"
+                      style={{
+                        position: 'absolute',
+                        top: '0',
+                        right: '5px',
+                        fontSize: '16px',
+                      }}
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div className="alert alert-danger mb-0" id="failure-message" style={failureStyle}>
+                    Incorrect password...
+                    <button onClick={handleDismissIncorrectLogin}
+                      type="button"
+                      className="close"
+                      style={{
+                        position: 'absolute',
+                        top: '0',
+                        right: '5px',
+                        fontSize: '16px',
+                      }}
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
                   </div>
                   <div className="mb-3">
-                    <button style={{ backgroundColor: 'red' }} type="button" onClick={() => {
-                      navigate(`/settings/delete/${accountData.id}/${accountData.username}`)
-                    }}>Delete Account</button>
+                    <button style={{ marginTop: '16px' }}>Update</button>
+                  </div>
+                  <div className="mb-3">
+                    <button
+                      style={{ backgroundColor: 'red' }}
+                      type="button"
+                      onClick={() => {
+                        navigate(`/settings/delete/${accountData.id}/${accountData.username}`)
+                      }}
+                    >
+                      Delete Account
+                    </button>
                   </div>
                 </form>
               </div>
-              <div className={messageClasses} id="success-message">
+              <div className={messageClasses} id="success-message"
+              style={successStyle}
+              >
                 Your settings have been updated!
+                <button onClick = {handleDismissSuccess}
+                  type="button"
+                  className="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
             </div>
           </div>

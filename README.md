@@ -4,7 +4,9 @@
 - Clarke Carpenter
 - Kyle Hodges
 
-GamerGrove – a grove for gamers.
+GamerGrove – A grove for gamers
+
+**Deployed Website Link:** https://gamergrove.gitlab.io/gamer-grove
 
 ## UI Screenshots For Code Sample for Airbnb Reviewers
 
@@ -13,9 +15,9 @@ GamerGrove – a grove for gamers.
 
 
 ## Design
-- [API design](docs/apis.md)
-- [SQL model](docs/data-model.md)
-- [GHI](docs/ghi.md)
+- [API Design](docs/api-design.md)
+- [SQL Tables Schema](docs/data-model-design.md)
+- [GHI Design](docs/ghi-design.md)
 - [Integrations](docs/integrations.md)
 
 ## Intended market
@@ -23,7 +25,7 @@ We are targeting gamer enthusiasts who are looking for an easy and user-friendly
 
 ## Functionality
 - Visitors to the site can:
-  - browse games that are already loaded into the site by platform and
+  - browse games that are pre-loaded into the site by platform and
    genre
   - view the details of any game (i.e. description, screenshots, ratings,
    user-written reviews, etc.)
@@ -40,24 +42,60 @@ We are targeting gamer enthusiasts who are looking for an easy and user-friendly
   - can access any of the above features from either a user dashboard or
    an 'options' pointer menu
 
-## Project Initialization
+## Getting Started
 To fully enjoy this application on your local machine, please make sure to follow these steps:
-pull from branch
-make env
-1. Clone the repository down to your local machine
-2. CD into the new project directory
-3. Run `docker volume create postgres-data`
-4. Run `docker volume create pg-admin`
-5. Run `docker compose build`
-6. Run `docker compose up`
-7. Run `docker exec -it gamer-grove-ghi-1 bash`
-8. Run `npm i html-react-parser`
-9. Run `npm install @spaceymonk/react-radial-menu`
-10. Run `npm install @galvanize-inc/jwtdown-for-react`
-11. Run `npm install react-bootstrap`
-12. Run `npm install react-slick slick-carousel`
-13. Run `npm create vite@latest`
-14. Exit the container's CLI, and enjoy GamerGrove to its fullest!
 
-To run this application successfully, you will need the following 3rd Party API source:
-- https://rawg.io/apidocs
+**Make sure you have Docker, Git, and Node.js 18.2 or above**
+
+1. Clone the repository down to your local machine:
+```
+git clone https://github.com/austintkim/GamerGrove.git
+```
+
+2. CD into the new project directory
+
+3. Create an .env file at the root level of this project directory with the following information:
+```
+SIGNING_KEY_FROM_ENV_FILE=5jkl3n43iojo5dsa
+DATABASE_URL_FROM_ENV_FILE=postgresql://gamergrove:password@postgres/gamergrove_db
+RAWG_API_KEY=0c4556270545498782c9a942f38cb48a
+VITE_API_HOST=http://localhost:5173/
+```
+
+![alt text](image-1.png)
+
+4. CD into the ghi directory and create an .env file with the following information:
+```
+VITE_API_HOST=http://localhost:8000
+VITE_RAWG_API_KEY=0c4556270545498782c9a942f38cb48a
+VITE_PUBLIC_URL=
+
+```
+
+![alt text](image-2.png)
+
+5. Run the following commands in the terminal:
+```
+docker volume create postgres-data
+docker volume create pg-admin
+docker compose build
+docker compose up
+docker exec -it gamergrove-ghi-1 bash
+npm i html-react-parser
+npm install @spaceymonk/react-radial-menu
+npm install @galvanize-inc/jwtdown-for-react
+npm install react-bootstrap
+npm install react-slick slick-carousel
+```
+6. Exit out of the container's CLI
+
+7. View the project in the browser: http://localhost:5173/
+
+8. Explore and enjoy!
+
+**Important Note**:
+- To run this application successfully, you will need the following 3rd Party API source:** https://rawg.io/apidocs
+- In steps 3 and 4 of the "Getting Started" section above, I have provided my personal API key for your convenience
+  - Note that I am subscribed to the basic plan, which allows for up to 1,000 requests a day (30,000 requests per month)
+- Feel free to use the link provided above to obtain your own Rawg API key and use that value in the two aforementioned .env files that you must add to the codebase before creating your Docker containers and launching the application in the browser
+  - No card or payment details are required.

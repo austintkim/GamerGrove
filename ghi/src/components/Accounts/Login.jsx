@@ -1,10 +1,9 @@
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useState } from "react";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Hero from "./Hero";
 
-import './Hero.css'
-
+import './Hero.css';
 
 const containerStyle = {
   minHeight: '100vh',
@@ -19,7 +18,6 @@ const LoginForm = () => {
   const [incorrectLogin, setIncorrectLogin] = useState(false);
   const { login } = useToken();
   const navigate = useNavigate();
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,17 +37,27 @@ const LoginForm = () => {
     } else {
       setIncorrectLogin(true);
     }
-
   };
 
-  let messageClasses = 'alert alert-danger d-none mb-0';
-  if (incorrectLogin) {
-    messageClasses = 'alert alert-danger mb-0';
-  }
+  const handleDismiss = () => {
+    const alertElement = document.getElementById('failure-message');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setIncorrectLogin(false), 300);
+  };
+
+  const alertStyle = {
+    display: incorrectLogin ? 'block' : 'none',
+    minWidth: '280px',
+    margin: '0 auto',
+    marginBottom: '15px',
+    whiteSpace: 'nowrap',
+    opacity: incorrectLogin ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+    position: 'relative', // Position relative for the close button
+  };
 
   return (
     <div style={{ position: 'relative' }}>
-
       <button
         onClick={() => { navigate("/"); }}
         style={{
@@ -63,44 +71,57 @@ const LoginForm = () => {
       </button>
       <div>
         <Hero />
-    <div style={containerStyle}>
-
-    <div className="card text-bg-light mb-3">
-      <div className="offset-3 col-6">
-      <h5 className="card-header">Login</h5>
-      <div className="card-body">
-        <form onSubmit={(e) => handleSubmit(e)}>
-          <div className="mb-3">
-            <label className="form-label">Username:</label>
-            <input
-              name="username"
-              type="text"
-              className="form-control"
-              onChange={(e) => setUsername(e.target.value)}
-            />
+        <div style={containerStyle}>
+          <div className="card text-bg-light mb-3" style={{ width: '100%', maxWidth: '600px' }}>
+            <div className="offset-3 col-6">
+              <h5 className="card-header" style={{ textAlign: 'center', fontSize: '36px' }}>
+                Login
+              </h5>
+              <div className="card-body">
+                <form onSubmit={(e) => handleSubmit(e)}>
+                  <div className="mb-3">
+                    <label className="form-label">Username:</label>
+                    <input
+                      name="username"
+                      type="text"
+                      className="form-control"
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Password:</label>
+                    <input
+                      name="password"
+                      type="password"
+                      className="form-control"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <input style={{ marginBottom: '15px' }} type="submit" value="Login" />
+                  </div>
+                  <div className="alert alert-danger mb-0" id="failure-message" style={alertStyle}>
+                    Incorrect username or password...
+                    <button onClick={handleDismiss}
+                      type="button"
+                      className="close"
+                      style={{
+                        position: 'absolute',
+                        top: '0',
+                        right: '5px',
+                        fontSize: '16px',
+                      }}
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
-          <div className="mb-3">
-            <label className="form-label">Password:</label>
-            <input
-              name="password"
-              type="password"
-              className="form-control"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div>
-            <input style={{ marginBottom: '15px' }} type="submit" value="Login" />
-          </div>
-          <div className={messageClasses} id="failure-message">
-            Incorrect username or password...
-          </div>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
-  </div>
-  </div>
-  </div>
   );
 };
 

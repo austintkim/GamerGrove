@@ -84,6 +84,7 @@
     margin: 0;
     margin-bottom: 10px;
     display: flex;
+    color: white;
 }
 
 .urcard-content .urcard-title {
@@ -124,5 +125,5 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 1000; 
+  z-index: 1000;
 }

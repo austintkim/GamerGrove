@@ -8,40 +8,103 @@ import Nav from '../Home/Nav';
 import CombinedCards from '../Cards/combinedCards';
 import Settings from '../Accounts/Settings.jsx';
 
-const fetchUserName = async () => {
-  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+function Dashboard() {
+  const[userDataDetails, setUserDataDetails] = useState('');
+  const[userLibraryEntries, setUserLibraryEntries] = useState([]);
+  const [libraryGameDetails, setLibraryGameDetails] = useState([]);
+  const[savedGameDetails, setSavedGameDetails] = useState([]);
+  const[wishListGameDetails, setWishListGameDetails] = useState([]);
 
-  const fetchConfig = {
-    credentials: 'include',
+  const fetchUserData = async () => {
+    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+
+    const fetchConfig = {
+      credentials: 'include',
+    };
+
+    const response = await fetch(tokenUrl, fetchConfig);
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data !== null) {
+      return data.account;
+      }
+    }
   };
 
-  const response = await fetch(tokenUrl, fetchConfig);
+  const fetchUserGames = async(userId) => {
+    const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userId}`;
+    const libraryConfig = {
+        credentials: 'include',
+      };
 
-  if (response.ok) {
-    const data = await response.json();
-    if (data !== null) {
-    return data.account.username;
+    try {
+      const response = await fetch(libraryUrl, libraryConfig);
+      const libraryData = await response.json();
+
+      if (libraryData.detail) {
+        setSavedGameDetails([]);
+        setWishListGameDetails([]);
+        return;
+      } else {
+        setUserLibraryEntries(libraryData);
+      }
+
+      const gameDetails = await Promise.all(
+        libraryData.map(async (item) => {
+          const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games/${item.game_id}`);
+          const gamesData = await response.json();
+          gamesData['wishlist'] = item.wishlist;
+          return gamesData;
+      })
+      );
+
+      setLibraryGameDetails(gameDetails);
+
+      const seenIds = new Set();
+      const uniqueGameDetails = gameDetails.filter(item => {
+        if (seenIds.has(item.id)) {
+          return false;
+        }
+        seenIds.add(item.id);
+          return true
+      });
+
+      setSavedGameDetails(uniqueGameDetails);
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-  }
-};
 
-function Dashboard() {
-  const[savedUsername, setSavedUsername] = useState('');
+};
 
   useEffect(() => {
     const fetchData = async () => {
-      const username = await fetchUserName();
-      setSavedUsername(username);
+      const userData = await fetchUserData();
+      setUserDataDetails(userData);
+      if (userData?.id) {
+        await fetchUserGames(userData.id);
+      }
     };
   fetchData();
   }, []);
+
+  useEffect(() => {
+    const wishListGames = libraryGameDetails.filter((item) => item.wishlist === true);
+    setWishListGameDetails(wishListGames);
+  }, [libraryGameDetails]);
+
+
+  const handleGameRemoved = () => {
+    fetchUserGames(userDataDetails.id);
+  };
 
   return (
     <div>
       <SideMenu />
       <Nav />
       <main>
-        <h1 style={{color:'white'}} >{savedUsername}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
+        <h1 style={{color:'white'}} >{userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
 
         <input id="radio1" type="radio" name="css-tabs" defaultChecked />
         <input id="radio2" type="radio" name="css-tabs" />
@@ -75,13 +138,18 @@ function Dashboard() {
           </section>
           <section id="content3">
              <div className='gcard-container'>
-             <GameCard />
+             <GameCard games = {savedGameDetails} />
 
             </div>
           </section>
           <section id="content4">
             <div>
-            <WishlistCard />
+            <WishlistCard
+            onGameRemoved={handleGameRemoved}
+            libraryEntries = {userLibraryEntries}
+            userData = {userDataDetails}
+            wishListGames = {wishListGameDetails}
+            />
 
             </div>
           </section>

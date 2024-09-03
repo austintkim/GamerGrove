@@ -12,7 +12,7 @@ import './SearchResults.css';
 const SearchResults = () => {
     const location = useLocation();
     const rawg_pks = location.state
-    const [searchGames, setSearchGames] = useState([]);
+    const [searchGames, setSearchGames] = useState([])
     const navigate = useNavigate();
     const { token } = useAuthContext();
     const [id, setId] = useState('');
@@ -77,7 +77,7 @@ const SearchResults = () => {
         const games = []
         const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
         const data = await response.json();
-        for (const d of data) {
+        for (const d of data.games) {
             if (rawg_pks.includes(d.rawg_pk)) {
                 games.push(d)
             }
@@ -263,7 +263,7 @@ useEffect(() => {
                             )}
                             {gameData.pc && (
                             <img
-                                src="https://imgtr.ee/images/2024/01/29/85a2afdfc48ffb6bf795b565eba3de63.png"
+                                src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
                                 width="15px"
                                 height="15px"
                                 alt="Icon 4"
@@ -403,7 +403,7 @@ useEffect(() => {
                   )}
                   {gameData.pc && (
                     <img
-                      src="https://imgtr.ee/images/2024/01/29/85a2afdfc48ffb6bf795b565eba3de63.png"
+                      src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
                       width="15px"
                       height="15px"
                       alt="Icon 4"

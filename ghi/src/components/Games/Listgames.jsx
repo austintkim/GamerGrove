@@ -15,8 +15,9 @@ const Listgames = () => {
 
   const platforms = ['xbox', 'playstation', 'pc', 'nintendo'];
 
-  if (platforms.includes(data.state) === false) {
-    const genre = data?.state || '';
+  if (platforms.includes(data.state) === false && data.state) {
+    const genre = data.state;
+    const formattedGenre = data.state.charAt(0).toUpperCase() + data.state.slice(1);
 
     const fetchGames = async () => {
       try {
@@ -25,10 +26,8 @@ const Listgames = () => {
 
         if (response.ok) {
           const fetchedGames = await response.json();
-          const filteredGames = genre.length > 2
-          ? fetchedGames.filter((game) => game.genre === genre)
-          : fetchedGames;
-          setTitle(genre);
+          const filteredGames = fetchedGames.games.filter((game) => game.genre === genre);
+          setTitle(formattedGenre);
           setGames(filteredGames);
         }
       } catch (error) {
@@ -41,7 +40,8 @@ const Listgames = () => {
       fetchGames();
     }, [genre]);
   } else if (platforms.includes(data.state)) {
-    const platform = data.state
+    const platform = data.state;
+    const formattedPlatform = data.state.charAt(0).toUpperCase() + data.state.slice(1);
     const fetchGames = async () => {
       try {
         const url = `${import.meta.env.VITE_API_HOST}/api/games`;
@@ -49,10 +49,8 @@ const Listgames = () => {
 
         if (response.ok) {
           const fetchedGames = await response.json();
-          const filteredGames = platform.length > 2
-            ? fetchedGames.filter((game) => game[`${platform}`] === true)
-            : fetchedGames;
-          setTitle(platform);
+          const filteredGames = fetchedGames.games.filter((game) => game[`${platform}`] === true)
+          setTitle(formattedPlatform);
           setGames(filteredGames);
         }
       } catch (error) {
@@ -64,12 +62,31 @@ const Listgames = () => {
     useEffect(() => {
       fetchGames();
     }, [platform]);
+  } else {
+    const fetchGames = async () => {
+      try {
+        const url = `${import.meta.env.VITE_API_HOST}/api/games`;
+        const response = await fetch(url);
+        if (response.ok) {
+          const fetchedGames = await response.json();
+          setGames(fetchedGames.games);
+          setTitle('All Games')
+        }
+      } catch (error) {
+        console.error('Error fetching games:', error);
+      }
+    };
+
+    useEffect(() => {
+      fetchGames();
+    },[data]);
+
   }
 
   return (
     <div>
       <Nav />
-      <h1 className='titlegames'>Games/{title ? title : 'All Games'}</h1>
+      <h1 className="titlegames" style={{ textDecoration: 'underline', textDecorationThickness: '1px' }}>{title}</h1>
 
       <div className='allgamesbody'>
 

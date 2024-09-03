@@ -64,11 +64,6 @@ function SignUpForm() {
     )
   }
 
-  let warningClasses = 'alert alert-warning d-none mb-0';
-  if (passwordMismatch) {
-    warningClasses = 'alert alert-warning mb-0';
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -101,6 +96,21 @@ function SignUpForm() {
     }
   }
 
+  const handleDismiss = () => {
+    const alertElement = document.getElementById('warning-message');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setPasswordMismatch(false), 300);
+  };
+
+  const alertStyle = {
+    display: passwordMismatch ? 'flex' : 'none',
+    maxWidth: '280px',
+    padding: '5px 15px',
+    whiteSpace: 'nowrap',
+    opacity: passwordMismatch ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+
   return (
     <div style={{ position: 'relative', ...containerStyle }}>
       <button
@@ -120,9 +130,6 @@ function SignUpForm() {
             <div className="row" style={{ backgroundColor: 'transparent', paddingLeft: '11%', marginLeft: '0%', marginRight: '7%' }}>
               <div className="offset-2 col-8">
                 <h2 className="card-header" style={{ textAlign: 'center'}}>Create account</h2>
-                <div className={warningClasses} id="warning-message">
-                  Your passwords do not match!
-                </div>
                 <div style={{ width: '100%'}}>
                   <form onSubmit={handleSubmit} id="create-account">
                     <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
@@ -137,6 +144,21 @@ function SignUpForm() {
                       <label htmlFor="password">Password Confirmation</label>
                       <input onChange={passwordConfirmChange} required type="password" name="password-confirm" id="password-confirm" className="form-control" style={{ marginBottom: '15px' }} />
                     </div>
+                <div className="alert alert-warning mb-0" id="warning-message" style={alertStyle}>
+                  Your passwords do not match!
+                  <button onClick = {handleDismiss}
+                  type="button"
+                  className="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
                     <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
                       <label htmlFor="first_name">First name</label>
                       <input onChange={handleFormChange} required type="text" name="first_name" id="first_name" className="form-control" value={accountFormData.first_name} />
