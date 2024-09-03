@@ -1,37 +1,18 @@
 import { useState, useEffect } from 'react';
 
-const Icon = () => {
+const Icon = ({ userData }) => {
   const [iconUrl, setIconUrl] = useState(null);
 
   useEffect(() => {
-
-    const fetchUserData = async () => {
-      const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
-      const fetchConfig = {
-        credentials: 'include',
+    if (userData) {
+      const fetchUserIcon = async (iconID) => {
+        const iconResponse = await fetch(`${import.meta.env.VITE_API_HOST}/api/icons/${iconID}`);
+        const iconData = await iconResponse.json();
+        setIconUrl(iconData.icon_url);
       };
-
-      try {
-        const response = await fetch(tokenUrl, fetchConfig);
-
-        const userData = await response.json();
-        if (userData !== null) {
-          const { account } = userData;
-          const { icon_id } = account;
-
-          const iconResponse = await fetch(`${import.meta.env.VITE_API_HOST}/api/icons/${icon_id}`);
-
-          const iconData = await iconResponse.json();
-
-          setIconUrl(iconData.icon_url);
-      }
-     } catch (error) {
-        //empty
-      }
-
+      fetchUserIcon(userData.icon_id);
     }
-        fetchUserData();
-      }, []);
+  }, [userData]);
 
   return (
   <div>

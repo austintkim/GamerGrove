@@ -136,7 +136,7 @@ function Dashboard() {
     return (
       <div>
         <SideMenu />
-        <Nav />
+        <Nav userData = {userDataDetails} />
         <main>
           <h1 style={{color:'white'}} >{userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
 

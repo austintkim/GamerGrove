@@ -2,42 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Settings.css';
 
-// const fetchUserName = async () => {
-//   const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
-
-//   const fetchConfig = {
-//     credentials: 'include',
-//   };
-
-//   const response = await fetch(tokenUrl, fetchConfig);
-
-//   if (response.ok) {
-//     const data = await response.json();
-//     if (data !== null) {
-//       return data.account.username;
-//     }
-//   }
-// }
 
 function Settings( {iconData, userData, onSettingsUpdate} ) {
   const navigate = useNavigate();
-
-  // const [icons, setIcons] = useState([]);
-  // const [username, setUsername] = useState('');
-  const [accountData, setAccountData] = useState('');
   const [incorrectLogin, setIncorrectLogin] = useState(false);
-
-  // const fetchAccount = async (user) => {
-  //   if (user !== undefined) {
-  //     const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
-  //     const response = await fetch(accountUrl);
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       return data;
-  //     }
-  //   }
-  // };
-
   const [accountFormData, setAccountFormData] = useState({
     username: '',
     password: '',
@@ -63,22 +31,6 @@ function Settings( {iconData, userData, onSettingsUpdate} ) {
   const [updatedAccount, setUpdatedAccount] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-
-  // const fetchData = async () => {
-  //   const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
-  //   const response = await fetch(url);
-
-  //   if (response.ok) {
-  //     const data = await response.json();
-  //     setIcons(data);
-  //   } else {
-  //     throw new Error('Failed to retrieve icons data');
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
 
   const handleFormChange = (e) => {
     setAccountFormData({
