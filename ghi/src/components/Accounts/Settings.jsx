@@ -2,41 +2,41 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Settings.css';
 
-const fetchUserName = async () => {
-  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+// const fetchUserName = async () => {
+//   const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
-  const fetchConfig = {
-    credentials: 'include',
-  };
+//   const fetchConfig = {
+//     credentials: 'include',
+//   };
 
-  const response = await fetch(tokenUrl, fetchConfig);
+//   const response = await fetch(tokenUrl, fetchConfig);
 
-  if (response.ok) {
-    const data = await response.json();
-    if (data !== null) {
-      return data.account.username;
-    }
-  }
-}
+//   if (response.ok) {
+//     const data = await response.json();
+//     if (data !== null) {
+//       return data.account.username;
+//     }
+//   }
+// }
 
-function Settings() {
+function Settings( {iconData, userData, onSettingsUpdate} ) {
   const navigate = useNavigate();
 
-  const [icons, setIcons] = useState([]);
-  const [username, setUsername] = useState('');
+  // const [icons, setIcons] = useState([]);
+  // const [username, setUsername] = useState('');
   const [accountData, setAccountData] = useState('');
   const [incorrectLogin, setIncorrectLogin] = useState(false);
 
-  const fetchAccount = async (user) => {
-    if (user !== undefined) {
-      const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
-      const response = await fetch(accountUrl);
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      }
-    }
-  };
+  // const fetchAccount = async (user) => {
+  //   if (user !== undefined) {
+  //     const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
+  //     const response = await fetch(accountUrl);
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       return data;
+  //     }
+  //   }
+  // };
 
   const [accountFormData, setAccountFormData] = useState({
     username: '',
@@ -48,44 +48,37 @@ function Settings() {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      const username = await fetchUserName();
-      setUsername(username);
-      const account = await fetchAccount(username);
-      setAccountData(account);
-      if (account) {
+    if (userData) {
         setAccountFormData({
-          username: account.username || '',
+          username: userData.username || '',
           password: '',
-          first_name: account.first_name || '',
-          last_name: account.last_name || '',
-          email: account.email || '',
-          icon_id: account.icon_id || ''
+          first_name: userData.first_name || '',
+          last_name: userData.last_name || '',
+          email: userData.email || '',
+          icon_id: userData.icon_id || ''
         });
       }
-    };
-    fetchData();
-  }, []);
+    }, [userData]);
 
   const [updatedAccount, setUpdatedAccount] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
-  const fetchData = async () => {
-    const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
-    const response = await fetch(url);
+  // const fetchData = async () => {
+  //   const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
+  //   const response = await fetch(url);
 
-    if (response.ok) {
-      const data = await response.json();
-      setIcons(data);
-    } else {
-      throw new Error('Failed to retrieve icons data');
-    }
-  };
+  //   if (response.ok) {
+  //     const data = await response.json();
+  //     setIcons(data);
+  //   } else {
+  //     throw new Error('Failed to retrieve icons data');
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   const handleFormChange = (e) => {
     setAccountFormData({
@@ -103,7 +96,7 @@ function Settings() {
     if (passwordConfirm === accountFormData.password) {
       const loginUrl = `${import.meta.env.VITE_API_HOST}/token`;
       const form = new FormData();
-      form.append("username", username);
+      form.append("username", userData.username);
       form.append("password", accountFormData.password);
       const loginConfig = {
         method: 'post',
@@ -116,7 +109,7 @@ function Settings() {
         throw new Error('Incorrect password')
       }
 
-      const updateUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${accountData.id}/${username}`;
+      const updateUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${userData.id}/${userData.username}`;
 
       const updateFetchConfig = {
         method: 'put',
@@ -133,6 +126,7 @@ function Settings() {
         setAccountFormData(accountFormData);
         setPasswordConfirm('');
         setUpdatedAccount(true);
+        onSettingsUpdate();
         document.getElementById('password-confirm').value = '';
       } else {
         throw new Error('Failed to update account settings');
@@ -290,7 +284,7 @@ const failureStyle = {
                         value={accountFormData.icon_id}
                       >
                         <option value=""></option>
-                        {icons.map((icon) => (
+                        {iconData.map((icon) => (
                           <option
                             key={icon.id}
                             value={icon.id}
@@ -306,7 +300,7 @@ const failureStyle = {
                       style={{ backgroundColor: 'transparent' }}
                     >
                       <div className="col-12 d-flex justify-content-center align-items-center mb-3">
-                        {icons.map((icon, index) => (
+                        {iconData.map((icon, index) => (
                           <div
                             key={icon.id}
                             className="text-center"
@@ -397,7 +391,7 @@ const failureStyle = {
                       style={{ backgroundColor: 'red' }}
                       type="button"
                       onClick={() => {
-                        navigate(`/settings/delete/${accountData.id}/${accountData.username}`)
+                        navigate(`/settings/delete/${userData.id}/${userData.username}`)
                       }}
                     >
                       Delete Account

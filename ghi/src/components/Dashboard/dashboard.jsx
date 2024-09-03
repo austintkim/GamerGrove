@@ -18,9 +18,10 @@ const containerStyle = {
 };
 
 function Dashboard() {
+  const [icons, setIcons] = useState([]);
   const[userDataDetails, setUserDataDetails] = useState('');
   const[userLibraryEntries, setUserLibraryEntries] = useState([]);
-  const [libraryGameDetails, setLibraryGameDetails] = useState([]);
+  const[libraryGameDetails, setLibraryGameDetails] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
   const[wishListGameDetails, setWishListGameDetails] = useState([]);
 
@@ -28,6 +29,18 @@ function Dashboard() {
   const navigate = useNavigate();
   const handleBackToLogin = () => {
     navigate("/login");
+  };
+
+  const fetchIcons = async () => {
+    const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
+    const response = await fetch(url);
+
+    if (response.ok) {
+      const data = await response.json();
+      setIcons(data);
+    } else {
+      throw new Error('Failed to retrieve icons data');
+    }
   };
 
   const fetchUserData = async () => {
@@ -40,6 +53,7 @@ function Dashboard() {
     const response = await fetch(tokenUrl, fetchConfig);
     const data = await response.json();
     if (data) {
+      setUserDataDetails(data.account);
       return data.account;
     } else {
       throw new Error ('No active token')
@@ -96,11 +110,11 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       const userData = await fetchUserData();
-      setUserDataDetails(userData);
       if (userData?.id) {
         await fetchUserGames(userData.id);
       }
     };
+  fetchIcons();
   fetchData();
   }, []);
 
@@ -113,6 +127,10 @@ function Dashboard() {
   const handleGameRemoved = () => {
     fetchUserGames(userDataDetails.id);
   };
+
+  const handleSettingsUpdate = () => {
+    fetchUserData();
+  }
 
   if (token) {
     return (
@@ -170,7 +188,11 @@ function Dashboard() {
               </div>
             </section>
             <section style={{ marginLeft: '100px'}} id="content5">
-              <Settings />
+              <Settings
+              iconData = {icons}
+              userData = {userDataDetails}
+              onSettingsUpdate = {handleSettingsUpdate}
+              />
             </section>
             </div>
 
@@ -190,7 +212,7 @@ function Dashboard() {
       </div>
     </div>
     );
-  };
+  }
 }
 
 export default Dashboard;
