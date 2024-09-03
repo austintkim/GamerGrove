@@ -19,7 +19,7 @@ We are targeting gamer enthusiasts who are looking for an easy and user-friendly
 
 ## Functionality
 - Visitors to the site can:
-  - browse games that are already loaded into the site by platform and
+  - browse games that are pre-loaded into the site by platform and
    genre
   - view the details of any game (i.e. description, screenshots, ratings,
    user-written reviews, etc.)
