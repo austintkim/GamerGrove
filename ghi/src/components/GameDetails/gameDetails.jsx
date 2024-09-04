@@ -39,6 +39,7 @@ const GameDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const [userDataDetails2, setUserDataDetails2] = useState('');
   const [gameData, setGameData] = useState(null);
   const [wishListText, setWishListText] = useState('Add to Wishlist');
   const [addToBoardText, setAddToBoardText] = useState('Add to Board');
@@ -54,6 +55,27 @@ const GameDetails = () => {
   const [reviews, setReviews] = useState([]);
   const [savedUsername, setSavedUsername] = useState('');
 
+  const fetchUserData = async () => {
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+
+  const fetchConfig = {
+    credentials: 'include',
+  };
+
+  const response = await fetch(tokenUrl, fetchConfig);
+  const data = await response.json();
+  if (data) {
+      setUserDataDetails2(data.account);
+      return data.account;
+  } else {
+      throw new Error ('No active token')
+  }
+};
+
+  useEffect(() => {
+      fetchUserData();
+  }, []);
+
   const fetchScreenshots = async (rawg_pk) => {
     const rawgPk = rawg_pk
     const url = `${import.meta.env.VITE_API_HOST}/api/screenshots/${rawgPk}`
@@ -63,6 +85,7 @@ const GameDetails = () => {
       setScreenshots(data)
     }
   }
+
   const fetchUserName = async () => {
     const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
     const fetchConfig = {
@@ -118,21 +141,6 @@ const GameDetails = () => {
       console.log("Error fetching boards:", error);
     }
   };
-
-//   const fetchReviews = async(gameId) => {
-//     const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/games/${id}`;
-//     try {
-//       const response = await fetch(reviewsUrl);
-//       if (response.status === 404) {
-//         setReviews([]);
-//       } else {
-//         const reviewsData = await response.json();
-//         setReviews(reviewsData)
-//       }
-//     } catch (error) {
-//       console.error('Error fetching reviews:', error);
-//   }
-// };
 
   useEffect(() => {
     const fetchGamesData = async () => {
@@ -365,7 +373,7 @@ const GameDetails = () => {
 
     <div>
       <SideMenu />
-      <Nav />
+      <Nav userData2 = {userDataDetails2}/>
 
       <div className='gamescard-img2'>
 

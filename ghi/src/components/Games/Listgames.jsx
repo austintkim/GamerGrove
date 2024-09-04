@@ -15,7 +15,7 @@ const Listgames = () => {
     const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
     const fetchConfig = {
-    credentials: 'include',
+      credentials: 'include',
     };
 
     const response = await fetch(tokenUrl, fetchConfig);
