@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData }) => {
+const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData, boardDetailsUserData }) => {
   const [iconUrl, setIconUrl] = useState(null);
 
   useEffect(() => {
@@ -46,6 +46,17 @@ const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsU
       fetchUserIcon(gamesDetailsUserData.icon_id);
     }
   }, [gamesDetailsUserData]);
+
+      useEffect(() => {
+    if (boardDetailsUserData) {
+      const fetchUserIcon = async (iconID) => {
+        const iconResponse = await fetch(`${import.meta.env.VITE_API_HOST}/api/icons/${iconID}`);
+        const iconData = await iconResponse.json();
+        setIconUrl(iconData.icon_url);
+      };
+      fetchUserIcon(boardDetailsUserData.icon_id);
+    }
+  }, [boardDetailsUserData]);
 
   return (
   <div>

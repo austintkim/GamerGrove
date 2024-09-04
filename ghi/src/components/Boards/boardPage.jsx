@@ -88,9 +88,31 @@ async function fetchUserName() {
 }
 
 function BoardPage() {
+  const [userDataDetails3, setUserDataDetails3] = useState('');
   const { id: boardId } = useParams();
   const [boardData, setBoardData] = useState(null);
   const [gamesData, setGamesData] = useState([]);
+
+  const fetchUserData = async () => {
+  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+
+  const fetchConfig = {
+    credentials: 'include',
+  };
+
+  const response = await fetch(tokenUrl, fetchConfig);
+  const data = await response.json();
+  if (data) {
+      setUserDataDetails3(data.account);
+      return data.account;
+  } else {
+      throw new Error ('No active token')
+  }
+};
+
+  useEffect(() => {
+      fetchUserData();
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -172,7 +194,7 @@ function BoardPage() {
 
   return (
     <div>
-       <Nav />
+       <Nav userData3 = {userDataDetails3} />
     <SideMenu />
   <div className="board-page-container">
 
