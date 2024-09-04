@@ -8,7 +8,7 @@ import Icon from "../Icon/icon.jsx";
 
 
 
-const Nav = ( {userData} ) => {
+const Nav = ( {userData0, userData} ) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { token } = useAuthContext();
 
@@ -201,7 +201,10 @@ const Nav = ( {userData} ) => {
             className='nav__avatar-container'
             onClick={handleDropdownClick}
           >
-            <Icon userData = {userData} />
+            <Icon
+            homeUserData = {userData0}
+            dashboardUserData = {userData}
+            />
             {showDropdown && (
               <div className='nav__dropdown' onClick={stopPropagation}>
                 <Link to="/dashboard">

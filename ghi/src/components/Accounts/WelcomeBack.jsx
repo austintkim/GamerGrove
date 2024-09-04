@@ -11,7 +11,6 @@ function WelcomeBack() {
     const navigate = useNavigate();
     const handleBackToHomepage = () => {
         navigate("/");
-        window.location.reload();
     };
 
   return (

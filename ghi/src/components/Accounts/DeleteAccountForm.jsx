@@ -48,7 +48,6 @@ const DeleteAccountForm = () => {
     const response = await fetch (logOutUrl, fetchConfig);
     if (response.ok) {
         navigate('/');
-        window.location.reload();
     } else {
         throw new Error('Failed to log out');
     }
