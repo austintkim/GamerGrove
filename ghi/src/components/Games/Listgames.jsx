@@ -7,8 +7,30 @@ import { useLocation } from 'react-router-dom';
 
 
 const Listgames = () => {
+  const [userDataDetails1, setUserDataDetails1] = useState('');
   const [games, setGames] = useState([]);
   const [title, setTitle] = useState('');
+
+  const fetchUserData = async () => {
+    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+
+    const fetchConfig = {
+    credentials: 'include',
+    };
+
+    const response = await fetch(tokenUrl, fetchConfig);
+    const data = await response.json();
+    if (data) {
+        setUserDataDetails1(data.account);
+        return data.account;
+    } else {
+        throw new Error ('No active token')
+    }
+  };
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
 
   const location = useLocation();
   const data = location.state;
@@ -85,7 +107,7 @@ const Listgames = () => {
 
   return (
     <div>
-      <Nav />
+      <Nav userData1 = {userDataDetails1}/>
       <h1 className="titlegames" style={{ textDecoration: 'underline', textDecorationThickness: '1px' }}>{title}</h1>
 
       <div className='allgamesbody'>
