@@ -76,24 +76,17 @@ class AccountQueries:
                 return db.fetchone() is None
 
     def create(self, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
-        uniqueness_violations = set()
-        if not self.is_unique("username", data.username):
-            uniqueness_violations.add(1)
-
-        if not self.is_unique("email", data.email):
-            uniqueness_violations.add(2)
-
-        if len(uniqueness_violations) == 2:
+        if not self.is_unique("username", data.username) and not self.is_unique("email", data.email):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Both the username and email are taken"
             )
-        elif 1 in uniqueness_violations:
+        elif not self.is_unique("username", data.username):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="That username is taken"
             )
-        elif 2 in uniqueness_violations:
+        elif not self.is_unique("email", data.email):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="That email is taken"
