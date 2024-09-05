@@ -30,6 +30,8 @@ function SignUpForm() {
 
   const [icons, setIcons] = useState([]);
   const [accountFormData, setAccountFormData] = useState(initialAccountData);
+  const [usernameTaken, setUserNameTaken] = useState(false);
+  const [emailTaken, setEmailTaken] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
@@ -87,22 +89,57 @@ function SignUpForm() {
         document.getElementById('password-confirm').value = ''
         navigate("/signup/welcome");
       } else {
-        throw new Error('Failed to create account')
+        const data = await account_response.json()
+        if (data.detail.includes('username')) {
+          setUserNameTaken(true)
+        }
+        if (data.detail.includes('email')) {
+          setEmailTaken(true)
+        }
+        throw new Error('Failed to create account - either username or email (or both) are already taken')
       }
-    }
-    else {
+    } else {
       setPasswordMismatch(true);
       throw new Error('Passwords did not match up')
     }
   }
 
-  const handleDismiss = () => {
-    const alertElement = document.getElementById('warning-message');
+  const handleDismissUsername = () => {
+    const alertElement = document.getElementById('warning-message-username');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setUserNameTaken(false), 300);
+  };
+
+  const alertStyleUsername = {
+    display: usernameTaken ? 'flex' : 'none',
+    maxWidth: '280px',
+    padding: '5px 15px',
+    whiteSpace: 'nowrap',
+    opacity: usernameTaken ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+
+  const handleDismissEmail = () => {
+    const alertElement = document.getElementById('warning-message-email');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setEmailTaken(false), 300);
+  };
+
+  const alertStyleEmail = {
+    display: emailTaken ? 'flex' : 'none',
+    maxWidth: '280px',
+    padding: '5px 15px',
+    whiteSpace: 'nowrap',
+    opacity: emailTaken ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+  const handleDismissPassword = () => {
+    const alertElement = document.getElementById('warning-message-password');
     alertElement.style.opacity = '0';
     setTimeout(() => setPasswordMismatch(false), 300);
   };
 
-  const alertStyle = {
+  const alertStylePassword = {
     display: passwordMismatch ? 'flex' : 'none',
     maxWidth: '280px',
     padding: '5px 15px',
@@ -136,7 +173,22 @@ function SignUpForm() {
                       <label htmlFor="username">Username</label>
                       <input onChange={handleFormChange} required type="text" name="username" id="username" className="form-control" value={accountFormData.username} />
                     </div>
-                    <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
+                <div className="alert alert-warning mb-0" id="warning-message-username" style={alertStyleUsername}>
+                  That username is already taken!
+                  <button onClick = {handleDismissUsername}
+                  type="button"
+                  className="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                    <div className="form-floating mb-3" style={{ textAlign: 'center', marginTop: '8px'}}>
                       <label htmlFor="password">Password</label>
                       <input onChange={handleFormChange} required type="password" name="password" id="password" autoComplete="new-password" className="form-control" value={accountFormData.password} style={{ marginBottom: '15px' }} />
                     </div>
@@ -144,9 +196,9 @@ function SignUpForm() {
                       <label htmlFor="password">Password Confirmation</label>
                       <input onChange={passwordConfirmChange} required type="password" name="password-confirm" id="password-confirm" className="form-control" style={{ marginBottom: '15px' }} />
                     </div>
-                <div className="alert alert-warning mb-0" id="warning-message" style={alertStyle}>
+                <div className="alert alert-warning mb-0" id="warning-message-password" style={alertStylePassword}>
                   Your passwords do not match!
-                  <button onClick = {handleDismiss}
+                  <button onClick = {handleDismissPassword}
                   type="button"
                   className="close"
                   style = {{
@@ -171,8 +223,23 @@ function SignUpForm() {
                       <label htmlFor="email">Email</label>
                       <input onChange={handleFormChange} required type="email" name="email" id="email" className="form-control" value={accountFormData.email} />
                     </div>
+                <div className="alert alert-warning mb-0" id="warning-message-email" style={alertStyleEmail}>
+                  That email is already taken!
+                  <button onClick = {handleDismissEmail}
+                  type="button"
+                  className="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
                     <div className="text-center">
-                      <div className="col-12 mb-3 d-flex justify-content-center align-items-center">
+                      <div className="col-12 mb-3 d-flex justify-content-center align-items-center" style={{ marginTop: '15px' }}>
                         <select onChange={handleFormChange} required name="icon_id" id="icon_id" className="form-select" value={accountFormData.icon_id}>
                           <option value="">Choose your icon</option>
                           {icons.map(icon => (
