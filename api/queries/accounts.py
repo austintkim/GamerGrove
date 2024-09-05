@@ -64,7 +64,41 @@ class AccountQueries:
                     detail="Could not find an account with that username"
                 )
 
+    def is_unique(self, field: str, value: str) -> bool:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                db.execute(
+                    f"""
+                    SELECT 1 FROM accounts WHERE {field} = %s
+                    """,
+                    [value]
+                )
+                return db.fetchone() is None
+
     def create(self, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
+        uniqueness_violations = set()
+        if not self.is_unique("username", data.username):
+            uniqueness_violations.add(1)
+
+        if not self.is_unique("email", data.email):
+            uniqueness_violations.add(2)
+
+        if len(uniqueness_violations) == 2:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Both the username and email are taken"
+            )
+        elif 1 in uniqueness_violations:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="That username is taken"
+            )
+        elif 2 in uniqueness_violations:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="That email is taken"
+            )
+
         with pool.connection() as conn:
             with conn.cursor() as db:
                 try:
@@ -91,17 +125,11 @@ class AccountQueries:
                         for i, column in enumerate(db.description):
                             record[column.name] = row[i]
                         return AccountOutWithPassword(**record)
-                except errors.UniqueViolation as e:
-                    if "email" in str(e):
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="That email is already taken"
-                        )
-                    elif "username" in str(e):
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="That username is already taken"
-                        )
+                except Exception:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Something went wrong during account creation"
+                    )
 
     def delete(self, id: int, username: str) -> bool:
         with pool.connection() as conn:

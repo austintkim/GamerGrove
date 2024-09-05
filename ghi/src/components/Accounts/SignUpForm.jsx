@@ -90,13 +90,19 @@ function SignUpForm() {
         navigate("/signup/welcome");
       } else {
         const data = await account_response.json()
-        if (data.detail.includes('username')) {
+        if (data.detail.includes('username') && data.detail.includes('email')) {
+          setUserNameTaken(true);
+          setEmailTaken(true);
+          throw new Error('Failed to create account - both username and email are taken')
+        }
+        else if (data.detail.includes('username')) {
           setUserNameTaken(true)
+          throw new Error('Failed to create account - username is taken')
         }
-        if (data.detail.includes('email')) {
+        else if (data.detail.includes('email')) {
           setEmailTaken(true)
+          throw new Error('Failed to create account - email is taken')
         }
-        throw new Error('Failed to create account - either username or email (or both) are already taken')
       }
     } else {
       setPasswordMismatch(true);
