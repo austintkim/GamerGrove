@@ -5,6 +5,7 @@ import Row from './components/Home/Rows'
 import Menu from './components/Home/Menu';
 
 function Home () {
+    const [userToken, setUserToken] = useState(null);
     const [userDataDetails0, setUserDataDetails0] = useState('');
 
     const fetchUserData = async () => {
@@ -17,6 +18,7 @@ function Home () {
         const response = await fetch(tokenUrl, fetchConfig);
         const data = await response.json();
         if (data) {
+            setUserToken(data.access_token);
             setUserDataDetails0(data.account);
             return data.account;
         } else {
@@ -30,7 +32,10 @@ function Home () {
 
     return(
         <div>
-            <Nav userData0 = {userDataDetails0} />
+            <Nav
+            userCookie = {userToken}
+            userData0 = {userDataDetails0}
+            />
             <Menu />
             <Landing />
             <Row path="/" element={<Row />} />

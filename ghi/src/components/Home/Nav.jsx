@@ -1,4 +1,3 @@
-import {useAuthContext} from "@galvanize-inc/jwtdown-for-react";
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Nav.css';
@@ -8,10 +7,8 @@ import Icon from "../Icon/icon.jsx";
 
 
 
-const Nav = ( {userData0, userData, userData1, userData2, userData3} ) => {
+const Nav = ( {userCookie, userData0, userData, userData1, userData2, userData3} ) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const { token } = useAuthContext();
-
   const avatarContainerRef = useRef(null);
   const navigate = useNavigate();
   const [searching, setSearching] = useState(false);
@@ -178,7 +175,7 @@ const Nav = ( {userData0, userData, userData1, userData2, userData3} ) => {
       }
   }
 
-  if (token) {
+  if (userCookie) {
     return (
     <div className='nav'>
       <nav>

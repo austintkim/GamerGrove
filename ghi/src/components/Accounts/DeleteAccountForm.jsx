@@ -32,9 +32,11 @@ const DeleteAccountForm = () => {
 
   const { id, username } = useParams();
 
-  const handleLogOut = async (event) => {
-    event.preventDefault();
+  const deleteCookie = (name, path = '/', domain = 'localhost') => {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
+  };
 
+  const handleLogOut = async () => {
     const logOutUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
     const fetchConfig = {
@@ -45,13 +47,19 @@ const DeleteAccountForm = () => {
         }
     };
 
-    const response = await fetch (logOutUrl, fetchConfig);
-    if (response.ok) {
-        navigate('/');
-    } else {
+    try {
+      const response = await fetch(logOutUrl, fetchConfig);
+      if(response.ok) {
+        deleteCookie('fastapi_token', '/');
+        return true;
+      } else {
         throw new Error('Failed to log out');
+      }
+    } catch (error) {
+      console.error('Error logging out:', error);
+      return false;
     }
-}
+  }
 
   const handleDelete = async (event) => {
     event.preventDefault();
@@ -69,7 +77,12 @@ const DeleteAccountForm = () => {
     try {
       const response = await fetch(deleteUrl, deleteConfig);
       if (response.ok) {
-        handleLogOut(event);
+        const logOutSuccess = await handleLogOut();
+        if (logOutSuccess) {
+          navigate('/')
+        } else {
+          console.error('Failed to log out after account deletion');
+        }
       } else {
         throw new Error('Failed to delete account');
       }
