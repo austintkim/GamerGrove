@@ -7,7 +7,7 @@ import Icon from "../Icon/icon.jsx";
 
 
 const Nav = (
-  { userCookie, userCookie1, userCookie2,
+  { userCookie, userCookie1, userCookie2, userCookie3,
     userData0, userData, userData1, userData2, userData3
   }
 ) => {
@@ -177,7 +177,7 @@ const Nav = (
       }
   }
 
-  if (userCookie || userCookie1 || userCookie2) {
+  if (userCookie || userCookie1 || userCookie2 || userCookie3) {
     return (
     <div className='nav'>
       <nav>

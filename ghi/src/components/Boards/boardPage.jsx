@@ -88,6 +88,7 @@ async function fetchUserName() {
 }
 
 function BoardPage() {
+  const [userToken3, setUserToken3] = useState(null);
   const [userDataDetails3, setUserDataDetails3] = useState('');
   const { id: boardId } = useParams();
   const [boardData, setBoardData] = useState(null);
@@ -103,6 +104,7 @@ function BoardPage() {
   const response = await fetch(tokenUrl, fetchConfig);
   const data = await response.json();
   if (data) {
+      setUserToken3(data.access_token);
       setUserDataDetails3(data.account);
       return data.account;
   } else {
@@ -194,7 +196,10 @@ function BoardPage() {
 
   return (
     <div>
-       <Nav userData3 = {userDataDetails3} />
+       <Nav
+       userCookie3 = {userToken3}
+       userData3 = {userDataDetails3}
+       />
     <SideMenu />
   <div className="board-page-container">
 
