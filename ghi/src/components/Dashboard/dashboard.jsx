@@ -18,7 +18,8 @@ const containerStyle = {
 };
 
 function Dashboard() {
-  const [icons, setIcons] = useState([]);
+  const[icons, setIcons] = useState([]);
+  const[userToken, setUserToken] = useState(null);
   const[userDataDetails, setUserDataDetails] = useState('');
   const[userLibraryEntries, setUserLibraryEntries] = useState([]);
   const[libraryGameDetails, setLibraryGameDetails] = useState([]);
@@ -53,6 +54,7 @@ function Dashboard() {
     const response = await fetch(tokenUrl, fetchConfig);
     const data = await response.json();
     if (data) {
+      setUserToken(data.access_token);
       setUserDataDetails(data.account);
       return data.account;
     } else {
@@ -136,7 +138,10 @@ function Dashboard() {
     return (
       <div>
         <SideMenu />
-        <Nav userData = {userDataDetails} />
+        <Nav
+          userCookie = {userToken}
+          userData = {userDataDetails}
+        />
         <main>
           <h1 style={{color:'white'}} >{userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
 

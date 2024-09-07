@@ -110,8 +110,8 @@ const Listgames = () => {
   return (
     <div>
       <Nav
-      userCookie1 = {userToken1}
-      userData1 = {userDataDetails1}
+        userCookie1 = {userToken1}
+        userData1 = {userDataDetails1}
       />
       <h1 className="titlegames" style={{ textDecoration: 'underline', textDecorationThickness: '1px' }}>{title}</h1>
 

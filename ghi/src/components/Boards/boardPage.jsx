@@ -197,8 +197,8 @@ function BoardPage() {
   return (
     <div>
        <Nav
-       userCookie3 = {userToken3}
-       userData3 = {userDataDetails3}
+        userCookie3 = {userToken3}
+        userData3 = {userDataDetails3}
        />
     <SideMenu />
   <div className="board-page-container">
