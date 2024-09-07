@@ -6,13 +6,15 @@ import PacmanLoader from 'react-spinners/PacmanLoader';
 import Icon from "../Icon/icon.jsx";
 
 
-
-const Nav = ( {userCookie, userData0, userData, userData1, userData2, userData3} ) => {
+const Nav = (
+  { userCookie, userCookie1,
+    userData0, userData, userData1, userData2, userData3
+  }
+) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const avatarContainerRef = useRef(null);
   const navigate = useNavigate();
   const [searching, setSearching] = useState(false);
-
 
   const closeDropdown = (e) => {
     if (avatarContainerRef.current && !avatarContainerRef.current.contains(e.target)) {
@@ -175,7 +177,7 @@ const Nav = ( {userCookie, userData0, userData, userData1, userData2, userData3}
       }
   }
 
-  if (userCookie) {
+  if (userCookie || userCookie1) {
     return (
     <div className='nav'>
       <nav>

@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 
 
 const Listgames = () => {
+  const [userToken1, setUserToken1] = useState(null);
   const [userDataDetails1, setUserDataDetails1] = useState('');
   const [games, setGames] = useState([]);
   const [title, setTitle] = useState('');
@@ -21,6 +22,7 @@ const Listgames = () => {
     const response = await fetch(tokenUrl, fetchConfig);
     const data = await response.json();
     if (data) {
+        setUserToken1(data.access_token);
         setUserDataDetails1(data.account);
         return data.account;
     } else {
@@ -107,7 +109,10 @@ const Listgames = () => {
 
   return (
     <div>
-      <Nav userData1 = {userDataDetails1}/>
+      <Nav
+      userCookie1 = {userToken1}
+      userData1 = {userDataDetails1}
+      />
       <h1 className="titlegames" style={{ textDecoration: 'underline', textDecorationThickness: '1px' }}>{title}</h1>
 
       <div className='allgamesbody'>
