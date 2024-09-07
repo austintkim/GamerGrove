@@ -39,6 +39,7 @@ const GameDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const [userToken2, setUserToken2] = useState(null);
   const [userDataDetails2, setUserDataDetails2] = useState('');
   const [gameData, setGameData] = useState(null);
   const [wishListText, setWishListText] = useState('Add to Wishlist');
@@ -65,6 +66,7 @@ const GameDetails = () => {
   const response = await fetch(tokenUrl, fetchConfig);
   const data = await response.json();
   if (data) {
+      setUserToken2(data.access_token);
       setUserDataDetails2(data.account);
       return data.account;
   } else {
@@ -373,7 +375,10 @@ const GameDetails = () => {
 
     <div>
       <SideMenu />
-      <Nav userData2 = {userDataDetails2}/>
+      <Nav
+        userCookie2 = {userToken2}
+        userData2 = {userDataDetails2}
+        />
 
       <div className='gamescard-img2'>
 
