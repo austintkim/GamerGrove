@@ -4,7 +4,7 @@
 - Clarke Carpenter
 - Kyle Hodges
 
-GamerGrove – A grove for gamers
+GamerGrove – A grove for gamers!!!
 
 **Deployed Website Link:** https://gamergrove.gitlab.io/gamer-grove
 
@@ -98,4 +98,4 @@ npm install react-slick slick-carousel
 - In steps 3 and 4 of the "Getting Started" section above, I have provided my personal API key for your convenience
   - Note that I am subscribed to the basic plan, which allows for up to 1,000 requests a day (30,000 requests per month)
 - Feel free to use the link provided above to obtain your own Rawg API key and use that value in the two aforementioned .env files that you must add to the codebase before creating your Docker containers and launching the application in the browser
-  - No card or payment details are required.
+  - No card or payment details are required
