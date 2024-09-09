@@ -192,11 +192,12 @@ if (accountFormData.new_password && newPasswordConfirm) {
 
   const alertStyleUsername = {
     display: usernameTaken ? 'flex' : 'none',
-    maxWidth: '280px',
-    padding: '5px 15px',
+    maxWidth: '255px',
+    padding: '5px',
     whiteSpace: 'nowrap',
     opacity: usernameTaken ? '1' : '0',
     transition: 'opacity 0.3s ease',
+    margin: '0 auto'
   };
 
   const handleDismissEmail = () => {
@@ -207,11 +208,12 @@ if (accountFormData.new_password && newPasswordConfirm) {
 
   const alertStyleEmail = {
     display: emailTaken ? 'flex' : 'none',
-    maxWidth: '280px',
-    padding: '5px 15px',
+    maxWidth: '220px',
+    padding: '5px',
     whiteSpace: 'nowrap',
     opacity: emailTaken ? '1' : '0',
     transition: 'opacity 0.3s ease',
+    margin: '0 auto'
   };
 
   const togglePasswordFields = () => {
@@ -330,7 +332,7 @@ const failureStyle = {
               <div className="settingscard">
                 <h4 className="card-header" style = {{textAlign:'center'}}>Account Settings</h4>
                 <form onSubmit={handleSubmit} id="create-profile">
-                  <div className="settingscard">
+                  <div className="settingscard" style = {{ marginBottom: '15px' }}>
                     <label htmlFor="username">Username</label>
                     <input
                       onChange={handleFormChange}
@@ -357,7 +359,7 @@ const failureStyle = {
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                  <div className="form-floating mb-3">
+                  <div className="form-floating mb-3" style ={{ marginTop: '15px' }}>
                     <label htmlFor="first_name">First name</label>
                     <input
                       onChange={handleFormChange}
@@ -410,7 +412,7 @@ const failureStyle = {
                   </button>
                 </div>
                   <div className="form-group">
-                    <div className="d-flex justify-content-center">
+                    <div className="d-flex justify-content-center" style = {{ marginTop: '15px' }}>
                       <button type="button" onClick={togglePasswordFields}>
                         {showPasswordFields ? 'Never mind!' : 'I want to change my password!'}
                       </button>
