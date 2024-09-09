@@ -64,15 +64,23 @@ class AccountQueries:
                     detail="Could not find an account with that username"
                 )
 
-    def is_unique(self, field: str, value: str) -> bool:
+    def is_unique(self, field: str, value: str, current_id: int = None) -> bool:
         with pool.connection() as conn:
             with conn.cursor() as db:
-                db.execute(
-                    f"""
-                    SELECT 1 FROM accounts WHERE {field} = %s
-                    """,
-                    [value]
-                )
+                if current_id:
+                    db.execute(
+                        f"""
+                        SELECT 1 FROM accounts WHERE {field} = %s AND id != %s
+                        """,
+                        [value, current_id]
+                    )
+                else:
+                    db.execute(
+                        f"""
+                        SELECT 1 FROM accounts WHERE {field} = %s
+                        """,
+                        [value]
+                    )
                 return db.fetchone() is None
 
     def create(self, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
@@ -160,6 +168,22 @@ class AccountQueries:
                 return True
 
     def update(self, id: int, username: str, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
+        if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Both the username and email are taken"
+            )
+        elif not self.is_unique("username", data.username, id):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="That username is taken"
+            )
+        elif not self.is_unique("email", data.email, id):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="That email is taken"
+            )
+
         with pool.connection() as conn:
             with conn.cursor() as db:
                 try:
@@ -225,15 +249,20 @@ class AccountQueries:
                         for i, column in enumerate(db.description):
                             record[column.name] = row[i]
                         return AccountOutWithPassword(**record)
+                except Exception:
+                    raise HTTPException(
+                        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Something went wrong during updating of account"
+                    )
 
-                except errors.UniqueViolation as e:
-                    if "email" in str(e):
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="That email is already taken"
-                        )
-                    elif "username" in str(e):
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="That username is already taken"
-                        )
+                # except errors.UniqueViolation as e:
+                #     if "email" in str(e):
+                #         raise HTTPException(
+                #             status_code=status.HTTP_400_BAD_REQUEST,
+                #             detail="That email is already taken"
+                #         )
+                #     elif "username" in str(e):
+                #         raise HTTPException(
+                #             status_code=status.HTTP_400_BAD_REQUEST,
+                #             detail="That username is already taken"
+                #         )
