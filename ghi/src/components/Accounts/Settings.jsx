@@ -6,6 +6,8 @@ import './Settings.css';
 function Settings( {iconData, userData, onSettingsUpdate} ) {
   const navigate = useNavigate();
   const [incorrectLogin, setIncorrectLogin] = useState(false);
+  const [usernameTaken, setUserNameTaken] = useState(false);
+  const [emailTaken, setEmailTaken] = useState(false);
   const [accountFormData, setAccountFormData] = useState({
     username: '',
     password: '',
@@ -35,6 +37,9 @@ function Settings( {iconData, userData, onSettingsUpdate} ) {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [updatedAccount, setUpdatedAccount] = useState(false);
+
+  console.log('accountFormData.new_password', accountFormData.new_password);
+  console.log('newPasswordConfirm', newPasswordConfirm);
 
 
   const handleFormChange = (e) => {
@@ -122,7 +127,20 @@ if (accountFormData.new_password && newPasswordConfirm) {
         setUpdatedAccount(true);
         onSettingsUpdate();
     } else {
-        throw new Error('Failed to update account settings');
+      accountFormData.new_password = '';
+      const data = await updateResponse.json();
+      if (data.detail.includes('username') && data.detail.includes('email')) {
+        setUserNameTaken(true);
+        setEmailTaken(true);
+        throw new Error('Failed to update account - both username and email are taken')
+      } else if (data.detail.includes('username')) {
+          setUserNameTaken(true);
+          throw new Error('Failed to create account - username is taken');
+      } else if (data.detail.includes('email')) {
+          setEmailTaken(true);
+          throw new Error('Failed to create account - email is taken');
+      }
+      throw new Error('Failed to update account settings');
     }
 } else {
     const updateUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${userData.id}/${userData.username}`;
@@ -148,11 +166,53 @@ if (accountFormData.new_password && newPasswordConfirm) {
         setUpdatedAccount(true);
         onSettingsUpdate();
     } else {
-        throw new Error('Failed to update account settings');
+      accountFormData.new_password = '';
+      const data = await updateResponse.json();
+      if (data.detail.includes('username') && data.detail.includes('email')) {
+        setUserNameTaken(true);
+        setEmailTaken(true);
+        throw new Error('Failed to update account - both username and email are taken')
+      } else if (data.detail.includes('username')) {
+          setUserNameTaken(true);
+          throw new Error('Failed to create account - username is taken');
+      } else if (data.detail.includes('email')) {
+          setEmailTaken(true);
+          throw new Error('Failed to create account - email is taken');
+      }
+      throw new Error('Failed to update account settings');
     }
 }
   }
 
+  const handleDismissUsername = () => {
+    const alertElement = document.getElementById('warning-message-username');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setUserNameTaken(false), 300);
+  };
+
+  const alertStyleUsername = {
+    display: usernameTaken ? 'flex' : 'none',
+    maxWidth: '280px',
+    padding: '5px 15px',
+    whiteSpace: 'nowrap',
+    opacity: usernameTaken ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
+
+  const handleDismissEmail = () => {
+    const alertElement = document.getElementById('warning-message-email');
+    alertElement.style.opacity = '0';
+    setTimeout(() => setEmailTaken(false), 300);
+  };
+
+  const alertStyleEmail = {
+    display: emailTaken ? 'flex' : 'none',
+    maxWidth: '280px',
+    padding: '5px 15px',
+    whiteSpace: 'nowrap',
+    opacity: emailTaken ? '1' : '0',
+    transition: 'opacity 0.3s ease',
+  };
 
   const togglePasswordFields = () => {
     setShowPasswordFields(!showPasswordFields);
@@ -282,6 +342,21 @@ const failureStyle = {
                       value={accountFormData.username}
                     />
                   </div>
+                <div className="alert alert-warning mb-0" id="warning-message-username" style={alertStyleUsername}>
+                  That username is already taken!
+                  <button onClick = {handleDismissUsername}
+                  type="button"
+                  className="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
                   <div className="form-floating mb-3">
                     <label htmlFor="first_name">First name</label>
                     <input
@@ -319,6 +394,21 @@ const failureStyle = {
                       style={{ marginBottom: '15px' }}
                     />
                   </div>
+                <div className="alert alert-warning mb-0" id="warning-message-email" style={alertStyleEmail}>
+                  That email is already taken!
+                  <button onClick = {handleDismissEmail}
+                  type="button"
+                  className="close"
+                  style = {{
+                    position: 'absolute',
+                    top: '0',
+                    right: '5px',
+                    fontSize: '16px',
+                    }}
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
                   <div className="form-group">
                     <div className="d-flex justify-content-center">
                       <button type="button" onClick={togglePasswordFields}>

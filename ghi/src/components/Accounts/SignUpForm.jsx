@@ -93,15 +93,15 @@ function SignUpForm() {
         if (data.detail.includes('username') && data.detail.includes('email')) {
           setUserNameTaken(true);
           setEmailTaken(true);
-          throw new Error('Failed to create account - both username and email are taken')
+          throw new Error('Failed to create account - both username and email are taken');
         }
         else if (data.detail.includes('username')) {
-          setUserNameTaken(true)
-          throw new Error('Failed to create account - username is taken')
+          setUserNameTaken(true);
+          throw new Error('Failed to create account - username is taken');
         }
         else if (data.detail.includes('email')) {
-          setEmailTaken(true)
-          throw new Error('Failed to create account - email is taken')
+          setEmailTaken(true);
+          throw new Error('Failed to create account - email is taken');
         }
       }
     } else {
@@ -139,6 +139,7 @@ function SignUpForm() {
     opacity: emailTaken ? '1' : '0',
     transition: 'opacity 0.3s ease',
   };
+  
   const handleDismissPassword = () => {
     const alertElement = document.getElementById('warning-message-password');
     alertElement.style.opacity = '0';
