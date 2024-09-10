@@ -38,10 +38,6 @@ function Settings( {iconData, userData, onSettingsUpdate} ) {
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [updatedAccount, setUpdatedAccount] = useState(false);
 
-  console.log('accountFormData.new_password', accountFormData.new_password);
-  console.log('newPasswordConfirm', newPasswordConfirm);
-
-
   const handleFormChange = (e) => {
     setAccountFormData({
       ...accountFormData,

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link} from 'react-router-dom';
 import './Nav.css';
 import logo from '../../assets/logo.gif';
 import PacmanLoader from 'react-spinners/PacmanLoader';
@@ -8,7 +8,8 @@ import Icon from "../Icon/icon.jsx";
 
 const Nav = (
   { userCookie0, userCookie, userCookie1, userCookie2, userCookie3,
-    userData0, userData, userData1, userData2, userData3
+    userData0, userData, userData1, userData2, userData3,
+    userLogOut0
   }
 ) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -169,13 +170,13 @@ const Nav = (
 
       const response = await fetch (logOutUrl, fetchConfig);
       if (response.ok){
-        navigate('/');
-        window.location.reload();
-      }
+        navigate("/");
+        userLogOut0();
       if (!response.ok) {
-          throw new Error('Failed to log out');
+        throw new Error('Failed to log out');
       }
   }
+}
 
   if (userCookie || userCookie0 || userCookie1 || userCookie2 || userCookie3) {
     return (
@@ -212,9 +213,12 @@ const Nav = (
                 <Link to="/dashboard">
                   <div className='nav__dropdown-item, font-drop'>Dashboard</div>
                 </Link>
-                <Link to="/" onClick={() => { handleLogOut(); }}>
-                  <div className='nav__dropdown-item, font-drop'>Logout</div>
-                </Link>
+              <button
+                  className='nav__dropdown-item, font-drop logout-button'
+                  onClick={() => { handleLogOut(); }}
+              >
+                Logout
+              </button>
               </div>
             )}
           </div>

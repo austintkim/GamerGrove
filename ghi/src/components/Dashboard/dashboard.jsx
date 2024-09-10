@@ -126,6 +126,11 @@ function Dashboard() {
   }, [libraryGameDetails]);
 
 
+  const dashboardLogOut = () => {
+    setUserToken(null);
+    setUserDataDetails('');
+  }
+
   const handleGameRemoved = () => {
     fetchUserGames(userDataDetails.id);
   };
@@ -141,6 +146,7 @@ function Dashboard() {
         <Nav
           userCookie = {userToken}
           userData = {userDataDetails}
+          userLogOut = {dashboardLogOut}
         />
         <main>
           <h1 style={{color:'white'}} >{userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>

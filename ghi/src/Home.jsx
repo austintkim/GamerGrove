@@ -5,6 +5,7 @@ import Row from './components/Home/Rows'
 import Menu from './components/Home/Menu';
 
 function Home () {
+
     const [userToken0, setUserToken0] = useState(null);
     const [userDataDetails0, setUserDataDetails0] = useState('');
 
@@ -22,7 +23,7 @@ function Home () {
             setUserDataDetails0(data.account);
             return data.account;
         } else {
-            throw new Error ('No active token')
+            console.log('No active token!')
         }
     };
 
@@ -30,11 +31,17 @@ function Home () {
         fetchUserData();
     }, []);
 
+    const homeLogOut = () => {
+        setUserToken0(null);
+        setUserDataDetails0('');
+    }
+
     return(
         <div>
             <Nav
                 userCookie0 = {userToken0}
                 userData0 = {userDataDetails0}
+                userLogOut0 = {homeLogOut}
             />
             <Menu />
             <Landing />

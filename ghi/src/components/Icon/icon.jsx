@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData, boardDetailsUserData }) => {
   const [iconUrl, setIconUrl] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   const fetchUserIcon = async (iconID) => {
     try {
@@ -14,12 +15,16 @@ const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsU
   };
 
   useEffect(() => {
-    const userData = homeUserData || dashboardUserData || allGamesUserData || gamesDetailsUserData || boardDetailsUserData;
+      setUserData(homeUserData || dashboardUserData || allGamesUserData || gamesDetailsUserData || boardDetailsUserData);
+    }, [homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData, boardDetailsUserData]);
 
+  useEffect(() => {
     if (userData && userData.icon_id) {
       fetchUserIcon(userData.icon_id);
+    } else {
+      setIconUrl(null);
     }
-  }, [homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData, boardDetailsUserData]);
+  }, [userData]);
 
   return (
     <div>
