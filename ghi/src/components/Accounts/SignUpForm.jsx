@@ -139,7 +139,7 @@ function SignUpForm() {
     opacity: emailTaken ? '1' : '0',
     transition: 'opacity 0.3s ease',
   };
-  
+
   const handleDismissPassword = () => {
     const alertElement = document.getElementById('warning-message-password');
     alertElement.style.opacity = '0';
@@ -197,7 +197,7 @@ function SignUpForm() {
                 </div>
                     <div className="form-floating mb-3" style={{ textAlign: 'center', marginTop: '8px'}}>
                       <label htmlFor="password">Password</label>
-                      <input onChange={handleFormChange} required type="password" name="password" id="password" autoComplete="new-password" className="form-control" value={accountFormData.password} style={{ marginBottom: '15px' }} />
+                      <input onChange={handleFormChange} required type="password" name="password" id="password" className="form-control" value={accountFormData.password} style={{ marginBottom: '15px' }} />
                     </div>
                     <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
                       <label htmlFor="password">Password Confirmation</label>
