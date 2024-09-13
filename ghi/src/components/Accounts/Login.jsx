@@ -33,7 +33,7 @@ const LoginForm = () => {
     const response = await fetch(loginUrl, loginConfig);
     if (response.ok) {
       login(username, password)
-      navigate('/login/welcomeback');
+      navigate('/dashboard');
     } else {
       setIncorrectLogin(true);
     }

@@ -21,6 +21,9 @@ function Dashboard() {
   const[icons, setIcons] = useState([]);
   const[userToken, setUserToken] = useState(null);
   const[userDataDetails, setUserDataDetails] = useState('');
+  const[userBoardDetails, setUserBoardDetails] = useState([]);
+  const[mappedUserBoardDetails, setMappedUserBoardDetails] = useState([]);
+  const[boardGameDetails, setBoardGameDetails] = useState([]);
   const[userLibraryEntries, setUserLibraryEntries] = useState([]);
   const[libraryGameDetails, setLibraryGameDetails] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
@@ -62,11 +65,12 @@ function Dashboard() {
     }
   };
 
+
   const fetchUserGames = async(userId) => {
     const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userId}`;
     const libraryConfig = {
-        credentials: 'include',
-      };
+      credentials: 'include',
+    };
 
     try {
       const response = await fetch(libraryUrl, libraryConfig);
@@ -84,9 +88,10 @@ function Dashboard() {
         libraryData.map(async (item) => {
           const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games/${item.game_id}`);
           const gamesData = await response.json();
+          gamesData['board_id'] = item.board_id;
           gamesData['wishlist'] = item.wishlist;
           return gamesData;
-      })
+        })
       );
 
       setLibraryGameDetails(gameDetails);
@@ -97,39 +102,81 @@ function Dashboard() {
           return false;
         }
         seenIds.add(item.id);
-          return true
+        return true
       });
-
 
       setSavedGameDetails(uniqueGameDetails);
 
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching user saved games:', error);
     }
 
-};
+  };
+
+
+  const fetchUserBoards = async(userId) => {
+    const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userId}`;
+    const boardConfig = {
+      credentials: 'include',
+    };
+
+    try {
+      const response = await fetch(boardUrl, boardConfig);
+      const boardData = await response.json();
+
+      if (boardData.detail) {
+        setUserBoardDetails([]);
+        return;
+      } else {
+        setUserBoardDetails(boardData);
+      }
+    } catch (error) {
+      console.error('Error fetching boards', error)
+    }
+
+  }
+
+  const mapGamestoBoards = async(boards, games) => {
+    const boardGamesMap = {};
+    games.forEach(game => {
+      if (!(game.board_id in boardGamesMap)) {
+        boardGamesMap[game.board_id] = [game];
+      } else {
+        boardGamesMap[game.board_id].push(game);
+      }
+    });
+
+    boards.forEach(board => {
+      board.games = boardGamesMap[board.id] || [];
+    });
+
+    setMappedUserBoardDetails(boards);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       const userData = await fetchUserData();
       if (userData?.id) {
+        await fetchUserBoards(userData.id);
         await fetchUserGames(userData.id);
       }
     };
   fetchIcons();
   fetchData();
-  }, []);
+  }, [token]);
+
+  useEffect(() => {
+    if (userBoardDetails.length && boardGameDetails.length) {
+      mapGamestoBoards(userBoardDetails, boardGameDetails);
+    }
+  }, [userBoardDetails, boardGameDetails])
 
   useEffect(() => {
     const wishListGames = libraryGameDetails.filter((item) => item.wishlist === true);
     setWishListGameDetails(wishListGames);
+    const boardGames = libraryGameDetails.filter((item) => item.board_id !== null);
+    setBoardGameDetails(boardGames);
   }, [libraryGameDetails]);
-
-
-  const dashboardLogOut = () => {
-    setUserToken(null);
-    setUserDataDetails('');
-  }
 
   const handleGameRemoved = () => {
     fetchUserGames(userDataDetails.id);
@@ -146,7 +193,6 @@ function Dashboard() {
         <Nav
           userCookie = {userToken}
           userData = {userDataDetails}
-          userLogOut = {dashboardLogOut}
         />
         <main>
           <h1 style={{color:'white'}} >{userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
@@ -166,8 +212,10 @@ function Dashboard() {
           <div id="content">
             <section id="content1">
               <div>
-              <BoardCard />
-
+              <BoardCard
+              boards = {userBoardDetails}
+              boardsWithGames = {mappedUserBoardDetails}
+              />
 
 
 
