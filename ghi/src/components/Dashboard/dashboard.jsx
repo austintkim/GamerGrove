@@ -21,9 +21,14 @@ function Dashboard() {
   const[icons, setIcons] = useState([]);
   const[userToken, setUserToken] = useState(null);
   const[userDataDetails, setUserDataDetails] = useState('');
+
   const[userBoardDetails, setUserBoardDetails] = useState([]);
   const[mappedUserBoardDetails, setMappedUserBoardDetails] = useState([]);
   const[boardGameDetails, setBoardGameDetails] = useState([]);
+
+  const[userReviewDetails, setUserReviewDetails] = useState([]);
+  const[reviewGameDetails, setReviewGameDetails] = useState([]);
+
   const[userLibraryEntries, setUserLibraryEntries] = useState([]);
   const[libraryGameDetails, setLibraryGameDetails] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
@@ -153,11 +158,43 @@ function Dashboard() {
     setMappedUserBoardDetails(boards);
   }
 
+  const fetchUserReviews = async(accountId) => {
+    const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/users/${accountId}`;
+
+    try {
+      const response = await fetch(reviewsUrl, { credentials: 'include' });
+      const reviewData = await response.json();
+
+      if (reviewData.detail) {
+        setUserReviewDetails([]);
+        return;
+      } else {
+        setUserReviewDetails(reviewData);
+      }
+    } catch (error) {
+      console.error('Error fetching boards', error);
+    }
+  }
+
+  const fetchUserReviewGames = async(reviews) => {
+    const gameDetails = await Promise.all(
+      reviews.map(async (item) => {
+        const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games/${item.game_id}`);
+        const gamesData = await response.json();
+        return gamesData;
+      })
+    );
+
+    setReviewGameDetails(gameDetails);
+
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       const userData = await fetchUserData();
       if (userData?.id) {
         await fetchUserBoards(userData.id);
+        await fetchUserReviews(userData.id);
         await fetchUserGames(userData.id);
       }
     };
@@ -177,6 +214,12 @@ function Dashboard() {
     const boardGames = libraryGameDetails.filter((item) => item.board_id !== null);
     setBoardGameDetails(boardGames);
   }, [libraryGameDetails]);
+
+  useEffect(() => {
+    if (userReviewDetails.length) {
+      fetchUserReviewGames(userReviewDetails)
+    }
+  }, [userReviewDetails])
 
   const handleGameRemoved = () => {
     fetchUserGames(userDataDetails.id);
@@ -213,8 +256,8 @@ function Dashboard() {
             <section id="content1">
               <div>
               <BoardCard
-              boards = {userBoardDetails}
-              boardsWithGames = {mappedUserBoardDetails}
+                boards = {userBoardDetails}
+                boardsWithGames = {mappedUserBoardDetails}
               />
 
 
@@ -223,7 +266,10 @@ function Dashboard() {
             </section>
             <section id="content2">
 
-              <CombinedCards />
+              <CombinedCards
+                reviews = {userReviewDetails}
+                reviewGames = {reviewGameDetails}
+              />
               <br />
 
 

@@ -1,60 +1,9 @@
-import { useState, useEffect } from 'react';
 import './userReviewCard.css';
 import StarRating from '../GameDetails/StarRating';
 import {useNavigate} from 'react-router-dom';
 
-async function fetchAccountId() {
-  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
-
-  const fetchConfig = {
-    credentials: 'include',
-  };
-
-  const response = await fetch(tokenUrl, fetchConfig);
-  const data = await response.json();
-  if (data) {
-    return data.account.id
-  } else {
-    throw new Error ('No active token')
-  }
-}
-
-function UserReviewCard() {
+function UserReviewCard({ userReviews }) {
   const navigate = useNavigate();
-
-  const [userReviews, setUserReviews] = useState([]);
-
-  const fetchUserReviews = async (accountId) => {
-    const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/users/${accountId}`;
-
-    try {
-      const response = await fetch(reviewsUrl, { credentials: 'include' });
-
-      if (response.ok) {
-        const reviewsData = await response.json();
-        setUserReviews(reviewsData);
-      } else {
-        setUserReviews([]);
-      }
-    } catch (error) {
-      setUserReviews([]);
-    }
-  };
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const accountId = await fetchAccountId();
-      if (accountId) {
-        fetchUserReviews(accountId);
-      } else {
-        console.error('Error fetching account ID');
-        setUserReviews([]);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
   return (
     <div>
       {userReviews.length === 0 ? (
