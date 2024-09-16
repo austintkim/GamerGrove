@@ -213,12 +213,12 @@ const Nav = (
                 <Link to="/dashboard">
                   <div className='nav__dropdown-item, font-drop'>Dashboard</div>
                 </Link>
-              <button
-                  className='nav__dropdown-item, font-drop logout-button'
-                  onClick={() => { handleLogOut(); }}
-              >
-                Logout
-              </button>
+                <button
+                    className='nav__dropdown-item, font-drop logout-button'
+                    onClick={() => { handleLogOut(); }}
+                >
+                  Logout
+                </button>
               </div>
             )}
           </div>
