@@ -21,6 +21,7 @@ function Dashboard() {
   const[icons, setIcons] = useState([]);
   const[userToken, setUserToken] = useState(null);
   const[userDataDetails, setUserDataDetails] = useState('');
+  const[loading, setLoading] = useState(true);
 
   const[userBoardDetails, setUserBoardDetails] = useState([]);
   const[mappedUserBoardDetails, setMappedUserBoardDetails] = useState([]);
@@ -196,6 +197,7 @@ function Dashboard() {
         await fetchUserBoards(userData.id);
         await fetchUserReviews(userData.id);
         await fetchUserGames(userData.id);
+        setLoading(false);
       }
     };
   fetchIcons();
@@ -227,6 +229,12 @@ function Dashboard() {
 
   const handleSettingsUpdate = () => {
     fetchUserData();
+  }
+
+  if (loading) {
+    return (
+      <div>Loading...</div>
+    )
   }
 
   if (token) {
