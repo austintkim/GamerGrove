@@ -1,5 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Hero from "../Accounts/Hero";
+
+const containerStyle = {
+  minHeight: '100vh',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const centerVertically = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+};
 
 const initialData = {
   board_name: "",
@@ -45,27 +59,38 @@ function BoardForm() {
   }
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="offset-3 col-6">
-          <div className="shadow p-4 mt-4">
-            <h1>Create a Board</h1>
-            <form onSubmit={handleSubmit} id="create-review">
-              <div className="form-floating mb-3">
-                <label htmlFor="board_name">Title</label>
-                <input onChange={handleFormChange} placeholder="i.e. 2023 Favs" required type="text" name="board_name" id="board_name" className="form-control" value={formData.board_name} />
+    <div>
+      <Hero />
+      <div style={{ position: 'relative', ...containerStyle }}>
+        <div style ={{ ...centerVertically, width: '100%'}}>
+          <div className="card text-bg-light mb-3">
+            <div className="container">
+              <div className="row"style={{ backgroundColor: 'transparent', paddingLeft: '0%', marginLeft: '0%', marginRight: '0%' }}>
+                <div className="offset-1 col-10">
+                  <h2 className="card-header" style={{ textAlign: 'center'}}>Create a Board</h2>
+                    <div style={{ width: '100%'}}>
+                      <form onSubmit={handleSubmit} id="create-review">
+                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
+                          <label htmlFor="board_name">Title</label>
+                          <input onChange={handleFormChange} placeholder="i.e. 2023 Favs" required type="text" name="board_name" id="board_name" className="form-control" value={formData.board_name} />
+                        </div>
+                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
+                          <label htmlFor="description">Description</label>
+                          <textarea onChange={handleFormChange} placeholder="i.e. My favorite games from 2023" name="description" id="description" className="form-control" value={formData.description} rows="3"></textarea>
+                        </div>
+                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
+                          <label htmlFor="cover_photo">Cover photo</label>
+                          <input onChange={handleFormChange} placeholder="i.e. https://media.wired.com/photos/5932b1c5aef9a462de984519/master/pass/dqixart.jpg" required type="url" name="cover_photo" id="cover_photo" className="form-control" value={formData.cover_photo} />
+                          <small className="form-text text" style={{color: "white"}}>Default cover photo provided above</small>
+                        </div>
+                        <div className ="mb-3" style={{ textAlign: 'right'}}>
+                          <button>Create</button>
+                        </div>
+                      </form>
+                    </div>
+                </div>
               </div>
-              <div className="form-floating mb-3">
-                <label htmlFor="description">Description</label>
-                <textarea onChange={handleFormChange} placeholder="i.e. My favorite games from 2023" name="description" id="description" className="form-control" value={formData.description} rows="3"></textarea>
-              </div>
-              <div className="form-floating mb-3">
-                <label htmlFor="cover_photo">Cover photo</label>
-                <input onChange={handleFormChange} placeholder="i.e. https://media.wired.com/photos/5932b1c5aef9a462de984519/master/pass/dqixart.jpg" required type="url" name="cover_photo" id="cover_photo" className="form-control" value={formData.cover_photo} />
-                <small className="form-text text" style={{color: "white"}}>Default cover photo provided above</small>
-              </div>
-              <button>Create</button>
-            </form>
+            </div>
           </div>
         </div>
       </div>
