@@ -33,6 +33,10 @@ function BoardForm() {
     })
   }
 
+  const handleBack = () => {
+    navigate(-1);
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -83,10 +87,11 @@ function BoardForm() {
                           <input onChange={handleFormChange} placeholder="i.e. https://media.wired.com/photos/5932b1c5aef9a462de984519/master/pass/dqixart.jpg" required type="url" name="cover_photo" id="cover_photo" className="form-control" value={formData.cover_photo} />
                           <small className="form-text text" style={{color: "white"}}>Default cover photo provided above</small>
                         </div>
-                        <div className ="mb-3" style={{ textAlign: 'right'}}>
-                          <button>Create</button>
-                        </div>
                       </form>
+                      <div className="d-flex justify-content-between">
+                        <button className="mb-3" style={{ textAlign: 'left'}} onClick={handleBack}>Back</button>
+                        <button form="create-review" className="mb-3" style={{ textAlign: 'right'}}>Create</button>
+                      </div>
                     </div>
                 </div>
               </div>
