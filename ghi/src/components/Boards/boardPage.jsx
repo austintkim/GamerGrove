@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import './boardPage.css';
 import '../Cards/boardGameCard.css'
 import SideMenu from '../Home/Menu';
 import Nav from '../Home/Nav';
 import BoardGameCard from '../Cards/boardGameCard';
-
-
 
 async function fetchBoardDetails(boardId) {
   const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/${boardId}`;
@@ -88,6 +86,7 @@ async function fetchUserName() {
 }
 
 function BoardPage() {
+  const navigate = useNavigate();
   const [userToken3, setUserToken3] = useState(null);
   const [userDataDetails3, setUserDataDetails3] = useState('');
   const { id: boardId } = useParams();
@@ -245,8 +244,9 @@ function BoardPage() {
         </Link>
         <br />
       <br />
+      <button className="mb-3" style={{ textAlign: 'left'}} onClick={() => navigate(-1)}>Back</button>
     </div>
-          </div>
+  </div>
   </div>
 );
 

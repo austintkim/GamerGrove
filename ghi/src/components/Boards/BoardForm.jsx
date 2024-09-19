@@ -33,10 +33,6 @@ function BoardForm() {
     })
   }
 
-  const handleBack = () => {
-    navigate(-1);
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -89,7 +85,7 @@ function BoardForm() {
                         </div>
                       </form>
                       <div className="d-flex justify-content-between">
-                        <button className="mb-3" style={{ textAlign: 'left'}} onClick={handleBack}>Back</button>
+                        <button className="mb-3" style={{ textAlign: 'left'}} onClick={() => navigate(-1)}>Back</button>
                         <button form="create-review" className="mb-3" style={{ textAlign: 'right'}}>Create</button>
                       </div>
                     </div>

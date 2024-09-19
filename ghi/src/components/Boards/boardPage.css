@@ -1,4 +1,4 @@
-.boardbody{
+.boardbody {
   width: 1000px;
 }
 
@@ -23,7 +23,6 @@
   width: 85%;
   top: 200px;
   left: 200px;
-
 }
 
 .BoardPageTitle {
@@ -31,7 +30,6 @@
   font-size: 36px;
   margin-bottom: 10px;
   position: relative;
-
 }
 
 .BoardPageDescription {
@@ -40,23 +38,19 @@
   margin-bottom: 10px;
   margin-right: 20px;
   text-align: right;
-
 }
 
 .BoardPageDescription span {
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   padding: 5px;
-
 }
-
 
 .BoardPageTitle span {
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   padding: 5px;
 }
-
 
 .boardpagehr {
   height: 3px;
@@ -69,34 +63,42 @@
 .deleteboard {
   text-align: right;
   font-family: K2D;
-  color: rgb(255, 255, 255);
-  margin-right: 20px;
   font-size: 18px;
+  color: white;
+  margin-right: 20px;
+  display: inline-block;
+  border: 2px solid #444;
+  padding: 6px;
+  border-radius: 0;
+  background-color: red;
+  text-decoration: none;
 }
 
 .deleteboard span {
-  background-color: rgba(255, 0, 0, 0.5);
-  border-radius: 10px;
-  padding: 5px;
+  background-color: transparent;
+  padding: 0;
 }
 
+.deleteboard:hover {
+  text-decoration: none;
+  color: white;
+}
 
 .updateboard {
   text-align: right;
   font-family: K2D;
-  color: rgb(255, 255, 255);
-  margin-right: 20px;
   font-size: 18px;
-
+  color: white;
+  margin-right: 20px;
+  display: inline-block;
+  border: 2px solid #444;
+  padding: 6px;
+  border-radius: 0;
+  background-color: green;
+  text-decoration: none;
 }
 
-.updateboard span {
-  background-color: rgba(25, 159, 7, 0.5);
-  border-radius: 10px;
-  padding: 5px;
-}
-
-.button {
-  align-self: right;
-  color: transparent;
+.updateboard:hover {
+  text-decoration: none;
+  color: white;
 }
