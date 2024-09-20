@@ -1,5 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Hero from "../Accounts/Hero"
+
+const containerStyle = {
+  minHeight: '100vh',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const centerVertically = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+};
 
 const fetchUserName = async () => {
   const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
@@ -111,26 +125,39 @@ function UpdateBoardForm() {
   };
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="offset-3 col-6">
-          <div className="shadow p-4 mt-4">
-            <h1>Update a board</h1>
-            <form onSubmit={handleSubmit} id="create-board">
-              <div className="form-floating mb-3">
-                <label htmlFor="board_name">Title</label>
-                <input onChange={handleFormChange} required type="text" name="board_name" id="board_name" className="form-control" value={formData.board_name} />
+    <div>
+      <Hero />
+      <div style={{ position: 'relative', ...containerStyle }}>
+        <div style ={{ ...centerVertically, width: '100%'}}>
+          <div className="card text-bg-light mb-3">
+            <div className="container">
+              <div className="row"style={{ backgroundColor: 'transparent', paddingLeft: '0%', marginLeft: '0%', marginRight: '0%' }}>
+                <div className="offset-1 col-10">
+                  <h2 className="card-header" style={{ textAlign: 'center'}}>Update Board</h2>
+                    <div style={{ width: '100%'}}>
+                      <form onSubmit={handleSubmit} id="create-review">
+                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
+                          <label htmlFor="board_name">Title</label>
+                          <input onChange={handleFormChange} required type="text" name="board_name" id="board_name" className="form-control" value={formData.board_name} />
+                        </div>
+                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
+                          <label htmlFor="description">Description</label>
+                          <textarea onChange={handleFormChange} name="description" id="description" className="form-control" value={formData.description} rows="3"></textarea>
+                        </div>
+                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
+                          <label htmlFor="cover_photo">Cover photo</label>
+                          <input onChange={handleFormChange} required type="url" name="cover_photo" id="cover_photo" className="form-control" value={formData.cover_photo} />
+                          <small className="form-text text" style={{color: "white"}}>Default cover photo provided above</small>
+                        </div>
+                      </form>
+                      <div className="d-flex justify-content-between">
+                        <button className="mb-3" style={{ textAlign: 'left'}} onClick={() => navigate(-1)}>Back</button>
+                        <button form="create-review" className="mb-3" style={{ textAlign: 'right'}}>Update</button>
+                      </div>
+                    </div>
+                </div>
               </div>
-              <div className="form-floating mb-3">
-                <label htmlFor="description">Description</label>
-                <textarea onChange={handleFormChange} required name="description" id="description" className="form-control" value={formData.description} rows="3"></textarea>
-              </div>
-              <div className="form-floating mb-3">
-                <label htmlFor="cover_photo">Cover photo</label>
-                <input onChange={handleFormChange} required type="url" name="cover_photo" id="cover_photo" className="form-control" value={formData.cover_photo} />
-              </div>
-              <button>Update</button>
-            </form>
+            </div>
           </div>
         </div>
       </div>

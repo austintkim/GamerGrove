@@ -91,11 +91,6 @@ const DeleteAccountForm = () => {
     }
   };
 
-  const handleBackToDashboard = (event) => {
-    event.preventDefault();
-    navigate("/dashboard");
-  };
-
   return (
     <div style={containerStyle}>
       <div className="card text-bg-light mb-3">
@@ -104,7 +99,7 @@ const DeleteAccountForm = () => {
             Are you sure you want to delete this account?
           </div>
           <button style={greenButton} onClick={handleDelete}>Yes</button>
-          <button style={redButton} onClick={handleBackToDashboard}>No</button>
+          <button style={redButton} onClick={() => navigate(-1)}>No</button>
         </div>
       </div>
     </div>
