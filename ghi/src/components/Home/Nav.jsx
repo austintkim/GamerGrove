@@ -172,6 +172,7 @@ const Nav = (
       if (response.ok){
         navigate("/");
         userLogOut0();
+        setShowDropdown(false);
       if (!response.ok) {
         throw new Error('Failed to log out');
       }
