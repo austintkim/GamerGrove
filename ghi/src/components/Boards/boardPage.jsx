@@ -87,6 +87,7 @@ async function fetchUserName() {
 
 function BoardPage() {
   const navigate = useNavigate();
+  const[loading, setLoading] = useState(true);
   const [userToken3, setUserToken3] = useState(null);
   const [userDataDetails3, setUserDataDetails3] = useState('');
   const { id: boardId } = useParams();
@@ -115,46 +116,46 @@ function BoardPage() {
       fetchUserData();
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const boardDetails = await fetchBoardDetails(boardId);
-      setBoardData(boardDetails);
-
-      const accountId = await fetchUserName();
-
-      const libraryData = await fetchGamesForBoard(accountId, boardId);
-
-    // Accounting for when the last game is removed from the board
-    // If a 404 status is returned from libraryData fetch (because there are no longer any games
-    // added to the board), put an empty return which allows the page to be re-rendered and
-    // show an empty board with no game cards
-      if (!Array.isArray(libraryData)) {
-        console.error('Invalid library data received:', libraryData);
-        return;
-      }
-      const gamesForBoard = libraryData
-        .filter((item) => item.board_id === parseInt(boardId, 10))
-        .map((item) => item.game_id);
-        const gameDetailsPromises = gamesForBoard.map((gameId) => fetchGameDetails(gameId));
-      const gamesForBoardDetails = await Promise.all(gameDetailsPromises);
-      for (const game of gamesForBoardDetails){
-        for (const entry of libraryData){
-          if (entry.game_id == game.id){
-            game.library_id = entry.id
-            game.account_id = entry.account_id
-        }
-      }
-    }
-
-      setGamesData(gamesForBoardDetails);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
-
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const boardDetails = await fetchBoardDetails(boardId);
+        setBoardData(boardDetails);
+
+        const accountId = await fetchUserName();
+
+        const libraryData = await fetchGamesForBoard(accountId, boardId);
+
+      // Accounting for when the last game is removed from the board
+      // If a 404 status is returned from libraryData fetch (because there are no longer any games
+      // added to the board), put an empty return which allows the page to be re-rendered and
+      // show an empty board with no game cards
+        if (!Array.isArray(libraryData)) {
+          console.error('Invalid library data received:', libraryData);
+          return;
+        }
+        const gamesForBoard = libraryData
+          .filter((item) => item.board_id === parseInt(boardId, 10))
+          .map((item) => item.game_id);
+          const gameDetailsPromises = gamesForBoard.map((gameId) => fetchGameDetails(gameId));
+        const gamesForBoardDetails = await Promise.all(gameDetailsPromises);
+        for (const game of gamesForBoardDetails){
+          for (const entry of libraryData){
+            if (entry.game_id == game.id){
+              game.library_id = entry.id
+              game.account_id = entry.account_id
+          }
+        }
+      }
+        setGamesData(gamesForBoardDetails);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
     fetchData();
+
   }, []);
 
   const handleGameRemoval = async (id, account_id,) => {
@@ -188,6 +189,12 @@ function BoardPage() {
     }
 
   };
+
+  if (loading) {
+    return (
+      <div>Loading...</div>
+    )
+  }
 
   if (!boardData || !gamesData) {
     return null;
