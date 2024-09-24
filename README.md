@@ -8,12 +8,6 @@ GamerGrove – A grove for gamers!!!
 
 **Deployed Website Link:** https://gamergrove.gitlab.io/gamer-grove
 
-## UI Screenshots For Code Sample for Airbnb Reviewers
-
-![Alt text](<User Dashboard Created Boards.png>)
-![Alt text](<Games Added to Board.png>)
-
-
 ## Design
 - [API Design](docs/api-design.md)
 - [SQL Tables Schema](docs/data-model-design.md)
