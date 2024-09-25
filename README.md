@@ -27,7 +27,7 @@ We are targeting gamer enthusiasts who are looking for an easy and user-friendly
    website's database)
   - click on a link to purchase the game on the platform of their choice
 
-- Users can (in addition to the above):
+- Upon creating an account, users can (in addition to the above):
   - create/update/delete an account
   - create/update/delete a board to which they can add games
   - add/remove games to their wishlist
