@@ -4,7 +4,7 @@
 - Clarke Carpenter
 - Kyle Hodges
 
-GamerGrove – A grove for gamers!!!
+GamerGrove – A grove for gamers!
 
 **Deployed Website Link:** https://gamergrove.gitlab.io/gamer-grove
 
@@ -85,7 +85,7 @@ npm install react-slick slick-carousel
 
 7. View the project in the browser: http://localhost:5173/
 
-8. Explore and enjoy!!!
+8. Explore and enjoy!
 
 **Important Note**:
 - To run this application successfully, you will need the following 3rd Party API source:** https://rawg.io/apidocs
