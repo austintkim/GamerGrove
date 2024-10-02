@@ -21,7 +21,6 @@ import DeleteReviewForm from './components/Reviews/DeleteReviewForm';
 import SearchResults from './components/SearchResults/SearchResults';
 
 import BoardPage from './components/Boards/boardPage';
-import Hero from './components/Accounts/Hero';
 import DeleteBoardForm from './components/Boards/DeleteBoardForm';
 import UpdateBoardForm from './components/Boards/UpdateBoardForm';
 
@@ -72,7 +71,6 @@ function App() {
                     <Route path="/boards/:id" element={<BoardPage />} />
                     <Route path="/boards/update/:id" element={<UpdateBoardForm />} />
                     <Route path="/search" element={<SearchResults />} />
-                    <Route path="/dogo" element={<Hero />} />
                 </Routes>
             </BrowserRouter>)
             : (<BrowserRouter>
@@ -95,7 +93,6 @@ function App() {
                     <Route path="/boards/:id" element={<BoardPage />} />
                     <Route path="/boards/update/:id" element={<UpdateBoardForm />} />
                     <Route path="/search" element={<SearchResults />} />
-                    <Route path="/dogo" element={<Hero />} />
                 </Routes>
             </BrowserRouter>
             )

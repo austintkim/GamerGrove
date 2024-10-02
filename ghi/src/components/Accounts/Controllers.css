@@ -1,4 +1,4 @@
-.hero-container {
+.controllers-container {
   position: relative;
 }
 
@@ -7,12 +7,12 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(5px);
+    transform: translateY(50px);
   }
 }
 
-.heroimg {
-  animation: bounceUpDown 2s infinite;
+.controllersimg {
+  animation: bounceUpDown 3s infinite;
   margin-bottom: -330px;
   margin-left: 790px;
   z-index: 1;

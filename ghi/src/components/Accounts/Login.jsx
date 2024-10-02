@@ -1,9 +1,9 @@
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import Hero from "./Hero";
+import Controllers from "./Controllers";
 
-import './Hero.css';
+import './Controllers.css';
 
 const containerStyle = {
   minHeight: '100vh',
@@ -70,7 +70,7 @@ const LoginForm = () => {
         Back to Homepage
       </button>
       <div>
-        <Hero />
+        <Controllers />
         <div style={containerStyle}>
           <div className="card text-bg-light mb-3" style={{ width: '100%', maxWidth: '600px' }}>
             <div className="offset-3 col-6">

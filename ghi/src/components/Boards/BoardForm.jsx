@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Hero from "../Accounts/Hero";
 
 const containerStyle = {
   minHeight: '100vh',
@@ -60,7 +59,6 @@ function BoardForm() {
 
   return (
     <div>
-      <Hero />
       <div style={{ position: 'relative', ...containerStyle }}>
         <div style ={{ ...centerVertically, width: '100%'}}>
           <div className="card text-bg-light mb-3">

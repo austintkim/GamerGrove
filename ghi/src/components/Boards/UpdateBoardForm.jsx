@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Hero from "../Accounts/Hero"
 
 const containerStyle = {
   minHeight: '100vh',
@@ -126,7 +125,6 @@ function UpdateBoardForm() {
 
   return (
     <div>
-      <Hero />
       <div style={{ position: 'relative', ...containerStyle }}>
         <div style ={{ ...centerVertically, width: '100%'}}>
           <div className="card text-bg-light mb-3">
@@ -147,7 +145,6 @@ function UpdateBoardForm() {
                         <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
                           <label htmlFor="cover_photo">Cover photo</label>
                           <input onChange={handleFormChange} required type="url" name="cover_photo" id="cover_photo" className="form-control" value={formData.cover_photo} />
-                          <small className="form-text text" style={{color: "white"}}>Default cover photo provided above</small>
                         </div>
                       </form>
                       <div className="d-flex justify-content-between">
