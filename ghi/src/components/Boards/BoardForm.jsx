@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Board from './Board';
+
+import './Board.css';
 
 const containerStyle = {
   minHeight: '100vh',
@@ -59,6 +62,7 @@ function BoardForm() {
 
   return (
     <div>
+      <Board />
       <div style={{ position: 'relative', ...containerStyle }}>
         <div style ={{ ...centerVertically, width: '100%'}}>
           <div className="card text-bg-light mb-3">

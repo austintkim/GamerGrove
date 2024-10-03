@@ -1,4 +1,4 @@
-.controllers-container {
+.board-container {
   position: relative;
 }
 
@@ -11,9 +11,9 @@
   }
 }
 
-.controllersimg {
+.boardimg {
   animation: bounceUpDown 3s infinite;
-  margin-bottom: -330px;
+  margin-bottom: -200px;
   margin-left: 815px;
   z-index: 1;
   position: relative;
