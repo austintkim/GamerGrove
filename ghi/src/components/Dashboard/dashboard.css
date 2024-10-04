@@ -47,7 +47,7 @@ p {
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
 
-#tabs::before {
+/* #tabs::before {
   content: "";
   display: block;
   position: absolute;
@@ -58,17 +58,18 @@ p {
   height: 40px;
   background: #2B2A28;
   border-bottom: 5px solid #ffffff;
-}
+} */
 
 #tabs::after {
   content: "";
   display: block;
   position: absolute;
-  z-index: 0;
-  height: 40px;
+  height: 100%;
   width: 200px;
   background: #000000;
+  transition: transform 300ms ease;
 }
+
 
 #tabs label {
   position: relative;
@@ -79,8 +80,7 @@ p {
   text-transform: uppercase;
   text-align: center;
   width: 200px;
-  line-height: 40px;
-  margin-top: -40px;
+  height: 40px;
   cursor: pointer;
   font-family: "K2D";
 }
@@ -88,7 +88,7 @@ p {
 #tabs label::before {
   content: "";
   display: block;
-  height: 30px;
+  height: 0px;
   width: 30px;
   background-position: center;
   background-repeat: no-repeat;

@@ -254,11 +254,11 @@ function Dashboard() {
           <input id="radio4" type="radio" name="css-tabs" />
           <input id="radio5" type="radio" name="css-tabs" />
           <div id="tabs">
-            <label style={{color:'white'}} htmlFor="radio1" id="tab1">Boards</label>
-            <label style={{color:'white'}} htmlFor="radio2" id="tab2">Reviews</label>
-            <label style={{color:'white'}} htmlFor="radio3" id="tab3">Games</label>
-            <label style={{color:'white'}} htmlFor="radio4" id="tab4">Wishlist</label>
-            <label style={{color:'white'}} htmlFor="radio5" id="tab5">Settings</label>
+            <label style={{color:'white'}} htmlFor="radio1">Boards</label>
+            <label style={{color:'white'}} htmlFor="radio2">Reviews</label>
+            <label style={{color:'white'}} htmlFor="radio3">Games</label>
+            <label style={{color:'white'}} htmlFor="radio4">Wishlist</label>
+            <label style={{color:'white'}} htmlFor="radio5">Settings</label>
           </div>
           <div id="content">
             <section id="content1">
