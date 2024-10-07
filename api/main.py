@@ -18,7 +18,7 @@ app.include_router(libraries.router, tags=["Libraries"])
 app.include_router(screenshots.router, tags=["Screenshots"])
 app.include_router(stores.router, tags=["StoresDB"])
 app.include_router(reviews.router, tags=["Reviews"])
-app.include_router(replies.router, tags=["Replies"])
+# app.include_router(replies.router, tags=["Replies"]) ----------> Hiding this until the replies table and endpoints are completely finished
 app.include_router(votes.router, tags=["Votes"])
 
 
