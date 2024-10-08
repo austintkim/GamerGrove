@@ -1,6 +1,6 @@
 import os
 from psycopg_pool import ConnectionPool
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from fastapi import (HTTPException, status)
 
@@ -14,6 +14,7 @@ class HttpError(BaseModel):
 class ReplyInBase(BaseModel):
     body: str
     review_id: int
+    reply_id: Optional[int]
 
 
 class ReplyInUpdate(BaseModel):
@@ -28,6 +29,7 @@ class ReplyOut(BaseModel):
     id: int
     body: str
     review_id: int
+    reply_id: Optional[int]
     account_id: int
 
 
@@ -45,12 +47,12 @@ class ReplyQueries:
                 )
                 rows = result.fetchall()
                 replies = []
-                if rows is not None:
-                    records = {}
+                if rows:
                     for row in rows:
+                        data = {}
                         for i, column in enumerate(db.description):
-                            records[column.name] = row[i]
-                        replies.append(ReplyOut(**records))
+                            data[column.name] = row[i]
+                        replies.append(ReplyOut(**data))
                     return replies
 
                 raise HTTPException(
@@ -71,7 +73,7 @@ class ReplyQueries:
                 )
                 rows = result.fetchall()
                 replies = []
-                if rows is not None:
+                if rows:
                     records = {}
                     for row in rows:
                         for i, column in enumerate(db.description):
@@ -96,7 +98,7 @@ class ReplyQueries:
                     [id]
                 )
                 row = result.fetchone()
-                if row is not None:
+                if row:
                     records = {}
                     for i, column in enumerate(db.description):
                         records[column.name] = row[i]
@@ -115,17 +117,21 @@ class ReplyQueries:
                         """
                         INSERT INTO replies (body,
                         account_id,
-                        review_id)
-                        VALUES (%s, %s, %s)
-                        RETURNING id,
-                        body,
                         review_id,
-                        account_id;
+                        reply_id,
+                        body)
+                        VALUES (%s, %s, %s, %s)
+                        RETURNING id,
+                        account_id,
+                        review_id,
+                        reply_id,
+                        body;
                         """,
                         [
-                            reply_dict["body"],
                             reply_dict["account_id"],
-                            reply_dict["review_id"]
+                            reply_dict["review_id"],
+                            reply_dict["reply_id"],
+                            reply_dict["body"]
                         ]
                     )
                     row = result.fetchone()
@@ -196,12 +202,13 @@ class ReplyQueries:
                     """
                     UPDATE replies
                     SET body = %s
-                    WHERE id = %s AND review_id = %s AND account_id = %s
+                    WHERE id = %s AND review_id = %s AND reply_id = %s AND account_id = %s
                     """,
                     [
                         reply_dict["body"],
                         id,
                         reply_dict["review_id"],
+                        reply_dict["reply_id"],
                         reply_dict["account_id"]
                     ]
                 )

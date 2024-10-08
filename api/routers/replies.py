@@ -78,6 +78,8 @@ async def delete_reply(
     account_id = account_data["id"]
     return queries.delete_reply(id, account_id)
 
+    ### VERIFY/FIX CODE TO UPDATE REPLIES COUNT ON ASSOCIATED REVIEW
+
 
 @router.put("/api/replies/{id}/{account_id}", response_model=Union[ReplyOut, HttpError])
 async def update_reply(
@@ -90,10 +92,14 @@ async def update_reply(
 
     account_id = account_data["id"]
     review_id = reply_details["review_id"]
+    reply_id = reply_details["reply_id"]
 
     reply_dict = reply.dict()
     reply_dict["account_id"] = account_id
     reply_dict["review_id"] = review_id
+    reply_dict["reply_id"] = reply_id
 
     updated_reply = queries.update_reply(id, reply_dict)
     return updated_reply
+
+    ### ADD CODE TO UPDATE REPLIES COUNT ON ASSOCIATED REVIEW
