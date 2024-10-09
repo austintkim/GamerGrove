@@ -33,8 +33,7 @@ We are targeting gamer enthusiasts who are looking for an easy and user-friendly
   - add/remove games to their wishlist
   - write/update/delete reviews for a game
   - upvote/downvote reviews for a game
-  - can easily access any of the above features from either a user dashboard or
-   an 'options' pointer menu
+  - can easily access any of the above features from either a user dashboard or an 'options' pointer menu
 
 ## Getting Started
 To fully enjoy this application on your local machine, please make sure to follow these steps:
