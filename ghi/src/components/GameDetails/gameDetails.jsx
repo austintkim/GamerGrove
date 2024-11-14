@@ -42,6 +42,7 @@ const GameDetails = () => {
   const [userToken2, setUserToken2] = useState(null);
   const [userDataDetails2, setUserDataDetails2] = useState('');
   const [gameData, setGameData] = useState(null);
+  const [libraryData, setLibraryData] = useState(null);
   const [wishListText, setWishListText] = useState('Add to Wishlist');
   const [addToBoardText, setAddToBoardText] = useState('Add to Board');
   const [reviewFormData, setReviewFormData] = useState({
@@ -117,33 +118,6 @@ const GameDetails = () => {
 
   const [accountData, setAccountData] = useState({});
 
-  const fetchBoards = async () => {
-    try {
-      const username = await fetchUserName();
-      const account = await fetchAccount(username);
-      setAccountData(account)
-
-      if (!account || !account.id) {
-
-        return;
-      }
-
-      const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${account.id}`;
-      const fetchConfig = {
-        credentials: 'include'
-      };
-
-      const boardResponse = await fetch(boardUrl, fetchConfig);
-
-      if (boardResponse.ok) {
-        const boardData = await boardResponse.json();
-        setBoards(boardData);
-      }
-    } catch (error) {
-      console.log("Error fetching boards:", error);
-    }
-  };
-
   useEffect(() => {
     const fetchGamesData = async () => {
       try {
@@ -175,6 +149,7 @@ const GameDetails = () => {
 
         if (response.ok) {
           const data = await response.json();
+          setLibraryData(data);
           for (const entry of data) {
             if (entry["account_id"] === account.id && entry["game_id"] == id && entry["wishlist"] === true) {
               setWishListText('Added to Wishlist!');
@@ -185,6 +160,45 @@ const GameDetails = () => {
         console.error('Error fetching library data', error);
       }
     };
+
+  const fetchBoards = async () => {
+    try {
+      const username = await fetchUserName();
+      const account = await fetchAccount(username);
+      setAccountData(account)
+
+      if (!account || !account.id) {
+
+        return;
+      }
+
+      const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${account.id}`;
+      const fetchConfig = {
+        credentials: 'include'
+      };
+
+      const boardResponse = await fetch(boardUrl, fetchConfig);
+
+      let excludedBoardIds = [];
+
+      if (boardResponse.ok) {
+        const boardData = await boardResponse.json();
+        console.log(libraryData);
+        if (libraryData) {
+          for (const entry of libraryData) {
+            if (entry["game_id"] === id && entry["board_id"]) {
+              excludedBoardIds.push(entry["board_id"])
+            }
+          }
+        }
+
+        setBoards(boardData);
+      }
+    } catch (error) {
+      console.log("Error fetching boards:", error);
+    }
+  };
+
 
     fetchGamesData();
     if (token) {
