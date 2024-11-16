@@ -183,7 +183,6 @@ const GameDetails = () => {
 
       if (boardResponse.ok) {
         const boardData = await boardResponse.json();
-        console.log(libraryData);
         if (libraryData) {
           for (const entry of libraryData) {
             if (entry["game_id"] === id && entry["board_id"]) {
