@@ -42,7 +42,6 @@ const GameDetails = () => {
   const [userToken2, setUserToken2] = useState(null);
   const [userDataDetails2, setUserDataDetails2] = useState('');
   const [gameData, setGameData] = useState(null);
-  const [libraryData, setLibraryData] = useState(null);
   const [wishListText, setWishListText] = useState('Add to Wishlist');
   const [addToBoardText, setAddToBoardText] = useState('Add to Board');
   const [reviewFormData, setReviewFormData] = useState({
@@ -55,7 +54,6 @@ const GameDetails = () => {
   const [boards, setBoards] = useState([]);
   const [screenshots, setScreenshots] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [savedUsername, setSavedUsername] = useState('');
 
   const fetchUserData = async () => {
   const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
@@ -75,9 +73,6 @@ const GameDetails = () => {
   }
 };
 
-  useEffect(() => {
-      fetchUserData();
-  }, []);
 
   const fetchScreenshots = async (rawg_pk) => {
     const rawgPk = rawg_pk
@@ -89,122 +84,70 @@ const GameDetails = () => {
     }
   }
 
-  const fetchUserName = async () => {
-    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
-    const fetchConfig = {
+  const fetchGamesData = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games/${id}`);
+      const data = await response.json();
+      fetchScreenshots(data.rawg_pk)
+      setGameData(data);
+    } catch (error) {
+      console.error('Error fetching games data:', error);
+    }
+  };
+
+  const fetchLibraryData = async (userId) => {
+    const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userId}`;
+    const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userId}`;
+
+    const config = {
       credentials: 'include',
     };
-    const response = await fetch(tokenUrl, fetchConfig);
 
-    if (response.ok) {
-      const data = await response.json();
-      if (data !== null) {
-        return data.account.username;
+    try {
+      const [libraryResponse, boardResponse] = await Promise.all([
+        fetch(libraryUrl, config),
+        fetch(boardUrl, config),
+      ]);
+
+      const libraryData = await libraryResponse.json();
+      const boardData = await boardResponse.json();
+
+      let boardsToExclude = [];
+
+      if (libraryData.detail) {
+        return;
+      } else {
+        for (const entry of libraryData) {
+          if (entry["game_id"] === Number(id) && entry["wishlist"] === true) {
+            setWishListText('Added to Wishlist!');
+          }
+          else if (entry["game_id"] === Number(id)) {
+            boardsToExclude.push(entry["board_id"]);
+          }
+        }
       }
+
+      if (boardData.detail) {
+        setBoards([]);
+      } else {
+        const boardsToInclude = boardData.filter((board) => !boardsToExclude.includes(board.id));
+        setBoards(boardsToInclude);
+      }
+      } catch (error) {
+      console.error('Error fetching data', error);
     }
   };
-
-  const fetchAccount = async (savedUsername) => {
-    if (savedUsername !== undefined) {
-      const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${savedUsername}`;
-      const response = await fetch(accountUrl);
-
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      }
-    }
-  };
-
-  const [accountData, setAccountData] = useState({});
 
   useEffect(() => {
-    const fetchGamesData = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games/${id}`);
-        const data = await response.json();
-        fetchScreenshots(data.rawg_pk)
-        setGameData(data);
-      } catch (error) {
-        console.error('Error fetching games data:', error);
+    const fetchData = async() => {
+      fetchGamesData();
+      const userData = await fetchUserData();
+      if (userData?.id) {
+        await fetchLibraryData(userData.id);
       }
     };
-
-    const fetchLibraryData = async () => {
-      try {
-        const username = await fetchUserName();
-        const account = await fetchAccount(username);
-
-        if (!account || !account.id) {
-          console.error('Account data is undefined or missing ID.');
-          return;
-        }
-
-        const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${account.id}`;
-        const fetchConfig = {
-          credentials: 'include'
-        };
-
-        const response = await fetch(libraryUrl, fetchConfig);
-
-        if (response.ok) {
-          const data = await response.json();
-          setLibraryData(data);
-          for (const entry of data) {
-            if (entry["account_id"] === account.id && entry["game_id"] == id && entry["wishlist"] === true) {
-              setWishListText('Added to Wishlist!');
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching library data', error);
-      }
-    };
-
-  const fetchBoards = async () => {
-    try {
-      const username = await fetchUserName();
-      const account = await fetchAccount(username);
-      setAccountData(account)
-
-      if (!account || !account.id) {
-
-        return;
-      }
-
-      const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${account.id}`;
-      const fetchConfig = {
-        credentials: 'include'
-      };
-
-      const boardResponse = await fetch(boardUrl, fetchConfig);
-
-      let excludedBoardIds = [];
-
-      if (boardResponse.ok) {
-        const boardData = await boardResponse.json();
-        if (libraryData) {
-          for (const entry of libraryData) {
-            if (entry["game_id"] === id && entry["board_id"]) {
-              excludedBoardIds.push(entry["board_id"])
-            }
-          }
-        }
-
-        setBoards(boardData);
-      }
-    } catch (error) {
-      console.log("Error fetching boards:", error);
-    }
-  };
-
-
-    fetchGamesData();
-    if (token) {
-      fetchLibraryData();
-    }
-    fetchBoards();
-  }, [id, token]);
+    fetchData();
+  }, [token])
 
   if (!gameData) {
     return null;
@@ -589,7 +532,7 @@ const GameDetails = () => {
       </div>
           <h1 className='gamesh1' style={{ textAlign: 'center', textDecoration: 'underline', marginTop: '5px' }}>Reviews</h1>
           <div className='moveright' >
-            <LargeUserReviewCard newReview = {submittedReview} gameId={gameData.id} accountId={accountData?.id} />
+            <LargeUserReviewCard newReview = {submittedReview} gameId={gameData.id} accountId={userDataDetails2?.id} />
           </div>
 
         </div>
