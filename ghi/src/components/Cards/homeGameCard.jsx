@@ -6,8 +6,6 @@ import './homeGameCard.css';
 import { Menu, MenuItem, SubMenu } from "@spaceymonk/react-radial-menu";
 import { useNavigate } from 'react-router-dom';
 
-
-
 function HomeGameCard( { games }  ) {
   const navigate = useNavigate();
   const { token } = useAuthContext();
@@ -36,8 +34,6 @@ function HomeGameCard( { games }  ) {
         ]);
         const libraryData = await libraryResponse.json();
         const boardData = await boardResponse.json();
-
-        console.log(libraryData);
 
         let boardsToExclude = [];
 
@@ -75,53 +71,6 @@ function HomeGameCard( { games }  ) {
 
   };
 
-
-  // async function fetchUserName() {
-  // const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
-  // const fetchConfig = {
-  //   credentials: 'include',
-  //   redirect: 'follow',
-  // };
-
-  // const response = await fetch(tokenUrl, fetchConfig);
-
-  // if (response.ok) {
-  //   const data = await response.json();
-  //   if (data !== null) {
-  //   return data.account.id;
-  //   }
-  // }
-  // }
-
-
-  // const fetchBoardData = async (userId) => {
-  //   if (userId !== undefined) {
-  //   const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userId}`;
-  //   const boardConfig = {
-  //     credentials: 'include',
-  //   };
-
-  //   try {
-  //     const response = await fetch(boardUrl, boardConfig);
-  //     const boardData = await response.json();
-  //     const boards = []
-  //     for (const b of boardData) {
-  //       boards.push(b)
-  //     }
-  //     setBoardDataList(boards);
-  //   } catch (error) {
-  //     //empty
-  //   }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     const userId = await fetchUserName();
-  //     fetchBoardData(userId);
-  //   }
-  //   fetchUserData();
-  // }, []);
 
   const handleClick = async (platform, rawg_pk) => {
     const storeUrl = await fetchStoreUrl(platform, rawg_pk);

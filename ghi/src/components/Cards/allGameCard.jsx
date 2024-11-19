@@ -12,6 +12,56 @@ function AllGameCard( {games} ) {
   const [id, setId] = useState('');
   const [show, setShow] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [boardDataList, setBoardDataList] = useState([]);
+
+    const handleOptionsClick = async (gameId) => {
+    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+
+    const config = {
+      credentials: 'include',
+    };
+
+    try {
+      const tokenResponse = await fetch(tokenUrl, config);
+      const userData = await tokenResponse.json();
+      if (userData) {
+        const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userData.account.id}`;
+        const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userData.account.id}`;
+
+        const [libraryResponse, boardResponse] = await Promise.all([
+          fetch(libraryUrl, config),
+          fetch(boardUrl, config),
+        ]);
+        const libraryData = await libraryResponse.json();
+        const boardData = await boardResponse.json();
+
+        let boardsToExclude = [];
+
+        if (libraryData.detail) {
+          return;
+        } else {
+          for (const entry of libraryData) {
+            if (entry["game_id"] === Number(gameId) && entry["wishlist"] === true) {
+              // Logic to not show the wishlist option
+            }
+            else if (entry["game_id"] === Number(gameId)) {
+              boardsToExclude.push(entry["board_id"]);
+            }
+          }
+        }
+
+        if (boardData.detail) {
+          setBoardDataList([]);
+        } else {
+          const boardsToInclude = boardData.filter((board) => !boardsToExclude.includes(board.id));
+          setBoardDataList(boardsToInclude);
+        }
+      }
+
+    } catch (error) {
+    console.error('Error fetching data', error);
+  }
+}
 
   const handleSubMenuClick = () => {
 
@@ -21,59 +71,6 @@ function AllGameCard( {games} ) {
     };
 
 
-
-  async function fetchUserName() {
-  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
-  const fetchConfig = {
-    credentials: 'include',
-    redirect: 'follow',
-  };
-
-  const response = await fetch(tokenUrl, fetchConfig);
-
-  if (response.ok) {
-    const data = await response.json();
-    if (data !== null){
-      return data.account.id;
-    }
-  }
-  }
-
-  const [boardDataList, setBoardDataList] = useState([]);
-
-  const fetchBoardData = async (userId) => {
-    const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userId}`;
-    const boardConfig = {
-      credentials: 'include',
-    };
-
-    try {
-      const response = await fetch(boardUrl, boardConfig);
-      const boardData = await response.json();
-
-      if (boardData.detail) {
-        return [];
-      }
-
-      const boards = []
-      for (const b of boardData) {
-        boards.push(b)
-      }
-      setBoardDataList(boards);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userId = await fetchUserName();
-      if (userId !== undefined) {
-      fetchBoardData(userId);
-      }
-    }
-    fetchUserData();
-  }, []);
 
   const handleClick = async (platform, rawg_pk) => {
     const storeUrl = await fetchStoreUrl(platform, rawg_pk);
@@ -245,6 +242,7 @@ if (token) {
           <div className="agbutton">
             <button onClick={(e) => {
                   e.preventDefault();
+                  handleOptionsClick(gameData.id);
                   setShow(!show);
                   setPosition({ x: e.clientX-10 });
                   setId(gameData.id)
