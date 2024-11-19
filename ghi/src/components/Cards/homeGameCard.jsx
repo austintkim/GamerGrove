@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {useAuthContext} from "@galvanize-inc/jwtdown-for-react";
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
