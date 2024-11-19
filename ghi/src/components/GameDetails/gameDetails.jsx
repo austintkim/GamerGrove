@@ -56,21 +56,21 @@ const GameDetails = () => {
   const [reviews, setReviews] = useState([]);
 
   const fetchUserData = async () => {
-  const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
-  const fetchConfig = {
-    credentials: 'include',
-  };
+    const fetchConfig = {
+      credentials: 'include',
+    };
 
-  const response = await fetch(tokenUrl, fetchConfig);
-  const data = await response.json();
-  if (data) {
-      setUserToken2(data.access_token);
-      setUserDataDetails2(data.account);
-      return data.account;
-  } else {
-      throw new Error ('No active token')
-  }
+    const response = await fetch(tokenUrl, fetchConfig);
+    const data = await response.json();
+    if (data) {
+        setUserToken2(data.access_token);
+        setUserDataDetails2(data.account);
+        return data.account;
+    } else {
+        throw new Error ('No active token')
+    }
 };
 
 

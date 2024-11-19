@@ -111,7 +111,6 @@
             transition: 0.5s;
         }
 
-
         .menu-wrapper {
             --__reactRadialMenu__menu-bgColor: hsla(272, 62%, 61%, 0.852);
             --__reactRadialMenu__separator-color: hsl(0, 0%, 100%);
@@ -120,4 +119,5 @@
             --__reactRadialMenu__activeItem-bgColor: rgba(90, 47, 111, 0.603);
             --__reactRadialMenu__arrow-color: hsla(0,0%,100%,1);
             --__reactRadialMenu__activeArrow-color: hsla(0,0%,75%,1);
+
         }
