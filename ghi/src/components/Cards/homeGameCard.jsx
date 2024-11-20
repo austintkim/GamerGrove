@@ -13,8 +13,11 @@ function HomeGameCard( { games }  ) {
   const [show, setShow] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [boardDataList, setBoardDataList] = useState([]);
+  const [gameInWishList, setGameInWishList] = useState(null);
 
   const handleOptionsClick = async (gameId) => {
+    setGameInWishList(false);
+
     const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
 
     const config = {
@@ -42,7 +45,7 @@ function HomeGameCard( { games }  ) {
         } else {
           for (const entry of libraryData) {
             if (entry["game_id"] === Number(gameId) && entry["wishlist"] === true) {
-              // Logic to not show the wishlist option
+              setGameInWishList(true);
             }
             else if (entry["game_id"] === Number(gameId)) {
               boardsToExclude.push(entry["board_id"]);
@@ -264,51 +267,58 @@ if (token) {
               <div className="menu-wrapper"
 
               >
-                <Menu
-
-                  centerX={position.x}
-                  centerY={position.y}
-                  innerRadius={50}
-                  outerRadius={120}
-                  show={show && id===gameData.id}
-                  animation={["rotate"]}
-                  animationTimeout={200}
-                  animateSubMenuChange={false}
+      <Menu
+        centerX={position.x}
+        centerY={position.y}
+        innerRadius={50}
+        outerRadius={120}
+        show={show && id === gameData.id}
+        animation={["rotate"]}
+        animationTimeout={200}
+        animateSubMenuChange={false}
+      >
+        {[
+          <MenuItem key="review" onItemClick={handleReviewClick} data={gameData.id}>
+            Review
+          </MenuItem>,
+          !gameInWishList && (
+            <MenuItem key="wish" onItemClick={handleWishClick} data={gameData.id}>
+              Wish
+            </MenuItem>
+          ),
+          <MenuItem key="details" onItemClick={handleDetailClick} data={gameData.id}>
+            Details
+          </MenuItem>,
+          boardDataList.length > 0 ? (
+            <SubMenu
+              key="submenu"
+              onDisplayClick={handleDisplayClick}
+              onItemClick={handleSubMenuClick}
+              itemView="Add to Board"
+              data="2. Sub Menu"
+              displayPosition="bottom"
+            >
+              {boardDataList.map((board) => (
+                <MenuItem
+                  key={board.id}
+                  onItemClick={handleBoardClick}
+                  data={[board.id, gameData.id]}
                 >
-                  <MenuItem onItemClick={handleReviewClick} data={gameData.id}>
-                    Review
-                  </MenuItem>
-                  <MenuItem onItemClick={handleWishClick} data={gameData.id}>
-                    Wish
-                  </MenuItem>
-                  <MenuItem onItemClick={handleDetailClick} data={gameData.id} >
-                    Details
-                  </MenuItem>
-                  {boardDataList.length > 0 ?
-                  <SubMenu
-                    onDisplayClick={handleDisplayClick}
-                    onItemClick={handleSubMenuClick}
-                    itemView="Add to Board"
-                    data="2. Sub Menu"
-                    displayPosition="bottom"
-                  >
-                    {boardDataList.map(board => {
-                      return(
-                        <MenuItem onItemClick={handleBoardClick} key={board.id} data={[board.id, gameData.id]}>
-                          {board.board_name}
-                        </MenuItem>
-                      )
-                    })}
-                    <MenuItem onItemClick={handleNewBoard}>Create New</MenuItem>
+                  {board.board_name}
+                </MenuItem>
+              ))}
+              <MenuItem key="create-new" onItemClick={handleNewBoard}>
+                Create New
+              </MenuItem>
+            </SubMenu>
+          ) : (
+            <MenuItem key="create-board" onItemClick={handleNewBoard}>
+              Create Board
+            </MenuItem>
+          ),
+        ].filter(Boolean)}
+      </Menu>
 
-
-
-
-                  </SubMenu>
-                  :
-                  <MenuItem onItemClick={handleNewBoard}>Create Board</MenuItem>
-                  }
-                </Menu>
               </div>
 
           </div>
