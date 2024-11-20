@@ -267,57 +267,57 @@ if (token) {
               <div className="menu-wrapper"
 
               >
-      <Menu
-        centerX={position.x}
-        centerY={position.y}
-        innerRadius={50}
-        outerRadius={120}
-        show={show && id === gameData.id}
-        animation={["rotate"]}
-        animationTimeout={200}
-        animateSubMenuChange={false}
-      >
-        {[
-          <MenuItem key="review" onItemClick={handleReviewClick} data={gameData.id}>
-            Review
-          </MenuItem>,
-          !gameInWishList && (
-            <MenuItem key="wish" onItemClick={handleWishClick} data={gameData.id}>
-              Wish
-            </MenuItem>
-          ),
-          <MenuItem key="details" onItemClick={handleDetailClick} data={gameData.id}>
-            Details
-          </MenuItem>,
-          boardDataList.length > 0 ? (
-            <SubMenu
-              key="submenu"
-              onDisplayClick={handleDisplayClick}
-              onItemClick={handleSubMenuClick}
-              itemView="Add to Board"
-              data="2. Sub Menu"
-              displayPosition="bottom"
-            >
-              {boardDataList.map((board) => (
-                <MenuItem
-                  key={board.id}
-                  onItemClick={handleBoardClick}
-                  data={[board.id, gameData.id]}
+                <Menu
+                  centerX={position.x}
+                  centerY={position.y}
+                  innerRadius={50}
+                  outerRadius={120}
+                  show={show && id === gameData.id}
+                  animation={["rotate"]}
+                  animationTimeout={200}
+                  animateSubMenuChange={false}
                 >
-                  {board.board_name}
-                </MenuItem>
-              ))}
-              <MenuItem key="create-new" onItemClick={handleNewBoard}>
-                Create New
-              </MenuItem>
-            </SubMenu>
-          ) : (
-            <MenuItem key="create-board" onItemClick={handleNewBoard}>
-              Create Board
-            </MenuItem>
-          ),
-        ].filter(Boolean)}
-      </Menu>
+                  {[
+                    <MenuItem key="review" onItemClick={handleReviewClick} data={gameData.id}>
+                      Review
+                    </MenuItem>,
+                    !gameInWishList && (
+                      <MenuItem key="wish" onItemClick={handleWishClick} data={gameData.id}>
+                        Wish
+                      </MenuItem>
+                    ),
+                    <MenuItem key="details" onItemClick={handleDetailClick} data={gameData.id}>
+                      Details
+                    </MenuItem>,
+                    boardDataList.length > 0 ? (
+                      <SubMenu
+                        key="submenu"
+                        onDisplayClick={handleDisplayClick}
+                        onItemClick={handleSubMenuClick}
+                        itemView="Add to Board"
+                        data="2. Sub Menu"
+                        displayPosition="bottom"
+                      >
+                        {boardDataList.map((board) => (
+                          <MenuItem
+                            key={board.id}
+                            onItemClick={handleBoardClick}
+                            data={[board.id, gameData.id]}
+                          >
+                            {board.board_name}
+                          </MenuItem>
+                        ))}
+                        <MenuItem key="create-new" onItemClick={handleNewBoard}>
+                          Create New
+                        </MenuItem>
+                      </SubMenu>
+                    ) : (
+                      <MenuItem key="create-board" onItemClick={handleNewBoard}>
+                        Create Board
+                      </MenuItem>
+                    ),
+                  ].filter(Boolean)}
+                </Menu>
 
               </div>
 
