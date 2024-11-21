@@ -102,6 +102,23 @@ class LibraryQueries:
                             detail="A game with the id you inputted does not exist in the database"
                         )
 
+                    wishlist_check = db.execute(
+                        f"""
+                        SELECT 1 FROM libraries WHERE wishlist = %s AND game_id = %s
+                        """,
+                        [
+                            library_dict["wishlist"],
+                            library_dict["game_id"]
+                        ]
+                    )
+
+                    wishlist_entry_row = wishlist_check.fetchone()
+                    if wishlist_entry_row is not None:
+                        raise HTTPException(
+                            status_code = status.HTTP_400_BAD_REQUEST,
+                            detail="This game was already added to the user's wishlist"
+                        )
+
                     result = db.execute(
                         """
                         INSERT INTO libraries (
