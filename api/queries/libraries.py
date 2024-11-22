@@ -104,7 +104,11 @@ class LibraryQueries:
 
                     wishlist_check = db.execute(
                         f"""
-                        SELECT 1 FROM libraries WHERE wishlist = %s AND game_id = %s
+                        SELECT 1
+                        FROM libraries
+                        WHERE wishlist = %s
+                            AND game_id = %s
+                            AND wishlist IS TRUE
                         """,
                         [
                             library_dict["wishlist"],
@@ -117,6 +121,25 @@ class LibraryQueries:
                         raise HTTPException(
                             status_code = status.HTTP_400_BAD_REQUEST,
                             detail="This game was already added to the user's wishlist"
+                        )
+
+                    board_check = db.execute(
+                        f"""
+                        SELECT 1 FROM libraries
+                        WHERE game_id = %s
+                            AND board_id = %s
+                        """,
+                        [
+                            library_dict["game_id"],
+                            library_dict["board_id"]
+                        ]
+                    )
+
+                    board_entry_row = board_check.fetchone()
+                    if board_entry_row is not None:
+                        raise HTTPException(
+                            status_code = status.HTTP_400_BAD_REQUEST,
+                            detail="This game was already added by the user to this board"
                         )
 
                     result = db.execute(

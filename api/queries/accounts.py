@@ -70,14 +70,18 @@ class AccountQueries:
                 if current_id:
                     db.execute(
                         f"""
-                        SELECT 1 FROM accounts WHERE {field} = %s AND id != %s
+                        SELECT 1
+                        FROM accounts
+                        WHERE {field} = %s
+                            AND id != %s
                         """,
                         [value, current_id]
                     )
                 else:
                     db.execute(
                         f"""
-                        SELECT 1 FROM accounts WHERE {field} = %s
+                        SELECT 1 FROM accounts
+                        WHERE {field} = %s
                         """,
                         [value]
                     )
