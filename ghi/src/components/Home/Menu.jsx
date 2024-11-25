@@ -50,7 +50,7 @@ const SideMenu = ({  }) => {
                 style={{
                     display: 'block',
                     padding: 0,
-                    margin: 0,
+                    marginBottom: '5px',
                     whiteSpace: 'nowrap',
                     backgroundColor: 'transparent'
                 }}
@@ -60,9 +60,9 @@ const SideMenu = ({  }) => {
             <li
                 className="linkside"
                 style={{
-                    display: 'block', 
+                    display: 'block',
                     padding: 0,
-                    margin: 0,
+                    marginBottom: '5px',
                     whiteSpace: 'nowrap',
                     backgroundColor: 'transparent'
                 }}
@@ -74,7 +74,7 @@ const SideMenu = ({  }) => {
                 style={{
                     display: 'block',
                     padding: 0,
-                    margin: 0,
+                    marginBottom: '5px',
                     whiteSpace: 'nowrap',
                     backgroundColor: 'transparent'
                 }}
@@ -86,7 +86,7 @@ const SideMenu = ({  }) => {
                 style={{
                     display: 'block',
                     padding: 0,
-                    margin: 0,
+                    marginBottom: '5px',
                     whiteSpace: 'nowrap',
                     backgroundColor: 'transparent'
                 }}
@@ -103,7 +103,17 @@ const SideMenu = ({  }) => {
 
         {genres.map(genre => {
             return(
-                <li key={genre} className='linkside'><NavLink to="/games" state={{ state: genre }} >- {genre}</NavLink></li>
+                <li key={genre}
+                className='linkside'
+                style={{
+                    display: 'block',
+                    padding: 0,
+                    marginBottom: '5px',
+                    whiteSpace: 'nowrap',
+                    backgroundColor: 'transparent'
+                }}
+                >
+                <NavLink to="/games" state={{ state: genre }} >- {genre}</NavLink></li>
             )
 
         })}
