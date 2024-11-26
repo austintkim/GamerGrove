@@ -5,6 +5,8 @@ import { NavLink, Link } from 'react-router-dom';
 const SideMenu = ({  }) => {
 
     const [genres, setGenres] = useState([]);
+    const consoles = ['xbox', 'playstation', 'pc', 'nintendo']
+
     const fetchGenres = async () => {
         const url = `${import.meta.env.VITE_API_HOST}/api/games`;
         const response = await fetch(url)
@@ -45,54 +47,32 @@ const SideMenu = ({  }) => {
     <p>Consoles</p>
     <hr className='solid' />
         <ul>
-            <li
-                className="linkside"
-                style={{
-                    display: 'block',
-                    padding: 0,
-                    marginBottom: '5px',
-                    whiteSpace: 'nowrap',
-                    backgroundColor: 'transparent'
-                }}
-            >
-                <NavLink to="/games" state={{ state: 'xbox' }}>- Xbox</NavLink>
-            </li>
-            <li
-                className="linkside"
-                style={{
-                    display: 'block',
-                    padding: 0,
-                    marginBottom: '5px',
-                    whiteSpace: 'nowrap',
-                    backgroundColor: 'transparent'
-                }}
-            >
-                <NavLink to="/games" state={{ state: 'playstation' }}>- PlayStation</NavLink>
-            </li>
-            <li
-                className="linkside"
-                style={{
-                    display: 'block',
-                    padding: 0,
-                    marginBottom: '5px',
-                    whiteSpace: 'nowrap',
-                    backgroundColor: 'transparent'
-                }}
-            >
-                <NavLink to="/games" state={{ state: 'pc' }}>- PC</NavLink>
-            </li>
-            <li
-                className="linkside"
-                style={{
-                    display: 'block',
-                    padding: 0,
-                    marginBottom: '5px',
-                    whiteSpace: 'nowrap',
-                    backgroundColor: 'transparent'
-                }}
-            >
-                <NavLink to="/games" state={{ state: 'nintendo' }}>- Nintendo</NavLink>
-            </li>
+            {consoles.map(console => {
+                let displayConsole = ''
+
+                if (console === 'playstation') {
+                    displayConsole = console.charAt(0).toUpperCase() + console.slice(1, 4) + console.charAt(4).toUpperCase() + console.slice(5);
+                } else if (console === 'pc') {
+                    displayConsole = console.toUpperCase();
+                } else {
+                    displayConsole = console.charAt(0).toUpperCase() + console.slice(1);
+                }
+
+                return(
+                    <li key={console}
+                    className='linkside'
+                    style={{
+                        display:'block',
+                        padding: 0,
+                        marginBottom: '5px',
+                        whiteSpace: 'nowrap',
+                        backgroundColor: 'transparent'
+                    }}
+                    >
+                    <NavLink to="/games" state = {{ state: console}}>- {displayConsole}</NavLink>
+                    </li>
+                )
+            })}
         </ul>
 </ul>
 
