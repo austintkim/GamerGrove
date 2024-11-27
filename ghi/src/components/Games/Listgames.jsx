@@ -65,7 +65,15 @@ const Listgames = () => {
     }, [genre]);
   } else if (platforms.includes(data.state)) {
     const platform = data.state;
-    const formattedPlatform = data.state.charAt(0).toUpperCase() + data.state.slice(1);
+    let formattedPlatform = '';
+
+    if (platform === 'playstation') {
+      formattedPlatform = platform.charAt(0).toUpperCase() + platform.slice(1, 4) + platform.charAt(4).toUpperCase() + platform.slice(5);
+    } else if (platform === 'pc') {
+      formattedPlatform = platform.toUpperCase();
+    } else {
+      formattedPlatform = platform.charAt(0).toUpperCase() + platform.slice(1);
+    }
     const fetchGames = async () => {
       try {
         const url = `${import.meta.env.VITE_API_HOST}/api/games`;

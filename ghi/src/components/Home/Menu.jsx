@@ -48,7 +48,7 @@ const SideMenu = ({  }) => {
     <hr className='solid' />
         <ul>
             {consoles.map(console => {
-                let displayConsole = ''
+                let displayConsole = '';
 
                 if (console === 'playstation') {
                     displayConsole = console.charAt(0).toUpperCase() + console.slice(1, 4) + console.charAt(4).toUpperCase() + console.slice(5);
