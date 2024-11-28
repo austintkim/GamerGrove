@@ -41,7 +41,7 @@ const Listgames = () => {
 
   if (platforms.includes(data.state) === false && data.state) {
     const genre = data.state;
-    const formattedGenre = data.state.charAt(0).toUpperCase() + data.state.slice(1);
+    const formattedGenre = genre.charAt(0).toUpperCase() + genre.slice(1);
 
     const fetchGames = async () => {
       try {
