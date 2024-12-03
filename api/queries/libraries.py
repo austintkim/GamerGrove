@@ -117,6 +117,7 @@ class LibraryQueries:
                     )
 
                     wishlist_entry_row = wishlist_check.fetchone()
+                    print(wishlist_entry_row)
                     if wishlist_entry_row is not None:
                         raise HTTPException(
                             status_code = status.HTTP_400_BAD_REQUEST,

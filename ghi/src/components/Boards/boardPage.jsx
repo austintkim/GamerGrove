@@ -114,10 +114,10 @@ function BoardPage() {
 
   useEffect(() => {
       fetchUserData();
+      fetchData();
   }, []);
 
 
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const boardDetails = await fetchBoardDetails(boardId);
@@ -154,9 +154,6 @@ function BoardPage() {
         console.error('Error fetching data:', error);
       }
     }
-    fetchData();
-
-  }, []);
 
   const handleGameRemoval = async (id, account_id,) => {
     // sending DELETE request to libraries endpoint to remove the instance of game being

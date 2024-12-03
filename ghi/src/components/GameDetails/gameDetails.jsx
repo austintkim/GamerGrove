@@ -114,9 +114,7 @@ const GameDetails = () => {
 
       let boardsToExclude = [];
 
-      if (libraryData.detail) {
-        return;
-      } else {
+      if (!libraryData.detail) {
         for (const entry of libraryData) {
           if (entry["game_id"] === Number(id) && entry["wishlist"] === true) {
             setWishListText('Added to Wishlist!');
