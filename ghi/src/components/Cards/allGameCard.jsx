@@ -40,9 +40,7 @@ function AllGameCard( {games} ) {
 
         let boardsToExclude = [];
 
-        if (libraryData.detail) {
-          return;
-        } else {
+        if (!libraryData.detail) {
           for (const entry of libraryData) {
             if (entry["game_id"] === Number(gameId) && entry["wishlist"] === true) {
               setGameInWishList(true);
