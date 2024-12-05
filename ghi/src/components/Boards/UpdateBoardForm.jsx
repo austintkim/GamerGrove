@@ -137,7 +137,7 @@ function UpdateBoardForm() {
                 <div className="offset-1 col-10">
                   <h2 className="card-header" style={{ textAlign: 'center'}}>Update Board</h2>
                     <div style={{ width: '100%'}}>
-                      <form onSubmit={handleSubmit} id="create-review">
+                      <form onSubmit={handleSubmit} id="update-board">
                         <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
                           <label htmlFor="board_name">Title</label>
                           <input onChange={handleFormChange} required type="text" name="board_name" id="board_name" className="form-control" value={formData.board_name} />
@@ -153,7 +153,7 @@ function UpdateBoardForm() {
                       </form>
                       <div className="d-flex justify-content-between">
                         <button className="mb-3" style={{ textAlign: 'left'}} onClick={() => navigate(-1)}>Back</button>
-                        <button form="create-review" className="mb-3" style={{ textAlign: 'right'}}>Update</button>
+                        <button form="update-board" className="mb-3" style={{ textAlign: 'right'}}>Update</button>
                       </div>
                     </div>
                 </div>
