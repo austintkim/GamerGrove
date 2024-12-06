@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from '../GameDetails/StarRating';
+import Review from './Review';
+
+import './Review.css'
 
 const containerStyle = {
   minHeight: '100vh',
@@ -133,6 +136,8 @@ function UpdateReviewForm() {
   };
 
   return (
+    <div>
+      <Review />
       <div style={{ position: 'relative', ...containerStyle }}>
         <div style ={{ ...centerVertically, width: '100%'}}>
           <div className="card text-bg-light mb-3">
@@ -153,9 +158,9 @@ function UpdateReviewForm() {
                         <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
                           <label htmlFor="rating"style={{ marginBottom: '0rem' }}>Rating out of 5:</label>
                           <div className='rating-container d-flex justify-content-center'>
-                           <div className='star-rating'>
-                             <StarRating rating={formData.rating} onStarClick={handleStarClick} />
-                           </div>
+                          <div className='star-rating'>
+                            <StarRating rating={formData.rating} onStarClick={handleStarClick} />
+                            </div>
                         </div>
                         </div>
                       </form>
@@ -170,6 +175,7 @@ function UpdateReviewForm() {
           </div>
         </div>
       </div>
+    </div>
   );
 }
 

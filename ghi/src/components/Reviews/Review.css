@@ -1,0 +1,21 @@
+.review-container {
+  position: relative;
+}
+
+@keyframes bounceUpDown {
+  0%, 100% {
+    transform: translateY(25px);
+  }
+  50% {
+    transform: translateY(50px);
+  }
+}
+
+.reviewimg {
+  animation: bounceUpDown 3s infinite;
+  margin-bottom: -200px;
+  margin-left: 815px;
+  z-index: 1;
+  position: relative;
+
+}
