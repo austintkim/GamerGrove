@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData, boardDetailsUserData }) => {
+const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData, boardDetailsUserData, searchResultsUserData }) => {
   const [iconUrl, setIconUrl] = useState(null);
   const [userData, setUserData] = useState(null);
 
@@ -15,8 +15,8 @@ const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsU
   };
 
   useEffect(() => {
-      setUserData(homeUserData || dashboardUserData || allGamesUserData || gamesDetailsUserData || boardDetailsUserData);
-    }, [homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData, boardDetailsUserData]);
+      setUserData(homeUserData || dashboardUserData || allGamesUserData || gamesDetailsUserData || boardDetailsUserData || searchResultsUserData);
+    }, [homeUserData, dashboardUserData, allGamesUserData, gamesDetailsUserData, boardDetailsUserData, searchResultsUserData]);
 
   useEffect(() => {
     if (userData && userData.icon_id) {

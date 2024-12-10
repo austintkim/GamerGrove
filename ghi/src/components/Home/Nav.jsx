@@ -7,8 +7,8 @@ import Icon from "../Icon/icon.jsx";
 
 
 const Nav = (
-  { userCookie0, userCookie, userCookie1, userCookie2, userCookie3,
-    userData0, userData, userData1, userData2, userData3,
+  { userCookie0, userCookie, userCookie1, userCookie2, userCookie3, userCookie4,
+    userData0, userData, userData1, userData2, userData3, userData4,
     userLogOut0
   }
 ) => {
@@ -179,7 +179,7 @@ const Nav = (
   }
 }
 
-  if (userCookie || userCookie0 || userCookie1 || userCookie2 || userCookie3) {
+  if (userCookie || userCookie0 || userCookie1 || userCookie2 || userCookie3 || userCookie4) {
     return (
     <div className='nav'>
       <nav>
@@ -208,6 +208,7 @@ const Nav = (
               allGamesUserData = {userData1}
               gamesDetailsUserData = {userData2}
               boardDetailsUserData = {userData3}
+              searchResultsUserData = {userData4}
             />
             {showDropdown && (
               <div className='nav__dropdown' onClick={stopPropagation}>

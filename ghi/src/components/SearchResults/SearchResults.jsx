@@ -19,22 +19,37 @@ const SearchResults = () => {
     const [show, setShow] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
-    async function fetchUserName() {
+    const [userToken4, setUserToken4] = useState(null);
+    const [userDataDetails4, setUserDataDetails4] = useState('');
+
+    const fetchUserData = async () => {
     const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+
     const fetchConfig = {
-        credentials: 'include',
-        redirect: 'follow',
+    credentials: 'include',
     };
 
     const response = await fetch(tokenUrl, fetchConfig);
+    const data = await response.json();
+    if (data) {
+        setUserToken4(data.access_token);
+        setUserDataDetails4(data.account);
+        return data.account;
+    } else {
+        console.log('No active token!')
+    }
+    };
 
-    if (response.ok) {
-        const data = await response.json();
-        if (data!== null){
-          return data.account.id;
+    useEffect(() => {
+      fetchGameData();
+      const fetchData = async () => {
+        const userId = await fetchUserData();
+        if (userId !== undefined){
+          fetchBoardData(userId);
         }
-    }
-    }
+      }
+      fetchData();
+    }, []);
 
     const [boardDataList, setBoardDataList] = useState([]);
 
@@ -72,7 +87,7 @@ const SearchResults = () => {
 
 
 
-    const fetchData = async () => {
+    const fetchGameData = async () => {
         try {
         const games = []
         const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
@@ -87,19 +102,6 @@ const SearchResults = () => {
         console.error('Error fetching data:', error);
         }
     };
-
-
-useEffect(() => {
-    fetchData();
-    const fetchUserData = async () => {
-      const userId = await fetchUserName();
-      if (userId !== undefined){
-        fetchBoardData(userId);
-      }
-    }
-    fetchUserData();
-  }, []);
-
 
   const handleClick = async (platform, rawg_pk) => {
     const storeUrl = await fetchStoreUrl(platform, rawg_pk);
@@ -122,8 +124,6 @@ useEffect(() => {
         }
 
       }
-
-
 
 
     } catch (error) {
@@ -206,12 +206,13 @@ useEffect(() => {
     if (token) {
         return (
           <div>
-             <Nav />
+             <Nav
+                userCookie4 = {userToken4}
+                userData4 = {userDataDetails4}
+             />
              <SideMenu />
             <div>
               <div>
-
-
                 <div className='sallgamesbody'>
                 {searchGames.map((gameData) => (
                     <div key={gameData.id} className='shgcard'>
@@ -353,7 +354,6 @@ useEffect(() => {
       <Nav />
       <SideMenu />
       <div >
-
         <div >
           <div className='sallgamesbody'>
             {searchGames.map((gameData) => (
