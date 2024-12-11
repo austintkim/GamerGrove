@@ -3,6 +3,7 @@ from psycopg_pool import ConnectionPool
 from typing import List
 from pydantic import BaseModel
 from fastapi import (HTTPException, status)
+from datetime import datetime
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -39,6 +40,8 @@ class ReviewOut(BaseModel):
     replies_count: int
     upvote_count: int
     rating: float
+    date_created: datetime
+    last_update: datetime
 
 
 class ReviewQueries:
@@ -141,7 +144,9 @@ class ReviewQueries:
                             title,
                             rating,
                             replies_count,
-                            upvote_count
+                            upvote_count,
+                            date_created,
+                            last_update
                         """,
                         [
                             review_dict["game_id"],
