@@ -77,8 +77,8 @@ function LargeNonUserReviewCard({ gameId }) {
                 alt="Thumbs Down"
               />
               </button>
-              <p style={{ color: 'white', textAlign: 'right', margin: '0', marginRight: '10px'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })}</p>
             </div>
+            <p style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right', margin: '0'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })}</p>
           </div>
         ))
       ) : (

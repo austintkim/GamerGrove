@@ -1,6 +1,7 @@
 import './userReviewCard.css';
 import StarRating from '../GameDetails/StarRating';
 import {useNavigate} from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
 
 function UserReviewCard({ userReviews }) {
   const navigate = useNavigate();
@@ -11,14 +12,11 @@ function UserReviewCard({ userReviews }) {
       ) : (
         userReviews.map((review) => (
           <div key={review.id} className="urcard">
-            <div className="urcard-contenet">
+            <div className="urcard-content">
             <div className="urcard-title">{review.title}</div>
-
-
             </div>
             <div className="urline"></div>
             <div className="urcard-content">
-
               <div className="urcard-details" style={{ color: 'black', flex: '2', textAlign: 'right' }}>
                 <p>{review.body}</p>
                 {review.rating && (
@@ -40,6 +38,7 @@ function UserReviewCard({ userReviews }) {
                 )}
               </div>
             </div>
+              <p style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })}</p>
           </div>
         ))
       )}
