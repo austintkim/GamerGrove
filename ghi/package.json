@@ -14,6 +14,7 @@
         "@ramotion/react-native-circle-menu": "^1.0.0",
         "@spaceymonk/react-radial-menu": "^2.0.4",
         "bootstrap": "^5.3.2",
+        "date-fns": "^4.1.0",
         "dotenv": "^16.4.1",
         "html-react-parser": "^5.1.2",
         "react": "^18.2.0",

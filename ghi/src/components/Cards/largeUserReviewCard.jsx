@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
 import './largeUserReviewCard.css';
 import StarRating from '../GameDetails/StarRating';
 
@@ -9,7 +10,7 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
   const [userReviews, setUserReviews] = useState([]);
   const [voted, setVoted] = useState(false)
 
-    const fetchReviewsForGame = async (gameId) => {
+  const fetchReviewsForGame = async (gameId) => {
     const votes = await fetchVotesForUser();
     const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/games/${gameId}`;
 
@@ -40,7 +41,7 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
               }
             }
           }
-         if (change === 0) {
+          if (change === 0) {
             r.upvote = undefined
             r.downvote = undefined
           } else {
@@ -55,7 +56,7 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
     } catch (error) {
       console.error('Error fetching reviews:', error);
     }
-  };
+};
 
   const fetchVotesForUser = async () => {
     const user = await fetchUserName();
@@ -354,6 +355,7 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
               />
 
               </button>
+              <p style={{ color: 'white', textAlign: 'right', margin: '0', marginRight: '10px'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })}</p>
             </div>
           </div>
         ))

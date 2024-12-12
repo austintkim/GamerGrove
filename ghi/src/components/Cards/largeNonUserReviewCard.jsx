@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
 import './largeUserReviewCard.css';
 import StarRating from '../GameDetails/StarRating';
 
@@ -41,12 +42,12 @@ function LargeNonUserReviewCard({ gameId }) {
 
             <div className="lurline"></div>
             <div style={{color: 'white'}} className="urcard-content">
-              <div className="lurcontainer">
+              <div className="lurcard-details">
                 <p>{review.body}</p>
               </div>
-              <div className="lurcontainer">
+              <div className="lurcard-date">
                   <div className="rating-container">
-                    <div className="star-rating" style={{marginTop: '15px'}}>
+                    <div className="star-rating" style={{marginTop: '75px'}}>
                       <StarRating rating={review.rating} />
                     </div>
                   </div>
@@ -76,6 +77,7 @@ function LargeNonUserReviewCard({ gameId }) {
                 alt="Thumbs Down"
               />
               </button>
+              <p style={{ color: 'white', textAlign: 'right', margin: '0', marginRight: '10px'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })}</p>
             </div>
           </div>
         ))
