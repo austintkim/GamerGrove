@@ -79,6 +79,7 @@ npm install @spaceymonk/react-radial-menu
 npm install @galvanize-inc/jwtdown-for-react
 npm install react-bootstrap
 npm install react-slick slick-carousel
+npm install date-fns
 ```
 6. Exit out of the container's CLI
 
