@@ -63,7 +63,29 @@ class AccountQueries:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Could not find an account with that username"
                 )
+    def get_by_id(self, id: int) -> AccountOut:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                result = db.execute(
+                    """
+                    SELECT *
+                    FROM accounts
+                    WHERE id = %s;
+                    """,
+                    [id],
+                )
 
+                row = result.fetchone()
+
+                if row is not None:
+                    record = {}
+                    for i, column in enumerate(db.description):
+                        record[column.name] = row[i]
+                    return AccountOutWithPassword(**record)
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Could not find an account with that id"
+                )
     def is_unique(self, field: str, value: str, current_id: int = None) -> bool:
         with pool.connection() as conn:
             with conn.cursor() as db:

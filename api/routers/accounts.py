@@ -37,12 +37,19 @@ async def create_account(
     return AccountToken(account=account, **token.dict())
 
 
-@router.get("/api/accounts/{username}", response_model=AccountOut)
+@router.get("/api/accounts/username/{username}", response_model=AccountOut)
 async def get_account(
     username: str,
     queries: AccountQueries = Depends()
 ):
     return queries.get(username)
+
+@router.get("/api/accounts/id/{id}", response_model=AccountOut)
+async def get_account_by_id(
+    id: int,
+    queries: AccountQueries = Depends()
+):
+    return queries.get_by_id(id)
 
 
 @router.delete("/api/accounts/{id}/{username}", response_model=Union[bool, HttpError])

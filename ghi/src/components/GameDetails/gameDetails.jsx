@@ -73,7 +73,6 @@ const GameDetails = () => {
     }
 };
 
-
   const fetchScreenshots = async (rawg_pk) => {
     const rawgPk = rawg_pk
     const url = `${import.meta.env.VITE_API_HOST}/api/screenshots/${rawgPk}`
