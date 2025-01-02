@@ -35,6 +35,7 @@ class ReviewOut(BaseModel):
     id: int
     game_id: int
     account_id: int
+    username: str
     title: str
     body: str
     replies_count: int
@@ -129,17 +130,19 @@ class ReviewQueries:
                         INSERT INTO reviews (
                             game_id,
                             account_id,
+                            username,
                             body,
                             title,
                             rating,
                             replies_count,
                             upvote_count
                             )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                         RETURNING
                             id,
                             game_id,
                             account_id,
+                            username,
                             body,
                             title,
                             rating,
@@ -151,6 +154,7 @@ class ReviewQueries:
                         [
                             review_dict["game_id"],
                             review_dict["account_id"],
+                            review_dict["username"],
                             review_dict["body"],
                             review_dict["title"],
                             review_dict["rating"],

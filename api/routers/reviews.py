@@ -77,6 +77,7 @@ async def create_review(
     games_queries.update_game(game_id, game_dict)
 
     review_dict["account_id"] = account_id
+    review_dict["username"] = account_data["username"]
     review_dict["replies_count"] = 0
     review_dict["upvote_count"] = 0
 
