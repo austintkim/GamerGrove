@@ -357,7 +357,7 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
               />
 
               </button>
-              <p style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right', margin: '0'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })} </p>
+              <p style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right', margin: '0'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })} by {review.username} </p>
             </div>
           </div>
         ))
