@@ -170,7 +170,8 @@ function Dashboard() {
         setUserReviewDetails([]);
         return;
       } else {
-        setUserReviewDetails(reviewData);
+        const sortedReviews = reviewData.sort((a, b) => new Date(b.date_created) - new Date(a.date_created));
+        setUserReviewDetails(sortedReviews);
       }
     } catch (error) {
       console.error('Error fetching boards', error);
