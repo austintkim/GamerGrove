@@ -10,8 +10,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
   const [userReviews, setUserReviews] = useState([]);
   const [voted, setVoted] = useState(false)
 
-  console.log(userReviews);
-
   const fetchReviewsForGame = async (gameId) => {
     const votes = await fetchVotesForUser();
     const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/games/${gameId}`;
@@ -53,7 +51,8 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
         }
 
     }
-        setUserReviews(reviewsData);
+        const sortedReviews = reviewsData.sort((a, b) => new Date(b.date_created) - new Date(a.date_created));
+        setUserReviews(sortedReviews);
       }
     } catch (error) {
       console.error('Error fetching reviews:', error);

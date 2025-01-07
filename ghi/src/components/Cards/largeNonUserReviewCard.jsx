@@ -20,7 +20,8 @@ function LargeNonUserReviewCard({ gameId }) {
         setUserReviews([]);
       } else {
         const reviewsData = await response.json();
-        setUserReviews(reviewsData);
+        const sortedReviews = reviewsData.sort((a, b) => new Date(b.date_created) - new Date(a.date_created));
+        setUserReviews(sortedReviews);
       }
     } catch (error) {
       console.error('Error fetching reviews:', error);
