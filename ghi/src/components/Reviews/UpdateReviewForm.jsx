@@ -61,7 +61,7 @@ function UpdateReviewForm() {
 
   const fetchAccount = async (username) => {
   if (username !== undefined) {
-    const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${username}`;
+    const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/username/${username}`;
     const response = await fetch(accountUrl);
     if (response.ok) {
       const data = await response.json();

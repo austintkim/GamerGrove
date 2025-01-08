@@ -61,7 +61,7 @@ function UpdateBoardForm() {
 
   const fetchAccount = async (user) => {
   if (user !== undefined) {
-    const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${user}`;
+    const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/username/${user}`;
     const response = await fetch(accountUrl);
     if (response.ok) {
       const data = await response.json();
@@ -75,6 +75,7 @@ function UpdateBoardForm() {
     const fetchData = async () => {
       try {
         const username = await fetchUserName();
+        console.log(username);
         const account = await fetchAccount(username);
 
         setAccountData(account);
