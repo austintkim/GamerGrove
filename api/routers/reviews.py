@@ -115,13 +115,13 @@ async def update_review(
     review: ReviewInUpdate,
     queries: ReviewQueries = Depends(),
     games_queries: GameQueries = Depends(),
-    review_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     review_dict = review.dict()
 
     review_details = queries.get_review(id).dict()
 
-    account_id = authenticate_user(review_data)
+    account_id = authenticate_user(account_data)
 
     game_id = review_details["game_id"]
     previous_rating = review_details["rating"]
@@ -138,6 +138,7 @@ async def update_review(
     upvote_count = review_details["upvote_count"]
 
     review_dict["account_id"] = account_id
+    review_dict["username"] = account_data["username"]
     review_dict["game_id"] = game_id
     review_dict["replies_count"] = replies_count
     review_dict["upvote_count"] = upvote_count

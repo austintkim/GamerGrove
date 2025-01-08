@@ -227,7 +227,7 @@ class ReviewQueries:
                         detail="A review with that id does not exist in the database"
                     )
 
-                account_id_check = db.execute(
+                result = db.execute(
                     """
                     UPDATE reviews
                     SET body = %s,
@@ -235,7 +235,19 @@ class ReviewQueries:
                         rating = %s,
                         replies_count = %s,
                         upvote_count = %s
-                    WHERE id = %s AND game_id = %s AND account_id = %s
+                    WHERE id = %s AND game_id = %s AND account_id = %s AND username = %s
+                    RETURNING
+                        id,
+                        game_id,
+                        account_id,
+                        username,
+                        body,
+                        title,
+                        rating,
+                        replies_count,
+                        upvote_count,
+                        date_created,
+                        last_update
                     """,
                     [
                         review_dict["body"],
@@ -245,12 +257,18 @@ class ReviewQueries:
                         review_dict["upvote_count"],
                         id,
                         review_dict["game_id"],
-                        review_dict["account_id"]
+                        review_dict["account_id"],
+                        review_dict["username"]
                     ]
                 )
-                if account_id_check.rowcount == 0:
+                row = result.fetchone()
+                if row is not None:
+                    record = {}
+                    for i, column in enumerate(db.description):
+                        record[column.name] = row[i]
+                    return ReviewOut(**record)
+                else:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="You are attempting to update a review that you did not create"
                     )
-                return ReviewOut(id=id, **review_dict)
