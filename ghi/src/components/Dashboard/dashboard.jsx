@@ -170,7 +170,7 @@ function Dashboard() {
         setUserReviewDetails([]);
         return;
       } else {
-        const sortedReviews = reviewData.sort((a, b) => new Date(b.date_created) - new Date(a.date_created));
+        const sortedReviews = reviewData.sort((a, b) => new Date(b.last_update) - new Date(a.last_update));
         setUserReviewDetails(sortedReviews);
       }
     } catch (error) {
