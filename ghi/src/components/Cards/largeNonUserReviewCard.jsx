@@ -79,7 +79,16 @@ function LargeNonUserReviewCard({ gameId }) {
               />
               </button>
             </div>
-            <p style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right', margin: '0'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })} by {review.username}</p>
+            {
+                review.last_update > review.date_created ?
+                <p
+                  style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right'}}> Updated {formatDistanceToNow(new Date(`${review.last_update}Z`), { addSuffix: true })}
+                </p>
+                :
+                <p
+                  style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })}
+                </p>
+              }
           </div>
         ))
       ) : (
