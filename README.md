@@ -93,3 +93,15 @@ npm install date-fns
   - Note that I am subscribed to the basic plan, which allows for up to 1,000 requests a day (30,000 requests per month)
 - Feel free to use the link provided above to obtain your own Rawg API key and use that value in the two aforementioned .env files that you must add to the codebase before creating your Docker containers and launching the application in the browser
   - No card or payment details are required
+
+## Resetting Database
+- If you would like to reset the database (to either migrate structural changes you made locally in a table or just want to wipe database clean), please run the following commands:
+```
+docker-compose down
+docker container prune -f
+docker volume rm pg-admin
+docker volume rm postgres-data
+docker volume create pg-admin
+docker volume create postgres-data
+docker-compose up
+```
