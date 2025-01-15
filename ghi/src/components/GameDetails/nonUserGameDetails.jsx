@@ -10,8 +10,7 @@ const containerStyle = {
 
 function NonUserGameDetails() {
     const navigate = useNavigate();
-    const { id } = useParams();
-
+    
     return (
         <div style={containerStyle}>
             <div className="card text-bg-light mb-3">
