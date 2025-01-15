@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './gameDetails.css';
 
 const containerStyle = {
@@ -10,7 +10,7 @@ const containerStyle = {
 
 function NonUserGameDetails() {
     const navigate = useNavigate();
-    
+
     return (
         <div style={containerStyle}>
             <div className="card text-bg-light mb-3">
