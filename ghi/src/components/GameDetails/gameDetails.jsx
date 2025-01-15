@@ -1,4 +1,3 @@
-import { useAuthContext } from "@galvanize-inc/jwtdown-for-react";
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate, Link } from 'react-router-dom';
@@ -35,7 +34,6 @@ const GameDetails = () => {
     }
   }, [place]);
 
-  const { token } = useAuthContext();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -144,7 +142,7 @@ const GameDetails = () => {
       }
     };
     fetchData();
-  }, [token])
+  }, [userToken2])
 
   if (!gameData) {
     return null;
@@ -323,7 +321,7 @@ const GameDetails = () => {
 
   return (
     <div>
-    {token ?
+    {userToken2 ?
 
 
     <div>
