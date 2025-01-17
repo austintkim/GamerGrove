@@ -354,7 +354,7 @@ const GameDetails = () => {
           >{wishListText}</button>
           <label >
 
-            <select value = {addToBoardText} onChange={handleBoardClick} className='GDButton' style={{color:'black', width: 'fit-content'}}>
+            <select value = {addToBoardText} onChange={handleBoardClick} className='GDButton' style={{color:'black', width: 'fit-content', opacity: '1'}} disabled = {addToBoardText !== 'Add to Board'} >
               <option value="">{addToBoardText}</option>
               {boards.map(board => {
                 return(
