@@ -121,6 +121,7 @@ function BoardPage() {
     const fetchData = async () => {
       try {
         const boardDetails = await fetchBoardDetails(boardId);
+
         setBoardData(boardDetails);
 
         const accountId = await fetchUserName();
@@ -149,6 +150,7 @@ function BoardPage() {
         }
       }
         setGamesData(gamesForBoardDetails);
+
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -173,7 +175,6 @@ function BoardPage() {
         }
         };
       const response = await fetch (url, fetchConfig)
-
 
       if (response.ok) {
         // Invoking fetchData so that once a game is successfully removed from the board
