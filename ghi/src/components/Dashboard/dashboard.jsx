@@ -1,4 +1,5 @@
 import './dashboard.css';
+import {useAuthContext} from "@galvanize-inc/jwtdown-for-react";
 import {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import BoardCard from '../Cards/boardCard.jsx';
@@ -34,7 +35,7 @@ function Dashboard() {
   const[savedGameDetails, setSavedGameDetails] = useState([]);
   const[wishListGameDetails, setWishListGameDetails] = useState([]);
 
-
+  const { token } = useAuthContext();
   const navigate = useNavigate();
   const handleBackToLogin = () => {
     navigate("/login");
@@ -201,7 +202,7 @@ function Dashboard() {
     };
   fetchIcons();
   fetchData();
-  }, [userToken]);
+  }, [token]);
 
   useEffect(() => {
     if (userBoardDetails.length && boardGameDetails.length) {
