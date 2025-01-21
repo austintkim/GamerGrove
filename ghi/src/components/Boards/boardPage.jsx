@@ -143,7 +143,7 @@ function BoardPage() {
         const gamesForBoardDetails = await Promise.all(gameDetailsPromises);
         for (const game of gamesForBoardDetails){
           for (const entry of libraryData){
-            if (entry.game_id == game.id){
+            if (entry.game_id == game.id && entry.board_id == boardId){
               game.library_id = entry.id
               game.account_id = entry.account_id
           }
