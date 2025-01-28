@@ -185,8 +185,16 @@ function Dashboard() {
         return gamesData;
       })
     );
+    const seenIds = new Set();
+    const uniqueGameDetails = gameDetails.filter((game) => {
+      if (seenIds.has(game.id)) {
+        return false;
+      }
+      seenIds.add(game.id);
+      return true;
+    });
 
-    setReviewGameDetails(gameDetails);
+    setReviewGameDetails(uniqueGameDetails);
 
   }
 

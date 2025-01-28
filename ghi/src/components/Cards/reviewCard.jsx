@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 function ReviewCard({ games }) {
 
+  console.log(games);
+
   const handleLinkClick = (e) => {
     e.stopPropagation();
   };
