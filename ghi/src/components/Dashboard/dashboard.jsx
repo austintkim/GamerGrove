@@ -7,7 +7,7 @@ import GameCard from '../Cards/gameCard.jsx';
 import WishlistCard from '../Cards/wishlistCard.jsx';
 import SideMenu from '../Home/Menu';
 import Nav from '../Home/Nav';
-import CombinedCards from '../Cards/combinedCards';
+import UserReviewCard from '../Cards/userReviewCard';
 import Settings from '../Accounts/Settings.jsx';
 
 const containerStyle = {
@@ -301,7 +301,7 @@ function Dashboard() {
                             maxWidth: '935px'
                         }}
                     >
-                        <CombinedCards
+                        <UserReviewCard
                             reviews={userReviewDetails}
                             reviewGames={reviewGameDetails}
                         />

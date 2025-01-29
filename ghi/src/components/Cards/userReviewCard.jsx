@@ -3,14 +3,25 @@ import StarRating from '../GameDetails/StarRating';
 import {Link, useNavigate} from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 
-function UserReviewCard({ userReviews }) {
+function UserReviewCard({ reviews, reviewGames }) {
   const navigate = useNavigate();
+
+  const gamesMap = new Map(reviewGames.map((game) => [game.id, game]))
+
+  reviews.forEach((review) => {
+      const game = gamesMap.get(review.game_id)
+      if (game) {
+          review.background_img = game.background_img
+          review.game_name = game.name
+      }
+  })
+
   return (
       <div>
-          {userReviews.length === 0 ? (
+          {reviews.length === 0 ? (
               <p style={{ color: 'white' }}>No reviews created yet.</p>
           ) : (
-              userReviews.map((review) => (
+              reviews.map((review) => (
                   <div key={review.id} className="urcard">
                       <div className="urcard-content">
                           <div className="urcard-title">{review.title}</div>
