@@ -247,79 +247,92 @@ function Dashboard() {
 
   if (userToken) {
     return (
-      <div>
-        <SideMenu />
-        <Nav
-          userCookie = {userToken}
-          userData = {userDataDetails}
-        />
-        <main>
-          <h1 style={{color:'white'}} >{userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟</h1>
+        <div>
+            <SideMenu />
+            <Nav userCookie={userToken} userData={userDataDetails} />
+            <main>
+                <h1 style={{ color: 'white', textAlign: 'left' }}>
+                    {userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟
+                </h1>
 
-          <input id="radio1" type="radio" name="css-tabs" defaultChecked />
-          <input id="radio2" type="radio" name="css-tabs" />
-          <input id="radio3" type="radio" name="css-tabs" />
-          <input id="radio4" type="radio" name="css-tabs" />
-          <input id="radio5" type="radio" name="css-tabs" />
-          <div id="tabs">
-            <label style={{color:'white'}} htmlFor="radio1">Boards</label>
-            <label style={{color:'white'}} htmlFor="radio2">Reviews</label>
-            <label style={{color:'white'}} htmlFor="radio3">Games</label>
-            <label style={{color:'white'}} htmlFor="radio4">Wishlist</label>
-            <label style={{color:'white'}} htmlFor="radio5">Settings</label>
-          </div>
-          <div id="content">
-            <section id="content1">
-              <div>
-              <BoardCard
-                boards = {userBoardDetails}
-                boardsWithGames = {mappedUserBoardDetails}
-              />
-
-
-
-              </div>
-            </section>
-            <section id="content2">
-
-              <CombinedCards
-                reviews = {userReviewDetails}
-                reviewGames = {reviewGameDetails}
-              />
-              <br />
-
-
-
-            </section>
-            <section id="content3">
-              <div className='gcard-container'>
-              <GameCard games = {savedGameDetails} />
-
-              </div>
-            </section>
-            <section id="content4">
-              <div>
-              <WishlistCard
-              onGameRemoved={handleGameRemoved}
-              libraryEntries = {userLibraryEntries}
-              userData = {userDataDetails}
-              wishListGames = {wishListGameDetails}
-              />
-
-              </div>
-            </section>
-            <section style={{ marginLeft: '100px'}} id="content5">
-              <Settings
-              iconData = {icons}
-              userData = {userDataDetails}
-              onSettingsUpdate = {handleSettingsUpdate}
-              />
-            </section>
-            </div>
-
-        </main>
-      </div>
-    );
+                <input
+                    id="radio1"
+                    type="radio"
+                    name="css-tabs"
+                    defaultChecked
+                />
+                <input id="radio2" type="radio" name="css-tabs" />
+                <input id="radio3" type="radio" name="css-tabs" />
+                <input id="radio4" type="radio" name="css-tabs" />
+                <input id="radio5" type="radio" name="css-tabs" />
+                <div id="tabs" >
+                    <label style={{ color: 'white' }} htmlFor="radio1">
+                        Boards
+                    </label>
+                    <label style={{ color: 'white' }} htmlFor="radio2">
+                        Reviews
+                    </label>
+                    <label style={{ color: 'white' }} htmlFor="radio3">
+                        Games
+                    </label>
+                    <label style={{ color: 'white' }} htmlFor="radio4">
+                        Wishlist
+                    </label>
+                    <label style={{ color: 'white' }} htmlFor="radio5">
+                        Settings
+                    </label>
+                </div>
+                <div id="content">
+                    <section id="content1">
+                        <div>
+                            <BoardCard
+                                boards={userBoardDetails}
+                                boardsWithGames={mappedUserBoardDetails}
+                            />
+                        </div>
+                    </section>
+                    <section
+                        id="content2"
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            width: '100%',
+                            maxWidth: '935px'
+                        }}
+                    >
+                        <CombinedCards
+                            reviews={userReviewDetails}
+                            reviewGames={reviewGameDetails}
+                        />
+                        <br />
+                    </section>
+                    <section id="content3">
+                        <div className="gcard-container">
+                            <GameCard games={savedGameDetails} />
+                        </div>
+                    </section>
+                    <section id="content4">
+                        <div>
+                            <WishlistCard
+                                onGameRemoved={handleGameRemoved}
+                                libraryEntries={userLibraryEntries}
+                                userData={userDataDetails}
+                                wishListGames={wishListGameDetails}
+                            />
+                        </div>
+                    </section>
+                    <section style={{ marginLeft: '100px' }} id="content5">
+                        <Settings
+                            iconData={icons}
+                            userData={userDataDetails}
+                            onSettingsUpdate={handleSettingsUpdate}
+                        />
+                    </section>
+                </div>
+            </main>
+        </div>
+    )
   } else {
     return (
       <div style={containerStyle}>

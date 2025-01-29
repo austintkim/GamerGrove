@@ -17,15 +17,14 @@
 .urcard-content {
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .urcard-photo img {
-    width: 125px;
     height: 125px;
-    border-radius: 50%;
-    margin-right: 20px;
-    flex: 1;
+    border-radius: 10%;
+    margin-bottom: 15px;
 }
 
 .urcard-details {
@@ -40,7 +39,7 @@
     margin: 0;
     text-align: center;
     margin-top: 10px;
-    margin-bottom: -20px;
+    margin-bottom: -30px;
     font-family: 'K2D';
     color: white;
 }
@@ -56,26 +55,16 @@
 .urcard-edit-delete {
     flex: 1;
     font-size: 18px;
-    text-align: left;
     font-family: 'K2D';
     color: white;
     margin-left: 6px;
-}
-
-.urcard-edit-delete1 {
-    font-size: 18px;
-    text-align: right;
-    font-family: 'K2D';
-    color: white;
-
 }
 
 .urline {
     width: 90%;
     margin-left: 30px;
     height: 1px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     background: rgb(138, 138, 138);
 }
 

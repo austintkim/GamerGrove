@@ -14,7 +14,7 @@
 .boardimg {
   animation: bounceUpDown 3s infinite;
   margin-bottom: -200px;
-  margin-left: 815px;
+  margin-left: -20px;
   z-index: 1;
   position: relative;
 

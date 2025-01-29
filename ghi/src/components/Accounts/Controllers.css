@@ -14,7 +14,7 @@
 .controllersimg {
   animation: bounceUpDown 3s infinite;
   margin-bottom: -330px;
-  margin-left: 815px;
+  margin-left: -20px;
   z-index: 1;
   position: relative;
 

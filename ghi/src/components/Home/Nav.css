@@ -11,8 +11,7 @@
   cursor: pointer;
   display: inline-block;
   width: 100%;
-  text-align: left;
-  margin-left: 10px;
+  text-align: center;
   outline: none;
 }
 
@@ -131,8 +130,7 @@ input[type=text] {
   text-decoration: underline;
   text-decoration-thickness: .5px;
   color: white;
-  padding: 5px;
-  margin-left: 10px;
+  padding-bottom: 5px;
 }
 
 .loader {

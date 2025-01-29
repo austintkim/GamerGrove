@@ -1,5 +1,4 @@
 import UserReviewCard from './userReviewCard';
-import ReviewCard from './reviewCard';
 
 function CombinedCards({ reviews, reviewGames } ) {
   const flexContainerStyle = {
@@ -18,7 +17,6 @@ function CombinedCards({ reviews, reviewGames } ) {
 
   return (
     <div style={flexContainerStyle}>
-      <ReviewCard games = {reviewGames}/>
       <UserReviewCard userReviews = {reviews}/>
     </div>
   );
