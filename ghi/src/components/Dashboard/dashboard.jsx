@@ -53,23 +53,29 @@ function Dashboard() {
     }
   };
 
-  const fetchUserData = async () => {
-    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
+const fetchUserData = async () => {
+    const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`
 
     const fetchConfig = {
-      credentials: 'include',
-    };
-
-    const response = await fetch(tokenUrl, fetchConfig);
-    const data = await response.json();
-    if (data) {
-      setUserToken(data.access_token);
-      setUserDataDetails(data.account);
-      return data.account;
-    } else {
-      throw new Error ('No active token')
+        credentials: 'include',
     }
-  };
+
+    try {
+        const response = await fetch(tokenUrl, fetchConfig)
+        const data = await response.json()
+        if (data) {
+            setUserToken(data.access_token)
+            setUserDataDetails(data.account)
+            return data.account
+        }
+        throw new Error('No active token')
+    } catch (error) {
+        console.error('Error fetching user data:', error)
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+}
 
 
   const fetchUserGames = async(userId) => {
