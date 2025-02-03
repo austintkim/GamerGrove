@@ -21,7 +21,9 @@ function Dashboard() {
   const[icons, setIcons] = useState([]);
   const[userToken, setUserToken] = useState(null);
   const[userDataDetails, setUserDataDetails] = useState('');
+  const[tokenFetchAttempted, setTokenFetchAttempted] = useState(false);
   const[loading, setLoading] = useState(true);
+
 
   const[userBoardDetails, setUserBoardDetails] = useState([]);
   const[mappedUserBoardDetails, setMappedUserBoardDetails] = useState([]);
@@ -34,6 +36,9 @@ function Dashboard() {
   const[libraryGameDetails, setLibraryGameDetails] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
   const[wishListGameDetails, setWishListGameDetails] = useState([]);
+
+  console.log(tokenFetchAttempted);
+  console.log(loading);
 
   const { token } = useAuthContext();
   const navigate = useNavigate();
@@ -68,14 +73,14 @@ const fetchUserData = async () => {
             setUserDataDetails(data.account)
             return data.account
         }
-        throw new Error('No active token')
-    } catch (error) {
+        console.warn('No active token found');
+        return null;
+      } catch (error) {
         console.error('Error fetching user data:', error)
-        throw error;
-    } finally {
-        setLoading(false);
+      } finally {
+        setTokenFetchAttempted(true);
+      }
     }
-}
 
 
   const fetchUserGames = async(userId) => {
@@ -206,14 +211,17 @@ const fetchUserData = async () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const userData = await fetchUserData();
-      if (userData?.id) {
-        await fetchUserBoards(userData.id);
-        await fetchUserReviews(userData.id);
-        await fetchUserGames(userData.id);
-        setLoading(false);
-      }
+        const userData = await fetchUserData();
+        if (userData?.id) {
+          await Promise.all([
+            fetchUserBoards(userData.id),
+            fetchUserReviews(userData.id),
+            fetchUserGames(userData.id),
+          ]);
+          setLoading(false);
+        }
     };
+
   fetchIcons();
   fetchData();
   }, [token]);
@@ -245,114 +253,116 @@ const fetchUserData = async () => {
     fetchUserData();
   }
 
-  if (loading) {
+  if (!tokenFetchAttempted || loading) {
     return (
       <div>Loading...</div>
     )
   }
 
-  if (userToken) {
+  if (!token) {
     return (
-        <div>
-            <SideMenu />
-            <Nav userCookie={userToken} userData={userDataDetails} />
-            <main>
-                <h1 style={{ color: 'white', textAlign: 'left' }}>
-                    {userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟
-                </h1>
-
-                <input
-                    id="radio1"
-                    type="radio"
-                    name="css-tabs"
-                    defaultChecked
-                />
-                <input id="radio2" type="radio" name="css-tabs" />
-                <input id="radio3" type="radio" name="css-tabs" />
-                <input id="radio4" type="radio" name="css-tabs" />
-                <input id="radio5" type="radio" name="css-tabs" />
-                <div id="tabs" >
-                    <label style={{ color: 'white' }} htmlFor="radio1">
-                        Boards
-                    </label>
-                    <label style={{ color: 'white' }} htmlFor="radio2">
-                        Reviews
-                    </label>
-                    <label style={{ color: 'white' }} htmlFor="radio3">
-                        Games
-                    </label>
-                    <label style={{ color: 'white' }} htmlFor="radio4">
-                        Wishlist
-                    </label>
-                    <label style={{ color: 'white' }} htmlFor="radio5">
-                        Settings
-                    </label>
+        <div style={containerStyle}>
+            <div className="card text-bg-light mb-3">
+                <div className="card-body">
+                    <div>
+                        You have been logged out due to inactivity...😅 Please
+                        log back in!
+                    </div>
+                    <button onClick={handleBackToLogin}> Log In </button>
                 </div>
-                <div id="content">
-                    <section id="content1">
-                        <div>
-                            <BoardCard
-                                boards={userBoardDetails}
-                                boardsWithGames={mappedUserBoardDetails}
-                            />
-                        </div>
-                    </section>
-                    <section
-                        id="content2"
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            width: '100%',
-                            maxWidth: '935px'
-                        }}
-                    >
-                        <UserReviewCard
-                            reviews={userReviewDetails}
-                            reviewGames={reviewGameDetails}
-                        />
-                        <br />
-                    </section>
-                    <section id="content3">
-                        <div className="gcard-container">
-                            <GameCard games={savedGameDetails} />
-                        </div>
-                    </section>
-                    <section id="content4">
-                        <div>
-                            <WishlistCard
-                                onGameRemoved={handleGameRemoved}
-                                libraryEntries={userLibraryEntries}
-                                userData={userDataDetails}
-                                wishListGames={wishListGameDetails}
-                            />
-                        </div>
-                    </section>
-                    <section style={{ marginLeft: '100px' }} id="content5">
-                        <Settings
-                            iconData={icons}
-                            userData={userDataDetails}
-                            onSettingsUpdate={handleSettingsUpdate}
-                        />
-                    </section>
-                </div>
-            </main>
+            </div>
         </div>
     )
-  } else {
-    return (
-      <div style={containerStyle}>
-      <div className="card text-bg-light mb-3">
-        <div className="card-body">
-          <div>
-            You have been logged out due to inactivity...😅 Please log back in!
-          </div>
-          <button onClick={handleBackToLogin}> Log In </button>
-        </div>
-      </div>
-    </div>
-    );
   }
+  return (
+      <div>
+          <SideMenu />
+          <Nav userCookie={userToken} userData={userDataDetails} />
+          <main>
+              <h1 style={{ color: 'white', textAlign: 'left' }}>
+                  {userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟
+              </h1>
+
+              <input
+                  id="radio1"
+                  type="radio"
+                  name="css-tabs"
+                  defaultChecked
+              />
+              <input id="radio2" type="radio" name="css-tabs" />
+              <input id="radio3" type="radio" name="css-tabs" />
+              <input id="radio4" type="radio" name="css-tabs" />
+              <input id="radio5" type="radio" name="css-tabs" />
+              <div id="tabs" >
+                  <label style={{ color: 'white' }} htmlFor="radio1">
+                      Boards
+                  </label>
+                  <label style={{ color: 'white' }} htmlFor="radio2">
+                      Reviews
+                  </label>
+                  <label style={{ color: 'white' }} htmlFor="radio3">
+                      Games
+                  </label>
+                  <label style={{ color: 'white' }} htmlFor="radio4">
+                      Wishlist
+                  </label>
+                  <label style={{ color: 'white' }} htmlFor="radio5">
+                      Settings
+                  </label>
+              </div>
+              <div id="content">
+                  <section id="content1">
+                      <div>
+                          <BoardCard
+                              boards={userBoardDetails}
+                              boardsWithGames={mappedUserBoardDetails}
+                          />
+                      </div>
+                  </section>
+                  <section
+                      id="content2"
+                      style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          width: '100%',
+                          maxWidth: '935px'
+                      }}
+                  >
+                      <UserReviewCard
+                          reviews={userReviewDetails}
+                          reviewGames={reviewGameDetails}
+                      />
+                      <br />
+                  </section>
+                  <section id="content3">
+                      <div className="gcard-container">
+                          <GameCard games={savedGameDetails} />
+                      </div>
+                  </section>
+                  <section id="content4">
+                      <div>
+                          <WishlistCard
+                              onGameRemoved={handleGameRemoved}
+                              libraryEntries={userLibraryEntries}
+                              userData={userDataDetails}
+                              wishListGames={wishListGameDetails}
+                          />
+                      </div>
+                  </section>
+                  <section style={{ marginLeft: '100px' }} id="content5">
+                      <Settings
+                          iconData={icons}
+                          userData={userDataDetails}
+                          onSettingsUpdate={handleSettingsUpdate}
+                      />
+                  </section>
+              </div>
+          </main>
+      </div>
+  )
 }
+
+
 
 export default Dashboard;
