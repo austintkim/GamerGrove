@@ -38,7 +38,7 @@ function UserReviewCard({ reviews, reviewGames }) {
                             >
                               {review.game_name}
                             </div>
-                            <div className="urcard-photo" style ={{marginBottom: '15px'}}>
+                            <div className="urcard-content" style ={{marginBottom: '15px'}}>
                                 <img
                                     src={review.background_img}
                                     alt="Card Photo"

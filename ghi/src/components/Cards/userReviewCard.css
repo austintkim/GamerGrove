@@ -21,12 +21,6 @@
     padding-right: 10px;
 }
 
-.urcard-photo img {
-    height: 125px;
-    border-radius: 10%;
-    margin-bottom: 15px;
-}
-
 .urcard-details {
     flex: 2;
     color: white;

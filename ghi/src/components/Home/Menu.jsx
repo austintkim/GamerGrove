@@ -30,7 +30,7 @@ const SideMenu = ({  }) => {
 }, []);
 
     return (
-            <div className="side-menu" style={{ textAlign: 'left'}}>
+            <div className="side-menu">
                 <ul>
 <ul>
     <Link to="/">
