@@ -24,7 +24,6 @@ function Dashboard() {
   const[tokenFetchAttempted, setTokenFetchAttempted] = useState(false);
   const[loading, setLoading] = useState(true);
 
-
   const[userBoardDetails, setUserBoardDetails] = useState([]);
   const[mappedUserBoardDetails, setMappedUserBoardDetails] = useState([]);
   const[boardGameDetails, setBoardGameDetails] = useState([]);
@@ -36,9 +35,6 @@ function Dashboard() {
   const[libraryGameDetails, setLibraryGameDetails] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
   const[wishListGameDetails, setWishListGameDetails] = useState([]);
-
-  console.log(tokenFetchAttempted);
-  console.log(loading);
 
   const { token } = useAuthContext();
   const navigate = useNavigate();
