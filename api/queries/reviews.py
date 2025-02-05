@@ -26,7 +26,7 @@ class ReviewInUpdate(BaseModel):
 
 
 class ReviewIn(ReviewInBase):
-    replies_count: int
+    comment_count: int
     upvote_count: int
     account_id: int
 
@@ -38,7 +38,7 @@ class ReviewOut(BaseModel):
     username: str
     title: str
     body: str
-    replies_count: int
+    comment_count: int
     upvote_count: int
     rating: float
     date_created: datetime
@@ -134,7 +134,7 @@ class ReviewQueries:
                             body,
                             title,
                             rating,
-                            replies_count,
+                            comment_count,
                             upvote_count
                             )
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -146,7 +146,7 @@ class ReviewQueries:
                             body,
                             title,
                             rating,
-                            replies_count,
+                            comment_count,
                             upvote_count,
                             date_created,
                             last_update
@@ -158,7 +158,7 @@ class ReviewQueries:
                             review_dict["body"],
                             review_dict["title"],
                             review_dict["rating"],
-                            review_dict["replies_count"],
+                            review_dict["comment_count"],
                             review_dict["upvote_count"]
                         ],
                     )
@@ -233,7 +233,7 @@ class ReviewQueries:
                     SET body = %s,
                         title = %s,
                         rating = %s,
-                        replies_count = %s,
+                        comment_count = %s,
                         upvote_count = %s
                     WHERE id = %s AND game_id = %s AND account_id = %s AND username = %s
                     RETURNING
@@ -244,7 +244,7 @@ class ReviewQueries:
                         body,
                         title,
                         rating,
-                        replies_count,
+                        comment_count,
                         upvote_count,
                         date_created,
                         last_update
@@ -253,7 +253,7 @@ class ReviewQueries:
                         review_dict["body"],
                         review_dict["title"],
                         review_dict["rating"],
-                        review_dict["replies_count"],
+                        review_dict["comment_count"],
                         review_dict["upvote_count"],
                         id,
                         review_dict["game_id"],

@@ -11,88 +11,90 @@ class HttpError(BaseModel):
     detail: str
 
 
-class ReplyInBase(BaseModel):
+class CommentInBase(BaseModel):
     body: str
     review_id: int
-    reply_id: Optional[int]
+    comment_id: Optional[int]
 
 
-class ReplyInUpdate(BaseModel):
+class CommentInUpdate(BaseModel):
     body: str
 
 
-class ReplyIn(ReplyInBase):
+class CommentIn(CommentInBase):
     account_id: int
 
 
-class ReplyOut(BaseModel):
+class CommentOut(BaseModel):
     id: int
     body: str
     review_id: int
-    reply_id: Optional[int]
+    comment_id: Optional[int]
     account_id: int
 
+### Fix create and update endpoints to incorporate time stamps
 
-class ReplyQueries:
-    def get_user_replies(self, account_id: int) -> List[ReplyOut]:
+
+class CommentQueries:
+    def get_user_comments(self, account_id: int) -> List[CommentOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
                     """
                     SELECT *
-                    FROM replies
+                    FROM comments
                     WHERE account_id = %s;
                     """,
                     [account_id]
                 )
                 rows = result.fetchall()
-                replies = []
+                comments = []
                 if rows:
                     for row in rows:
                         data = {}
                         for i, column in enumerate(db.description):
                             data[column.name] = row[i]
-                        replies.append(ReplyOut(**data))
-                    return replies
+                        comments.append(CommentOut(**data))
+                    return comments
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="No replies written by this user"
+                    detail="No comments written by this user"
                 )
 
-    def get_review_replies(self, review_id: int) -> List[ReplyOut]:
+    def get_review_comments(self, review_id: int) -> List[CommentOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
                     """
                     SELECT *
-                    FROM replies
+                    FROM comments
                     WHERE review_id = %s;
                     """,
                     [review_id]
                 )
                 rows = result.fetchall()
-                replies = []
+                comments = []
                 if rows:
                     records = {}
                     for row in rows:
                         for i, column in enumerate(db.description):
                             records[column.name] = row[i]
-                        replies.append(ReplyOut(**records))
-                    return replies
+                        comments.append(CommentOut(**records))
+                    return comments
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="This review doesn't have any replies yet"
+                    detail="This review doesn't have any comments yet"
                 )
 
-    def get_reply(self, id: int) -> ReplyOut:
+    def get_comment(self, id: int) -> CommentOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
                     """
                     SELECT *
-                    FROM replies
+                    FROM comments
                     WHERE id = %s;
                     """,
                     [id]
@@ -102,36 +104,36 @@ class ReplyQueries:
                     records = {}
                     for i, column in enumerate(db.description):
                         records[column.name] = row[i]
-                    return ReplyOut(**records)
+                    return CommentOut(**records)
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could not find a reply with that id"
+                    detail="Could not find a comment with that id"
                 )
 
-    def create_reply(self, reply_dict: ReplyIn) -> ReplyOut:
+    def create_comment(self, comment_dict: CommentIn) -> CommentOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 try:
                     result = db.execute(
                         """
-                        INSERT INTO replies (body,
+                        INSERT INTO comments (body,
                         account_id,
                         review_id,
-                        reply_id,
+                        comment_id,
                         body)
                         VALUES (%s, %s, %s, %s)
                         RETURNING id,
                         account_id,
                         review_id,
-                        reply_id,
+                        comment_id,
                         body;
                         """,
                         [
-                            reply_dict["account_id"],
-                            reply_dict["review_id"],
-                            reply_dict["reply_id"],
-                            reply_dict["body"]
+                            comment_dict["account_id"],
+                            comment_dict["review_id"],
+                            comment_dict["comment_id"],
+                            comment_dict["body"]
                         ]
                     )
                     row = result.fetchone()
@@ -139,19 +141,19 @@ class ReplyQueries:
                         record = {}
                         for i, column in enumerate(db.description):
                             record[column.name] = row[i]
-                        return ReplyOut(**record)
+                        return CommentOut(**record)
                 except ValueError:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error creating reply"
+                        detail="Error creating comment"
                     )
 
-    def delete_reply(self, id: int, account_id: int) -> bool:
+    def delete_comment(self, id: int, account_id: int) -> bool:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 id_check = db.execute(
                     """
-                    SELECT * FROM replies
+                    SELECT * FROM comments
                     WHERE id = %s
                     """,
                     [id]
@@ -161,12 +163,12 @@ class ReplyQueries:
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A reply with that id does not exist in the database"
+                        detail="A comment with that id does not exist in the database"
                     )
 
                 account_id_check = db.execute(
                     """
-                    DELETE FROM replies
+                    DELETE FROM comments
                     WHERE id = %s AND account_id = %s
                     """,
                     [
@@ -177,16 +179,16 @@ class ReplyQueries:
                 if account_id_check.rowcount == 0:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to delete a reply that you did not create"
+                        detail="You are attempting to delete a comment that you did not create"
                     )
                 return True
 
-    def update_reply(self, id: int, reply_dict: ReplyIn) -> ReplyOut:
+    def update_comment(self, id: int, comment_dict: CommentIn) -> CommentOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 id_check = db.execute(
                     """
-                    SELECT * FROM replies
+                    SELECT * FROM comments
                     WHERE id = %s
                     """,
                     [id]
@@ -196,25 +198,25 @@ class ReplyQueries:
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A reply with that id does not exist in the database"
+                        detail="A comment with that id does not exist in the database"
                     )
                 account_id_check = db.execute(
                     """
-                    UPDATE replies
+                    UPDATE comments
                     SET body = %s
-                    WHERE id = %s AND review_id = %s AND reply_id = %s AND account_id = %s
+                    WHERE id = %s AND review_id = %s AND comment_id = %s AND account_id = %s
                     """,
                     [
-                        reply_dict["body"],
+                        comment_dict["body"],
                         id,
-                        reply_dict["review_id"],
-                        reply_dict["reply_id"],
-                        reply_dict["account_id"]
+                        comment_dict["review_id"],
+                        comment_dict["comment_id"],
+                        comment_dict["account_id"]
                     ]
                 )
                 if account_id_check.rowcount == 0:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to update a reply that you did not create"
+                        detail="You are attempting to update a comment that you did not create"
                     )
-                return ReplyOut(id=id, **reply_dict)
+                return CommentOut(id=id, **comment_dict)

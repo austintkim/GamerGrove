@@ -78,7 +78,7 @@ async def create_review(
 
     review_dict["account_id"] = account_id
     review_dict["username"] = account_data["username"]
-    review_dict["replies_count"] = 0
+    review_dict["comment_count"] = 0
     review_dict["upvote_count"] = 0
 
     created_review = queries.create_review(review_dict)
@@ -134,13 +134,13 @@ async def update_review(
     game_dict["rating"] = game_dict["rating_total"]/game_dict["rating_count"]
     games_queries.update_game(game_id, game_dict)
 
-    replies_count = review_details["replies_count"]
+    comment_count = review_details["comment_count"]
     upvote_count = review_details["upvote_count"]
 
     review_dict["account_id"] = account_id
     review_dict["username"] = account_data["username"]
     review_dict["game_id"] = game_id
-    review_dict["replies_count"] = replies_count
+    review_dict["comment_count"] = comment_count
     review_dict["upvote_count"] = upvote_count
 
     updated_review = queries.update_review(id, review_dict)
