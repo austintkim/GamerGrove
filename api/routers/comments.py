@@ -7,7 +7,7 @@ from queries.comments import (
     CommentQueries,
     HttpError
     )
-from queries.comments import (
+from queries.reviews import (
     ReviewQueries
 )
 from authenticator import authenticator
