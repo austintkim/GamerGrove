@@ -8,7 +8,7 @@ steps = [
         FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
         review_id INT NOT NULL,
         FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
-        comment_id INT NULL,
+        comment_id INT,
         FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
         date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP

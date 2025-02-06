@@ -3,6 +3,7 @@ from psycopg_pool import ConnectionPool
 from typing import List, Optional
 from pydantic import BaseModel
 from fastapi import (HTTPException, status)
+from datetime import datetime
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -27,12 +28,12 @@ class CommentIn(CommentInBase):
 
 class CommentOut(BaseModel):
     id: int
+    account_id: int
     body: str
     review_id: int
     comment_id: Optional[int]
-    account_id: int
-
-### Fix create and update endpoints to incorporate time stamps
+    date_created: datetime
+    last_update: datetime
 
 
 class CommentQueries:
@@ -117,7 +118,7 @@ class CommentQueries:
                 try:
                     result = db.execute(
                         """
-                        INSERT INTO comments (body,
+                        INSERT INTO comments (
                         account_id,
                         review_id,
                         comment_id,
@@ -127,7 +128,9 @@ class CommentQueries:
                         account_id,
                         review_id,
                         comment_id,
-                        body;
+                        body,
+                        date_created,
+                        last_update
                         """,
                         [
                             comment_dict["account_id"],

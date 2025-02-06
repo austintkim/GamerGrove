@@ -29,7 +29,7 @@ async def create_comment(
     review_id = comment_dict["review_id"]
     review_dict = review_queries.get_review(review_id).dict()
     del review_dict["id"]
-    review_dict["comments_count"] += 1
+    review_dict["comment_count"] += 1
     review_queries.update_review(review_id, review_dict)
 
     created_comment = queries.create_comment(comment_dict)
@@ -72,7 +72,7 @@ async def delete_comment(
     review_id = comment_details["review_id"]
     review_dict = review_queries.get_review(review_id).dict()
     del review_dict["id"]
-    review_dict["comments_count"] -= 1
+    review_dict["comment_count"] -= 1
     review_queries.update_review(review_id, review_dict)
 
     account_id = account_data["id"]
