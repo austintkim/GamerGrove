@@ -78,8 +78,6 @@ async def delete_comment(
     account_id = account_data["id"]
     return queries.delete_comment(id, account_id)
 
-    ### VERIFY/FIX CODE TO UPDATE Comments COUNT ON ASSOCIATED REVIEW
-
 
 @router.put("/api/comments/{id}/{account_id}", response_model=Union[CommentOut, HttpError])
 async def update_comment(
