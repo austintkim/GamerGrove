@@ -203,11 +203,19 @@ class CommentQueries:
                         status_code=status.HTTP_404_NOT_FOUND,
                         detail="A comment with that id does not exist in the database"
                     )
-                account_id_check = db.execute(
+                result = db.execute(
                     """
                     UPDATE comments
                     SET body = %s
-                    WHERE id = %s AND review_id = %s AND comment_id = %s AND account_id = %s
+                    WHERE id = %s AND review_id = %s AND (comment_id IS NULL OR comment_id = %s) AND account_id = %s
+                    RETURNING
+                        id,
+                        review_id,
+                        comment_id,
+                        account_id,
+                        body,
+                        date_created,
+                        last_update
                     """,
                     [
                         comment_dict["body"],
@@ -217,9 +225,14 @@ class CommentQueries:
                         comment_dict["account_id"]
                     ]
                 )
-                if account_id_check.rowcount == 0:
+                row = result.fetchone()
+                if row is not None:
+                    record = {}
+                    for i, column in enumerate(db.description):
+                        record[column.name] = row[i]
+                    return CommentOut(**record)
+                else:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="You are attempting to update a comment that you did not create"
                     )
-                return CommentOut(id=id, **comment_dict)

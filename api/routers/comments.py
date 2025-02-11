@@ -99,5 +99,3 @@ async def update_comment(
 
     updated_comment = queries.update_comment(id, comment_dict)
     return updated_comment
-
-    ### ADD CODE TO UPDATE Comments COUNT ON ASSOCIATED REVIEW
