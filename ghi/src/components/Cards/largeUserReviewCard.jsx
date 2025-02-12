@@ -292,7 +292,7 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
             <div>
             <div className="lurcard-title">{review.title}</div>
             </div>
-            <div>
+            <div style={{marginBottom: '10px'}}>
               {review.account_id === accountId && (
                 <>
                   <button

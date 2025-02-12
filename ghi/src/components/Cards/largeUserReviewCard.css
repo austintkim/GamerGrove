@@ -46,7 +46,7 @@
     padding: 0px;
     color: rgb(255, 255, 255);
     font-family: 'K2D';
-    font-size: 13px;
+    font-size: 18px;
     text-align: center;
     margin-top: 10px;
     margin-left: 100px;
@@ -57,7 +57,7 @@
 }
 
 .lurcard-title {
-    font-size: 20px;
+    font-size: 30px;
     margin: 0;
     color: rgb(255, 255, 255);
     text-align: center;
