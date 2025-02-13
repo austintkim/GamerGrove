@@ -20,12 +20,18 @@ steps = [
         CREATE OR REPLACE FUNCTION update_last_update_column()
         RETURNS TRIGGER AS $$
         BEGIN
+            -- If title or body is changing, update last_update
             IF (OLD.title IS DISTINCT FROM NEW.title OR OLD.body IS DISTINCT FROM NEW.body) THEN
                 NEW.last_update = CURRENT_TIMESTAMP;
-            ELSE
-                NEW.last_update = OLD.last_update;
+                RETURN NEW; -- Explicitly return early to prevent unnecessary changes
             END IF;
-            RETURN NEW;
+
+            -- If no relevant changes occurred, prevent unnecessary updates
+            IF ROW(NEW.*) IS DISTINCT FROM ROW(OLD.*) THEN
+                RETURN NEW;
+            ELSE
+                RETURN OLD;  -- Prevents PostgreSQL from treating this as an update
+            END IF;
         END;
         $$ LANGUAGE plpgsql;
 
