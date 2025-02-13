@@ -20,15 +20,20 @@ steps = [
         CREATE OR REPLACE FUNCTION update_last_update_column()
         RETURNS TRIGGER AS $$
         BEGIN
-            NEW.last_update = CURRENT_TIMESTAMP;
+            IF (OLD.title IS DISTINCT FROM NEW.title OR OLD.body IS DISTINCT FROM NEW.body) THEN
+                NEW.last_update = CURRENT_TIMESTAMP;
+            ELSE
+                NEW.last_update = OLD.last_update;
+            END IF;
             RETURN NEW;
         END;
         $$ LANGUAGE plpgsql;
 
-        CREATE TRIGGER set_last_update
+        CREATE OR REPLACE TRIGGER set_last_update
         BEFORE UPDATE ON reviews
         FOR EACH ROW
         EXECUTE FUNCTION update_last_update_column();
+
         """,
         """
         DROP TABLE reviews;
