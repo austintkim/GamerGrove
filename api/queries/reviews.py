@@ -227,45 +227,55 @@ class ReviewQueries:
                         detail="A review with that id does not exist in the database"
                     )
 
-                result = db.execute(
-                    """
+                columns = [desc[0] for desc in db.description]
+                existing_review = dict(zip(columns, id_row))
+
+                update_fields = []
+                update_values = []
+
+                if review_dict["body"] != existing_review["body"]:
+                    update_fields.append("body = %s")
+                    update_values.append(review_dict["body"])
+
+                if review_dict["title"] != existing_review["title"]:
+                    update_fields.append("title = %s")
+                    update_values.append(review_dict["title"])
+
+                update_fields.append("rating = %s")
+                update_values.append(review_dict["rating"])
+
+                update_fields.append("comment_count = %s")
+                update_values.append(review_dict["comment_count"])
+
+                update_fields.append("upvote_count = %s")
+                update_values.append(review_dict["upvote_count"])
+
+                if "body = %s" in update_fields or "title = %s" in update_fields:
+                    update_fields.append("last_update = CURRENT_TIMESTAMP")
+
+                update_query = f"""
                     UPDATE reviews
-                    SET body = %s,
-                        title = %s,
-                        rating = %s,
-                        comment_count = %s,
-                        upvote_count = %s
+                    SET {", ".join(update_fields)}
                     WHERE id = %s AND game_id = %s AND account_id = %s AND username = %s
-                    RETURNING
-                        id,
-                        game_id,
-                        account_id,
-                        username,
-                        body,
-                        title,
-                        rating,
-                        comment_count,
-                        upvote_count,
-                        date_created,
-                        last_update
-                    """,
-                    [
-                        review_dict["body"],
-                        review_dict["title"],
-                        review_dict["rating"],
-                        review_dict["comment_count"],
-                        review_dict["upvote_count"],
-                        id,
-                        review_dict["game_id"],
-                        review_dict["account_id"],
-                        review_dict["username"]
-                    ]
-                )
+                    RETURNING id, game_id, account_id, username, body, title, rating,
+                            comment_count, upvote_count, date_created, last_update
+                """
+
+                update_values.extend([id, review_dict["game_id"], review_dict["account_id"], review_dict["username"]])
+
+                result = db.execute(update_query, update_values)
                 row = result.fetchone()
+
                 if row is not None:
-                    record = {}
-                    for i, column in enumerate(db.description):
-                        record[column.name] = row[i]
+                    columns = [desc[0] for desc in db.description]
+                    record = dict(zip(columns, row))
+
+                    record["game_id"] = int(record["game_id"])
+                    record["account_id"] = int(record["account_id"])
+                    record["comment_count"] = int(record["comment_count"])
+                    record["upvote_count"] = int(record["upvote_count"])
+                    record["rating"] = float(record["rating"])
+
                     return ReviewOut(**record)
                 else:
                     raise HTTPException(
