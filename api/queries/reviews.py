@@ -233,16 +233,17 @@ class ReviewQueries:
                 update_fields = []
                 update_values = []
 
-                if review_dict["body"] != existing_review["body"]:
-                    update_fields.append("body = %s")
-                    update_values.append(review_dict["body"])
-
                 if review_dict["title"] != existing_review["title"]:
                     update_fields.append("title = %s")
                     update_values.append(review_dict["title"])
 
-                update_fields.append("rating = %s")
-                update_values.append(review_dict["rating"])
+                if review_dict["body"] != existing_review["body"]:
+                    update_fields.append("body = %s")
+                    update_values.append(review_dict["body"])
+
+                if review_dict["rating"] != existing_review["rating"]:
+                    update_fields.append("rating = %s")
+                    update_values.append(review_dict["rating"])
 
                 update_fields.append("comment_count = %s")
                 update_values.append(review_dict["comment_count"])
@@ -250,7 +251,7 @@ class ReviewQueries:
                 update_fields.append("upvote_count = %s")
                 update_values.append(review_dict["upvote_count"])
 
-                if "body = %s" in update_fields or "title = %s" in update_fields:
+                if "title = %s" in update_fields or "body = %s" in update_fields or "rating = %s" in update_fields:
                     update_fields.append("last_update = CURRENT_TIMESTAMP")
 
                 update_query = f"""
