@@ -381,7 +381,8 @@ const GameDetails = () => {
                             >
                                 {wishListText}
                             </button>
-                            <label>
+                            {boards.length > 0 ? (
+                                <label>
                                 <select
                                     value={addToBoardText}
                                     onChange={handleBoardClick}
@@ -406,6 +407,16 @@ const GameDetails = () => {
                                     })}
                                 </select>
                             </label>
+                            ): (
+                                <button
+                                    className="GDButton"
+                                    style={{ color: 'black', width: 'fit-content' }}
+                                    onClick={()=>{
+                                    navigate('/boards/create')
+                                }}> Create A Board
+                                </button>
+                            )}
+
                             <button
                                 className="GDButton"
                                 style={{ color: 'black', width: 'fit-content' }}
