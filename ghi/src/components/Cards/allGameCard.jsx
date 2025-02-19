@@ -102,7 +102,8 @@ function AllGameCard({ games }) {
 
     const handleReviewClick = (event, index, data) => {
         const v = data
-        navigate(`/games/${v}`, { state: 'create-review' })
+        const url = `/games/${v}#create-review`;
+        navigate(url, { state: 'create-review' });
     }
 
     const handleDetailClick = (event, index, data) => {

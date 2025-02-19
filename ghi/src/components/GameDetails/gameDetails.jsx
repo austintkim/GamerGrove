@@ -12,27 +12,26 @@ import LargeNonUserReviewCard from '../Cards/largeNonUserReviewCard'
 import ScreenshotsCard from '../Cards/screenshotsCard'
 import StarRating from './StarRating'
 import parse from 'html-react-parser'
-import { useLocation } from 'react-router-dom'
 
 const GameDetails = () => {
-    const location = useLocation()
-    const place = location.state
-
-    const lastHash = useRef('')
     useEffect(() => {
-        if (place) {
-            lastHash.current = place.slice(1) // safe hash for further use after navigation
-        }
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+        setTimeout(() => {
+            const element = document.getElementById(hash);
+            if (element) {
+                const rect = element.getBoundingClientRect();
+                const offset = 170;
+                const scrollPosition = window.scrollY + rect.top - offset;
 
-        if (lastHash.current && document.getElementById(lastHash.current)) {
-            setTimeout(() => {
-                document
-                    .getElementById(lastHash.current)
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-                lastHash.current = ''
-            }, 100)
-        }
-    }, [place])
+                window.scrollTo({
+                    top: scrollPosition,
+                    behavior: 'smooth',
+                });
+            }
+        }, 100); 
+    }
+}, [location.hash]);
 
     const navigate = useNavigate()
     const { id } = useParams()
