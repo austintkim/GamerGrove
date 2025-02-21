@@ -106,11 +106,6 @@ function HomeGameCard({ games }) {
         navigate(url, { state: 'create-review' });
     }
 
-    const handleDetailClick = (event, index, data) => {
-        const v = data
-        navigate(`/games/${v}`)
-    }
-
     const handleWishClick = async (event, index, data) => {
         const addEntryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`
         const wishListData = {}
