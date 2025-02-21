@@ -290,13 +290,6 @@ function AllGameCard({ games }) {
                                                 Wish
                                             </MenuItem>
                                         ),
-                                        <MenuItem
-                                            key="details"
-                                            onItemClick={handleDetailClick}
-                                            data={gameData.id}
-                                        >
-                                            Details
-                                        </MenuItem>,
                                         boardDataList.length > 0 ? (
                                             <SubMenu
                                                 key="submenu"
