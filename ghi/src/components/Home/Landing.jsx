@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Landing.css';
-import './Menu';
+import './sideMenu';
 import './Rows';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';

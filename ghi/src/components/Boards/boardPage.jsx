@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import './boardPage.css';
 import '../Cards/boardGameCard.css'
-import SideMenu from '../Home/Menu';
+import SideMenu from '../Home/sideMenu';
 import Nav from '../Home/Nav';
 import BoardGameCard from '../Cards/boardGameCard';
 

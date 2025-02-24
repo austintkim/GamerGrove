@@ -5,7 +5,7 @@ import './gameDetails.css'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import SideMenu from '../Home/Menu'
+import SideMenu from '../Home/sideMenu'
 import Nav from '../Home/Nav'
 import LargeUserReviewCard from '../Cards/largeUserReviewCard'
 import LargeNonUserReviewCard from '../Cards/largeNonUserReviewCard'
@@ -29,7 +29,7 @@ const GameDetails = () => {
                     behavior: 'smooth',
                 });
             }
-        }, 100); 
+        }, 100);
     }
 }, [location.hash]);
 

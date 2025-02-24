@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import BoardCard from '../Cards/boardCard.jsx';
 import GameCard from '../Cards/gameCard.jsx';
 import WishlistCard from '../Cards/wishlistCard.jsx';
-import SideMenu from '../Home/Menu';
+import SideMenu from '../Home/sideMenu';
 import Nav from '../Home/Nav';
 import UserReviewCard from '../Cards/userReviewCard';
 import Settings from '../Accounts/Settings.jsx';
