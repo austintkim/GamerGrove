@@ -9,6 +9,8 @@ function Home() {
     const [userDataDetails0, setUserDataDetails0] = useState('');
     const [genres, setGenres] = useState([]);
     const [genresLoaded, setGenresLoaded] = useState(false);
+    const [carousel, setCarousel] = useState([]);
+    const [carouselLoaded, setCarouselLoaded] = useState(false);
 
     const fetchUserData = async () => {
         const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
@@ -52,9 +54,39 @@ function Home() {
         }
     };
 
+    const preloadImages = (games) => {
+        return Promise.all(
+            games.map((game) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = game.background_img;
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                });
+            })
+        );
+    };
+
+    const fetchCarousel = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
+            const data = await response.json();
+            const filteredGames = data.games.filter(game => game.rating > 4.35);
+
+            await preloadImages(filteredGames);
+            setCarousel(filteredGames);
+            setCarouselLoaded(true);
+        } catch (error) {
+            console.error('Error fetching carousel', error);
+            setCarouselLoaded(true);
+        }
+
+    }
+
     useEffect(() => {
         fetchUserData();
         fetchGenres();
+        fetchCarousel();
     }, []);
 
     const homeLogOut = () => {
@@ -62,7 +94,7 @@ function Home() {
         setUserDataDetails0('');
     };
 
-    if (!genresLoaded) {
+    if (!genresLoaded || !carouselLoaded) {
         return <div>Loading...</div>;
     }
 
@@ -74,7 +106,7 @@ function Home() {
                 userLogOut0={homeLogOut}
             />
             <SideMenu genres={genres} />
-            <Landing />
+            <Landing games={carousel} />
             <Rows path="/" element={<Rows />} />
         </div>
     );

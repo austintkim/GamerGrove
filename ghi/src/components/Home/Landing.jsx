@@ -7,24 +7,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const Landing = () => {
-  const [games, setGames] = useState([]);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
-      const data = await response.json();
-      const filteredGames = data.games.filter(game => game.rating > 4.35);
-      setGames(filteredGames);
-    } catch (error) {
-      console.error('Error fetching data', error);
-    }
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+const Landing = ({ games }) => {
 
       const settings = {
       dots: true,
