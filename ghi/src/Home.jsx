@@ -67,23 +67,22 @@ function Home() {
         );
     };
 
-    const fetchCarousel = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
-            const data = await response.json();
-            const filteredGames = data.games.filter(game => game.rating > 4.35);
-
-            await preloadImages(filteredGames);
-            setCarousel(filteredGames);
-            setCarouselLoaded(true);
-        } catch (error) {
-            console.error('Error fetching carousel', error);
-            setCarouselLoaded(true);
-        }
-
-    }
-
     useEffect(() => {
+        const fetchCarousel = async () => {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
+                const data = await response.json();
+                const filteredGames = data.games.filter(game => game.rating > 4.35);
+
+                await preloadImages(filteredGames);
+                setCarousel(filteredGames);
+                setCarouselLoaded(true);
+            } catch (error) {
+                console.error('Error fetching carousel', error);
+                setCarouselLoaded(true);
+            }
+        };
+        
         fetchUserData();
         fetchGenres();
         fetchCarousel();
