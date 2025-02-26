@@ -6,7 +6,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const Landing = ({ games }) => {
+const Landing = ({ carouselGames }) => {
 
       const settings = {
       dots: true,
@@ -25,7 +25,7 @@ const Landing = ({ games }) => {
       <h3 className='homeH3'>Most Popular</h3>
       <div className="homeline"></div>
       <Slider {...settings}>
-        {games.map((game, index) => (
+        {carouselGames.map((game, index) => (
             <div key={index}>
               <Link to={`/games/${game.id}`}>
               <img

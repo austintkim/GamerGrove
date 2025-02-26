@@ -1,27 +1,11 @@
-import { useEffect, useState } from 'react';
 import './Rows.css';
 import HomeGameCard from '../Cards/homeGameCard.jsx';
 
-const Rows = ({ selectedGenre}) => {
-  const [gameDataList, setGameDataList] = useState([]);
-
-    const fetchData = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
-            const data = await response.json();
-            setGameDataList(data.games);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+const Rows = ({ selectedGenre, games}) => {
 
   const organizeGamesByGenre = () => {
     const organizedGames = {};
-    gameDataList.forEach((game) => {
+    games.forEach((game) => {
       if (!organizedGames[game.genre]) {
         organizedGames[game.genre] = [];
       }

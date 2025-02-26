@@ -9,8 +9,10 @@ function Home() {
     const [userDataDetails0, setUserDataDetails0] = useState('');
     const [genres, setGenres] = useState([]);
     const [genresLoaded, setGenresLoaded] = useState(false);
-    const [carousel, setCarousel] = useState([]);
-    const [carouselLoaded, setCarouselLoaded] = useState(false);
+    const [carouselGames, setCarouselGames] = useState([]);
+    const [carouselGamesLoaded, setCarouselGamesLoaded] = useState(false);
+    const [games, setGames] = useState([]);
+    const [gamesLoaded, setGamesLoaded] = useState(false);
 
     const fetchUserData = async () => {
         const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
@@ -68,24 +70,29 @@ function Home() {
     };
 
     useEffect(() => {
-        const fetchCarousel = async () => {
+        const fetchGames = async () => {
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
                 const data = await response.json();
+
+                await preloadImages(data.games);
+                setGames(data.games);
+                setGamesLoaded(true);
+
                 const filteredGames = data.games.filter(game => game.rating > 4.35);
 
-                await preloadImages(filteredGames);
-                setCarousel(filteredGames);
-                setCarouselLoaded(true);
+                setCarouselGames(filteredGames);
+                setCarouselGamesLoaded(true);
             } catch (error) {
-                console.error('Error fetching carousel', error);
-                setCarouselLoaded(true);
+                console.error('Error fetching games', error);
+                setGamesLoaded(true);
+                setCarouselGamesLoaded(true);
             }
         };
-        
+
         fetchUserData();
         fetchGenres();
-        fetchCarousel();
+        fetchGames();
     }, []);
 
     const homeLogOut = () => {
@@ -93,7 +100,7 @@ function Home() {
         setUserDataDetails0('');
     };
 
-    if (!genresLoaded || !carouselLoaded) {
+    if (!genresLoaded || !carouselGamesLoaded || !gamesLoaded) {
         return <div>Loading...</div>;
     }
 
@@ -105,8 +112,13 @@ function Home() {
                 userLogOut0={homeLogOut}
             />
             <SideMenu genres={genres} />
-            <Landing games={carousel} />
-            <Rows path="/" element={<Rows />} />
+            <Landing carouselGames={carouselGames} />
+            <Rows
+                path="/"
+                element={<Rows />}
+                games={games}
+
+            />
         </div>
     );
 }
