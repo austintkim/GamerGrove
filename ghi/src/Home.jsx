@@ -3,6 +3,7 @@ import Landing from './components/Home/Landing';
 import Nav from './components/Home/Nav';
 import Rows from './components/Home/Rows';
 import SideMenu from './components/Home/sideMenu';
+import bm from './assets/bm.gif';
 
 function Home() {
     const [userToken0, setUserToken0] = useState(null);
@@ -13,6 +14,15 @@ function Home() {
     const [carouselGamesLoaded, setCarouselGamesLoaded] = useState(false);
     const [games, setGames] = useState([]);
     const [gamesLoaded, setGamesLoaded] = useState(false);
+    const [showLoader, setShowLoader] = useState(false);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setShowLoader(true);
+        }, 125);
+
+        return () => clearTimeout(timeout);
+    }, []);
 
     const fetchUserData = async () => {
         const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`;
@@ -56,18 +66,30 @@ function Home() {
         }
     };
 
-    const preloadImages = (games) => {
-        return Promise.all(
-            games.map((game) => {
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.src = game.background_img;
-                    img.onload = resolve;
-                    img.onerror = resolve;
+   const preloadGameData = (games) => {
+    return Promise.all(
+        games.map((game) => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = game.background_img;
+                img.onload = () => resolve({
+                    name: game.name,
+                    xbox: game.xbox,
+                    playstation: game.playstation,
+                    nintendo: game.nintendo,
+                    background_img: game.background_img
                 });
-            })
-        );
-    };
+                img.onerror = () => resolve({
+                    name: game.name,
+                    xbox: game.xbox,
+                    playstation: game.playstation,
+                    nintendo: game.nintendo,
+                    background_img: null // Mark image as failed to load
+                });
+            });
+        })
+    );
+};
 
     useEffect(() => {
         const fetchGames = async () => {
@@ -75,7 +97,7 @@ function Home() {
                 const response = await fetch(`${import.meta.env.VITE_API_HOST}/api/games`);
                 const data = await response.json();
 
-                await preloadImages(data.games);
+                await preloadGameData(data.games);
                 setGames(data.games);
                 setGamesLoaded(true);
 
@@ -101,8 +123,29 @@ function Home() {
     };
 
     if (!genresLoaded || !carouselGamesLoaded || !gamesLoaded) {
-        return <div>Loading...</div>;
+        if (showLoader) {
+            return (
+                <img
+                    src={bm}
+                    alt=""
+                    style={{
+                        position: "fixed",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: "350px",
+                        objectFit: "contain",
+                        cursor: "pointer",
+                        padding: "16px",
+                        zIndex: 3
+                    }}
+                />
+            );
+        }
+        return null;
     }
+
+
 
     return (
         <div>
