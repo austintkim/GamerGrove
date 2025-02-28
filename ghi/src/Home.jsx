@@ -19,7 +19,7 @@ function Home() {
     useEffect(() => {
         const timeout = setTimeout(() => {
             setShowLoader(true);
-        }, 380);
+        }, 250);
 
         return () => clearTimeout(timeout);
     }, []);
