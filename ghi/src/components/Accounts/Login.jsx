@@ -2,7 +2,6 @@ import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import metalslime from '../../assets/metalslime.gif'
-import Controllers from "./Controllers";
 
 import './Controllers.css';
 
