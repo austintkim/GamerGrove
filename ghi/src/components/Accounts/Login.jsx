@@ -3,8 +3,6 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import metalslime from '../../assets/metalslime.gif'
 
-import './Controllers.css';
-
 const containerStyle = {
   minHeight: '100vh',
   display: 'flex',
