@@ -84,7 +84,7 @@ function Home() {
                     xbox: game.xbox,
                     playstation: game.playstation,
                     nintendo: game.nintendo,
-                    background_img: null // Mark image as failed to load
+                    background_img: null
                 });
             });
         })
