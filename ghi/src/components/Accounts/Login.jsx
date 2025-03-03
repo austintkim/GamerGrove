@@ -75,7 +75,7 @@ const LoginForm = () => {
                   alt=""
                   style={{
                       position: 'fixed',
-                      bottom: '50%',
+                      bottom: '45%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
                       width: '150px',
