@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Board from './Board';
-
-import './Board.css'
 
 const containerStyle = {
   minHeight: '100vh',
