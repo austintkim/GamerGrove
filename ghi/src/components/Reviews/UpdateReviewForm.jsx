@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from '../GameDetails/StarRating';
-import Review from './Review';
-
-import './Review.css'
+import review from '../../assets/review.gif'
 
 const containerStyle = {
   minHeight: '100vh',
@@ -136,47 +134,131 @@ function UpdateReviewForm() {
   };
 
   return (
-    <div>
-      <Review />
-      <div style={{ position: 'relative', ...containerStyle }}>
-        <div style ={{ ...centerVertically, width: '100%'}}>
-          <div className="card text-bg-light mb-3">
-            <div className="container">
-              <div className="row"style={{ backgroundColor: 'transparent', paddingLeft: '0%', marginLeft: '0%', marginRight: '0%' }}>
-                <div className="offset-1 col-10">
-                  <h2 className="card-header" style={{ textAlign: 'center'}}>Update Review</h2>
-                    <div style={{ width: '100%'}}>
-                      <form onSubmit={handleSubmit} id="update-review">
-                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
-                          <label htmlFor="title">Title</label>
-                          <input onChange={handleFormChange} required type="text" name="title" id="title" className="form-control" value={formData.title} />
-                        </div>
-                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
-                          <label htmlFor="description">Description</label>
-                          <textarea onChange={handleFormChange} name="body" id="body" className="form-control" value={formData.body} rows="3"></textarea>
-                        </div>
-                        <div className="form-floating mb-3" style={{ textAlign: 'center'}}>
-                          <label htmlFor="rating"style={{ marginBottom: '0rem' }}>Rating out of 5:</label>
-                          <div className='rating-container d-flex justify-content-center'>
-                          <div className='star-rating'>
-                            <StarRating rating={formData.rating} onStarClick={handleStarClick} />
-                            </div>
-                        </div>
-                        </div>
-                      </form>
-                      <div className="d-flex justify-content-between">
-                        <button className="mb-3" style={{ textAlign: 'left'}} onClick={() => navigate(-1)}>Back</button>
-                        <button form="update-review" className="mb-3" style={{ textAlign: 'right'}}>Update</button>
+      <div>
+          <img
+              src={review}
+              alt=""
+              style={{
+                  position: 'fixed',
+                  bottom: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '250px',
+                  objectFit: 'contain',
+                  cursor: 'pointer',
+                  padding: '16px',
+                  zIndex: 3,
+              }}
+          />
+          <div style={{ position: 'relative', ...containerStyle }}>
+              <div style={{ ...centerVertically, width: '100%' }}>
+                  <div className="card text-bg-light mb-3">
+                      <div className="container">
+                          <div
+                              className="row"
+                              style={{
+                                  backgroundColor: 'transparent',
+                                  paddingLeft: '0%',
+                                  marginLeft: '0%',
+                                  marginRight: '0%',
+                              }}
+                          >
+                              <div className="offset-1 col-10">
+                                  <h2
+                                      className="card-header"
+                                      style={{ textAlign: 'center' }}
+                                  >
+                                      Update Review
+                                  </h2>
+                                  <div style={{ width: '100%' }}>
+                                      <form
+                                          onSubmit={handleSubmit}
+                                          id="update-review"
+                                      >
+                                          <div
+                                              className="form-floating mb-3"
+                                              style={{ textAlign: 'center' }}
+                                          >
+                                              <label htmlFor="title">
+                                                  Title
+                                              </label>
+                                              <input
+                                                  onChange={handleFormChange}
+                                                  required
+                                                  type="text"
+                                                  name="title"
+                                                  id="title"
+                                                  className="form-control"
+                                                  value={formData.title}
+                                              />
+                                          </div>
+                                          <div
+                                              className="form-floating mb-3"
+                                              style={{ textAlign: 'center' }}
+                                          >
+                                              <label htmlFor="description">
+                                                  Description
+                                              </label>
+                                              <textarea
+                                                  onChange={handleFormChange}
+                                                  name="body"
+                                                  id="body"
+                                                  className="form-control"
+                                                  value={formData.body}
+                                                  rows="3"
+                                              ></textarea>
+                                          </div>
+                                          <div
+                                              className="form-floating mb-3"
+                                              style={{ textAlign: 'center' }}
+                                          >
+                                              <label
+                                                  htmlFor="rating"
+                                                  style={{
+                                                      marginBottom: '0rem',
+                                                  }}
+                                              >
+                                                  Rating out of 5:
+                                              </label>
+                                              <div className="rating-container d-flex justify-content-center">
+                                                  <div className="star-rating">
+                                                      <StarRating
+                                                          rating={
+                                                              formData.rating
+                                                          }
+                                                          onStarClick={
+                                                              handleStarClick
+                                                          }
+                                                      />
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </form>
+                                      <div className="d-flex justify-content-between">
+                                          <button
+                                              className="mb-3"
+                                              style={{ textAlign: 'left' }}
+                                              onClick={() => navigate(-1)}
+                                          >
+                                              Back
+                                          </button>
+                                          <button
+                                              form="update-review"
+                                              className="mb-3"
+                                              style={{ textAlign: 'right' }}
+                                          >
+                                              Update
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
                       </div>
-                    </div>
-                </div>
+                  </div>
               </div>
-            </div>
           </div>
-        </div>
       </div>
-    </div>
-  );
+  )
 }
 
 export default UpdateReviewForm;
