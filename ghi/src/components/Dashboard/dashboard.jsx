@@ -9,6 +9,7 @@ import SideMenu from '../Home/sideMenu';
 import Nav from '../Home/Nav';
 import UserReviewCard from '../Cards/userReviewCard';
 import Settings from '../Accounts/Settings.jsx';
+import bmdashboard from '../../assets/bmdashboard.gif'
 
 const containerStyle = {
   minHeight: '100vh',
@@ -275,21 +276,35 @@ const fetchUserData = async () => {
           <SideMenu />
           <Nav userCookie={userToken} userData={userDataDetails} />
           <main>
-              <h1 style={{ color: 'white', textAlign: 'left' }}>
+              <h1
+                  style={{
+                      color: 'white',
+                      textAlign: 'left',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      marginBottom: '0px',
+                  }}
+              >
                   {userDataDetails.username}&apos;s Dashboard 🎛️ 🖥️ 📟
+                  <img
+                      src={bmdashboard}
+                      alt=""
+                      style={{
+                          width: '70px',
+                          objectFit: 'contain',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          position: 'relative',
+                      }}
+                  />
               </h1>
 
-              <input
-                  id="radio1"
-                  type="radio"
-                  name="css-tabs"
-                  defaultChecked
-              />
+              <input id="radio1" type="radio" name="css-tabs" defaultChecked />
               <input id="radio2" type="radio" name="css-tabs" />
               <input id="radio3" type="radio" name="css-tabs" />
               <input id="radio4" type="radio" name="css-tabs" />
               <input id="radio5" type="radio" name="css-tabs" />
-              <div id="tabs" >
+              <div id="tabs">
                   <label style={{ color: 'white' }} htmlFor="radio1">
                       Boards
                   </label>
@@ -322,7 +337,7 @@ const fetchUserData = async () => {
                           flexDirection: 'column',
                           alignItems: 'center',
                           width: '100%',
-                          maxWidth: '935px'
+                          maxWidth: '935px',
                       }}
                   >
                       <UserReviewCard
