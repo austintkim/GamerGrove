@@ -181,93 +181,133 @@ const Nav = (
 
   if (userCookie || userCookie0 || userCookie1 || userCookie2 || userCookie3 || userCookie4) {
     return (
-    <div className='nav'>
-      <nav>
-        <div className='nav__contents'>
-          <div className='ncontainer expanded'>
-            <form onSubmit={searchGames}>
-              <input onChange={handleSearchChange} placeholder='Search for game titles...' className='js-search' type='text' />
-              <i className='fa fa-search'></i>
-            </form>
-          </div>
+        <div className="nav">
+            <nav>
+                <div className="nav__contents">
+                    <div className="ncontainer expanded">
+                        <form onSubmit={searchGames}>
+                            <input
+                                onChange={handleSearchChange}
+                                placeholder="Search for game titles..."
+                                className="js-search"
+                                type="text"
+                            />
+                            <i className="fa fa-search"></i>
+                        </form>
+                    </div>
 
+                    <img
+                        className="nav__logo"
+                        src={logo}
+                        alt=""
+                        onClick={() => navigate('/')}
+                    />
 
-          <img className='nav__logo' src={logo} alt='' onClick={() =>
-          navigate("/")
-          } />
-
-
-          <div
-            ref={avatarContainerRef}
-            className='nav__avatar-container'
-            onClick={handleDropdownClick}
-          >
-            <Icon
-              homeUserData = {userData0}
-              dashboardUserData = {userData}
-              allGamesUserData = {userData1}
-              gamesDetailsUserData = {userData2}
-              boardDetailsUserData = {userData3}
-              searchResultsUserData = {userData4}
-            />
-            {showDropdown && (
-              <div className='nav__dropdown' onClick={stopPropagation}>
-                <Link to="/dashboard">
-                  <div className='nav__dropdown-item, font-drop'>Dashboard</div>
-                </Link>
-                <button
-                    className='nav__dropdown-item, font-drop logout-button'
-                    onClick={() => { handleLogOut(); }}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
+                    <div
+                        ref={avatarContainerRef}
+                        className="nav__avatar-container"
+                        onClick={handleDropdownClick}
+                    >
+                        <Icon
+                            homeUserData={userData0}
+                            dashboardUserData={userData}
+                            allGamesUserData={userData1}
+                            gamesDetailsUserData={userData2}
+                            boardDetailsUserData={userData3}
+                            searchResultsUserData={userData4}
+                        />
+                        {showDropdown && (
+                            <div
+                                className="nav__dropdown"
+                                onClick={stopPropagation}
+                            >
+                                <Link to="/dashboard">
+                                    <div className="nav__dropdown-item, font-drop">
+                                        Dashboard
+                                    </div>
+                                </Link>
+                                <button
+                                    className="nav__dropdown-item, font-drop logout-button"
+                                    onClick={() => {
+                                        handleLogOut()
+                                    }}
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </nav>
+            <div className="loader">
+                <PacmanLoader
+                    color="#faff06"
+                    size={65}
+                    loading={searching}
+                    aria-label={'Loading Spinner'}
+                />
+            </div>
         </div>
-      </nav>
-      <div className="loader">
-        <PacmanLoader color="#faff06" size={65} loading={searching} aria-label={"Loading Spinner"} />
-      </div>
-    </div>
-  );
+    )
   } else {
   return (
-    <div className='nav'>
-      <nav>
-        <div className='nav__contents'>
-          <div className='ncontainer expanded'>
-            <form onSubmit={searchGames} >
-              <input onChange={handleSearchChange} placeholder='Search for game titles...' className='js-search' type='text' />
-              <i className='fa fa-search'></i>
-            </form>
-          </div>
+      <div className="nav">
+          <nav>
+              <div className="nav__contents">
+                  <div className="ncontainer expanded">
+                      <form onSubmit={searchGames}>
+                          <input
+                              onChange={handleSearchChange}
+                              placeholder="Search for game titles..."
+                              className="js-search"
+                              type="text"
+                          />
+                          <i className="fa fa-search"></i>
+                      </form>
+                  </div>
 
-          <img className='nav__logo' src={logo} alt='' />
+                  <img
+                      className="nav__logo"
+                      src={logo}
+                      alt=""
+                      onClick={() => navigate('/')}
+                  />
 
-          <div
-            ref={avatarContainerRef}
-            className='nav__avatar-container'
-            onClick={handleDropdownClick}
-          >
-            <Icon />
-            {showDropdown && (
-              <div className='nav__dropdown' onClick={stopPropagation}>
-                <Link to="/login">
-                <div className='nav__dropdown-item, font-drop'>Login</div>
-                </Link>
-                <Link to="/signup">
-                <div className='nav__dropdown-item, font-drop'>Sign Up</div>
-                </Link>
+                  <div
+                      ref={avatarContainerRef}
+                      className="nav__avatar-container"
+                      onClick={handleDropdownClick}
+                  >
+                      <Icon />
+                      {showDropdown && (
+                          <div
+                              className="nav__dropdown"
+                              onClick={stopPropagation}
+                          >
+                              <Link to="/login">
+                                  <div className="nav__dropdown-item, font-drop">
+                                      Login
+                                  </div>
+                              </Link>
+                              <Link to="/signup">
+                                  <div className="nav__dropdown-item, font-drop">
+                                      Sign Up
+                                  </div>
+                              </Link>
+                          </div>
+                      )}
+                  </div>
               </div>
-            )}
+          </nav>
+          <div className="loader">
+              <PacmanLoader
+                  color="#faff06"
+                  size={115}
+                  loading={searching}
+                  aria-label={'Loading Spinner'}
+              />
           </div>
-        </div>
-      </nav>
-      <div className="loader">
-        <PacmanLoader color="#faff06" size={115} loading={searching} aria-label={"Loading Spinner"}/>
       </div>
-    </div>
   )
 }
 }
