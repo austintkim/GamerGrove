@@ -9,7 +9,6 @@ steps = [
         review_id INT NOT NULL,
         FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
         upvote BOOLEAN,
-        downvote BOOLEAN
         );
 
         """,
