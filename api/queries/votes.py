@@ -14,12 +14,10 @@ class HttpError(BaseModel):
 class VoteInBase(BaseModel):
     review_id: int
     upvote: bool
-    downvote: bool
 
 
 class VoteInUpdate(BaseModel):
     upvote: bool
-    downvote: bool
 
 
 class VoteIn(VoteInBase):
@@ -31,7 +29,6 @@ class VoteOut(BaseModel):
     account_id: int
     review_id: int
     upvote: bool
-    downvote: bool
 
 
 class VoteQueries:
@@ -124,14 +121,12 @@ class VoteQueries:
                         RETURNING id,
                         account_id,
                         review_id,
-                        upvote,
-                        downvote;
+                        upvote
                         """,
                         [
                             vote_dict["account_id"],
                             vote_dict["review_id"],
-                            vote_dict["upvote"],
-                            vote_dict["downvote"]
+                            vote_dict["upvote"]
                         ]
                     )
                     row = result.fetchone()
@@ -169,15 +164,13 @@ class VoteQueries:
                     UPDATE votes
                     SET account_id = %s,
                         review_id = %s,
-                        upvote = %s,
-                        downvote = %s
+                        upvote = %s
                     WHERE id = %s AND account_id = %s
                     """,
                     [
                         vote_dict["account_id"],
                         vote_dict["review_id"],
                         vote_dict["upvote"],
-                        vote_dict["downvote"],
                         id,
                         vote_dict["account_id"]
                     ]

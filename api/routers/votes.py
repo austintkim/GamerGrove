@@ -32,21 +32,9 @@ async def create_vote(
 
     if vote_dict["upvote"] is True:
         review_dict["upvote_count"] += 1
-    elif vote_dict["downvote"] is True:
+    else:
         review_dict["upvote_count"] -= 1
 
-    try:
-        vote_history = queries.get_user_votes(account_id)
-        if vote_dict["upvote"] is False and vote_dict["downvote"] is False:
-            if vote_history[-1].upvote:
-                review_dict["upvote_count"] -= 1
-            elif vote_history[-1].downvote is True:
-                review_dict["upvote_count"] += 1
-    except Exception as e:
-        if isinstance(e, HTTPException) and e.status_code == status.HTTP_404_NOT_FOUND:
-            pass
-        else:
-            raise
     review_queries.update_review(review_id, review_dict)
 
     created_vote = queries.create_vote(vote_dict)
@@ -69,6 +57,14 @@ async def get_review_votes(
 ):
     return queries.get_review_votes(review_id)
 
+@router.get("/api/votes/{id}", response_model=Union[VoteOut, HttpError])
+async def get_vote(
+    id: int,
+    queries: VoteQueries = Depends(),
+):
+    return queries.get_vote(id)
+
+# Need to add delete_vote endpoints
 
 @router.put("/api/votes/{id}/{account_id}", response_model=Union[VoteOut, HttpError])
 async def update_vote(
