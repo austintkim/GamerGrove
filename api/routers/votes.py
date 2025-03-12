@@ -87,9 +87,9 @@ async def update_vote(
     del review_dict["id"]
 
     if vote_dict["upvote"] is True and vote_details["upvote"] is False:
-        review_dict["upvote_count"] += 1
+        review_dict["upvote_count"] += 2
     elif vote_dict["upvote"] is False and vote_details["upvote"] is True:
-        review_dict["upvote_count"] -= 1
+        review_dict["upvote_count"] -= 2
     review_queries.update_review(review_id, review_dict)
 
     updated_vote = queries.update_vote(id, vote_dict)
