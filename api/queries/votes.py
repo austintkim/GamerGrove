@@ -113,11 +113,11 @@ class VoteQueries:
                 try:
                     result = db.execute(
                         """
-                        INSERT INTO votes (account_id,
+                        INSERT INTO votes (
+                        account_id,
                         review_id,
-                        upvote,
-                        downvote)
-                        VALUES (%s, %s, %s, %s)
+                        upvote)
+                        VALUES (%s, %s, %s)
                         RETURNING id,
                         account_id,
                         review_id,
@@ -140,6 +140,41 @@ class VoteQueries:
                         status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Error creating vote"
                     )
+
+    def delete_vote(self, id: int, account_id: int) -> bool:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                id_check = db.execute(
+                    """
+                    SELECT * FROM votes
+                    WHERE id = %s
+                    """,
+                    [id]
+                )
+
+                id_row = id_check.fetchone()
+                if id_row is None:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail="A vote with that id does not exist in the database"
+                    )
+
+                account_id_check = db.execute(
+                    """
+                    DELETE FROM votes
+                    WHERE id = %s AND account_id = %s
+                    """,
+                    [
+                        id,
+                        account_id
+                    ]
+                )
+                if account_id_check.rowcount == 0:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="You are attempting to delete a vote that you did not create"
+                    )
+                return True
 
     def update_vote(self, id: int, vote_dict: VoteIn) -> VoteOut:
         with pool.connection() as conn:

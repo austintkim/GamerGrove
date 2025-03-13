@@ -64,7 +64,26 @@ async def get_vote(
 ):
     return queries.get_vote(id)
 
-# Need to add delete_vote endpoints
+@router.delete("/api/votes/{id}/{account_id}", response_model=Union[bool, HttpError])
+async def delete_vote(
+    id: int,
+    queries: VoteQueries = Depends(),
+    review_queries: ReviewQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data)
+):
+    vote_details = queries.get_vote(id).dict()
+    review_id = vote_details["review_id"]
+    review_dict = review_queries.get_review(review_id).dict()
+    del review_dict["id"]
+    if vote_details["upvote"]:
+        review_dict["upvote_count"] -= 1
+    else:
+        review_dict["upvote_count"] += 1
+
+    review_queries.update_review(review_id, review_dict)
+
+    account_id = account_data["id"]
+    return queries.delete_vote(id, account_id)
 
 @router.put("/api/votes/{id}/{account_id}", response_model=Union[VoteOut, HttpError])
 async def update_vote(
