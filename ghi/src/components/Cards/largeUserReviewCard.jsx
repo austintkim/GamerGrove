@@ -31,19 +31,13 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
               change++
               if (v.upvote) {
                 r.upvote = true
-                r.downvote = false
-              } else if (v.downvote) {
-                r.upvote = false
-                r.downvote = true
               } else {
                 r.upvote = false
-                r.downvote = false
               }
             }
           }
           if (change === 0) {
             r.upvote = undefined
-            r.downvote = undefined
           } else {
             change = 0
           }
@@ -112,48 +106,66 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
 
     const upVoteData = {
       "review_id": reviewId,
-      "upvote": true,
-      "downvote": false
+      "upvote": true
     }
     if (user) {
-      const voteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/users/${user}`
-      const postUrl = `${import.meta.env.VITE_API_HOST}/api/votes`
-      const response = await fetch(voteUrl, { credentials: 'include' });
-      if (response.ok) {
-        const votes = await response.json()
+      const reviewVotesUrl = `${import.meta.env.VITE_API_HOST}/api/votes/reviews/${reviewId}`
+      const response = await fetch(reviewVotesUrl, { credentials: 'include' });
+      console.log(response);
 
-
-
-        for (const v of votes) {
-          if (v.account_id == user && v.review_id == reviewId ) {
-            if (v.upvote == true) {
-              const noVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
-              const noVoteData = {
-                "review_id": reviewId,
-                "upvote": false,
-                "downvote": false
+        if (response.status === 404) {
+            const upVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/`;
+            const upVoteConfig = {
+              method: 'post',
+              body: JSON.stringify(upVoteData),
+              credentials: 'include',
+              headers: {
+                "Content-Type": 'application/json'
               }
-              const fetchConfig = {
-                method: 'put',
-                body: JSON.stringify(noVoteData),
+            }
+          try {
+                  const response = await fetch(upVoteUrl, upVoteConfig)
+                  if (response.ok) {
+                    console.log('Upvote successfully created')
+                  } else {
+                    throw new Error('Failed to create upvote')
+                  }
+                } catch (error) {
+                  console.error('Error creating upvote')
+                }
+                fetchReviewsForGame(gameId)
+                return
+      } else if (response.status === 500) {
+        throw new Error('Error fetching review votes')
+      } else if (response.ok) {
+        const votes = await response.json()
+        for (const v of votes) {
+          if (v.account_id == user) {
+            if (v.upvote == true) {
+              const deleteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+
+              const deleteConfig = {
+                method: 'delete',
                 credentials: 'include',
                 headers: {
                   "Content-Type": 'application/json'
                 }
+              };
+
+              try {
+                const response = await fetch(deleteUrl, deleteConfig)
+                if (response.ok) {
+                  console.log('Vote deleted')
+                } else {
+                  throw new Error('Failed to delete vote');
+                }
+              } catch (error) {
+                console.error('Error deleting vote', error);
               }
-              const noVoteResponse = await fetch(noVoteUrl, fetchConfig)
-              if (noVoteResponse.ok) {
-
-                fetchReviewsForGame(gameId)
-                return
-
-              }
-
-              return
 
             } else {
               const upVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
-              const fetchConfig = {
+              const upVoteConfig = {
                 method: 'put',
                 body: JSON.stringify(upVoteData),
                 credentials: 'include',
@@ -161,41 +173,23 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
                   "Content-Type": 'application/json'
                 }
               }
-              const upVoteResponse = await fetch(upVoteUrl, fetchConfig)
-              fetchReviewsForGame(gameId)
-              return
+              try {
+                const response = await fetch(upVoteUrl, upVoteConfig)
+                if (response.ok) {
+                  console.log('Vote updated from downvote to upvote')
+                } else {
+                  throw new Error('Failed to update vote from downvote to upvote')
+                }
+              } catch (error) {
+                console.error('Error updating vote', error)
+              }
             }
-
-
           }
         }
-        const fetchConfig = {
-            method: 'post',
-            body: JSON.stringify(upVoteData),
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-          const upVoteResponse = await fetch(postUrl, fetchConfig)
-          fetchReviewsForGame(gameId)
-
-
-      } else {
-
-        const fetchConfig = {
-            method: 'post',
-            body: JSON.stringify(upVoteData),
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-          const upVoteResponse = await fetch(postUrl, fetchConfig)
-          fetchReviewsForGame(gameId)
+      }
+        fetchReviewsForGame(gameId)
       }
     }
-  }
 
 
   const handleDownVoteClick = async (reviewId, gameId) => {
@@ -203,43 +197,62 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
     const downVoteData = {
       "review_id": reviewId,
       "upvote": false,
-      "downvote": true
     }
     if (user) {
-      const voteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/users/${user}`
-      const postUrl = `${import.meta.env.VITE_API_HOST}/api/votes`
+      const voteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/reviews/${reviewId}`
       const response = await fetch(voteUrl, { credentials: 'include' });
-      if (response.ok) {
+      if (response.status === 404) {
+        const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes`
+        const downVoteConfig = {
+            method: 'post',
+            body: JSON.stringify(downVoteData),
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+        try {
+            const response = await fetch(downVoteUrl, downVoteConfig)
+            if (response.ok) {
+                console.log('Downvote successfully created')
+            } else {
+                throw new Error('Failed to create downvote')
+            }
+        } catch (error) {
+            console.error('Error creating upvote')
+        }
+        fetchReviewsForGame(gameId)
+        return
+      } else if (response.status === 500) {
+        throw new Error('Error fetching review votes')
+      } else if (response.ok) {
         const votes = await response.json()
-
-
-
         for (const v of votes) {
-          if (v.account_id == user && v.review_id == reviewId ) {
-            if (v.downvote == true) {
-              const noVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
-              const noVoteData = {
-                "review_id": reviewId,
-                "upvote": false,
-                "downvote": false
-              }
-              const fetchConfig = {
-                method: 'put',
-                body: JSON.stringify(noVoteData),
+          if (v.account_id == user) {
+            if (v.upvote == false) {
+              const deleteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+
+              const deleteConfig = {
+                method: 'delete',
                 credentials: 'include',
                 headers: {
                   "Content-Type": 'application/json'
                 }
-              }
-              const noVoteResponse = await fetch(noVoteUrl, fetchConfig)
-              if (noVoteResponse.ok) {
-                fetchReviewsForGame(gameId)
-                return
-              }
-              return
+              };
+
+             try {
+                 const response = await fetch(deleteUrl, deleteConfig)
+                 if (response.ok) {
+                     console.log('Vote deleted')
+                 } else {
+                     throw new Error('Failed to delete vote')
+                 }
+             } catch (error) {
+                 console.error('Error deleting vote', error)
+             }
             } else {
-              const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`
-              const fetchConfig = {
+              const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+              const downVoteConfig = {
                 method: 'put',
                 body: JSON.stringify(downVoteData),
                 credentials: 'include',
@@ -247,40 +260,21 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
                   "Content-Type": 'application/json'
                 }
               }
-              const downVoteResponse = await fetch(downVoteUrl, fetchConfig)
-              fetchReviewsForGame(gameId)
-              return
-
+              try {
+                const response = await fetch(downVoteUrl, downVoteConfig)
+                if (response.ok) {
+                  console.log('Vote updated from downvote to upvote')
+                } else {
+                  throw new Error('Failed to update vote from downvote to upvote')
+                }
+              } catch (error) {
+                console.error('Error updating vote', error)
+              }
             }
-
           }
         }
-
-        const fetchConfig = {
-            method: 'post',
-            body: JSON.stringify(downVoteData),
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-          const downVoteResponse = await fetch(postUrl, fetchConfig)
-          fetchReviewsForGame(gameId)
-
-
-
-      } else {
-        const fetchConfig = {
-            method: 'post',
-            body: JSON.stringify(downVoteData),
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-          const downVoteResponse = await fetch(postUrl, fetchConfig)
-          fetchReviewsForGame(gameId)
       }
+          fetchReviewsForGame(gameId)
     }
   }
 
@@ -347,7 +341,7 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
               <button className='down-btn' onClick = {() => {
                 handleDownVoteClick(review.id, review.game_id)
               }}
-              style={{ backgroundColor: review.downvote === true ? 'red' : 'transparent' }}
+              style={{ backgroundColor: review.upvote === false ? 'red' : 'transparent' }}
               >
               <img
                 className="thumbs-down"
