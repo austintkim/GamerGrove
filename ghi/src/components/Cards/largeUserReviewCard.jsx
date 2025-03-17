@@ -111,7 +111,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
     if (user) {
       const reviewVotesUrl = `${import.meta.env.VITE_API_HOST}/api/votes/reviews/${reviewId}`
       const response = await fetch(reviewVotesUrl, { credentials: 'include' });
-      console.log(response);
 
         if (response.status === 404) {
             const upVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/`;
@@ -162,6 +161,8 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
               } catch (error) {
                 console.error('Error deleting vote', error);
               }
+              fetchReviewsForGame(gameId)
+              return
 
             } else {
               const upVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
@@ -183,11 +184,32 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
               } catch (error) {
                 console.error('Error updating vote', error)
               }
+              fetchReviewsForGame(gameId)
+              return
             }
           }
         }
-      }
+        const upVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/`
+        const upVoteConfig = {
+            method: 'post',
+            body: JSON.stringify(upVoteData),
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+        try {
+            const response = await fetch(upVoteUrl, upVoteConfig)
+            if (response.ok) {
+                console.log('Upvote successfully created')
+            } else {
+                throw new Error('Failed to create upvote')
+            }
+        } catch (error) {
+            console.error('Error creating upvote')
+        }
         fetchReviewsForGame(gameId)
+      }
       }
     }
 
@@ -250,6 +272,8 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
              } catch (error) {
                  console.error('Error deleting vote', error)
              }
+             fetchReviewsForGame(gameId)
+             return
             } else {
               const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
               const downVoteConfig = {
@@ -270,11 +294,32 @@ function LargeUserReviewCard({ gameId, accountId, newReview }) {
               } catch (error) {
                 console.error('Error updating vote', error)
               }
+              fetchReviewsForGame(gameId)
+              return
             }
           }
         }
+        const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes`
+        const downVoteConfig = {
+            method: 'post',
+            body: JSON.stringify(downVoteData),
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+        try {
+            const response = await fetch(downVoteUrl, downVoteConfig)
+            if (response.ok) {
+                console.log('Downvote successfully created')
+            } else {
+                throw new Error('Failed to create downvote')
+            }
+        } catch (error) {
+            console.error('Error creating downvote')
+        }
+        fetchReviewsForGame(gameId)
       }
-          fetchReviewsForGame(gameId)
     }
   }
 
