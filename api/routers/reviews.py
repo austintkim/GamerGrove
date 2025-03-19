@@ -39,9 +39,9 @@ async def get_game_reviews(
 async def get_user_reviews(
 
     queries: ReviewQueries = Depends(),
-    review_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data)
 ):
-    account_id = authenticate_user(review_data)
+    account_id = account_data["id"]
     return queries.get_user_reviews(account_id)
 
 
@@ -60,7 +60,7 @@ async def create_review(
     games_queries: GameQueries = Depends(),
     account_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    account_id = authenticate_user(account_data)
+    account_id = account_data["id"]
 
     review_dict = review.dict()
 
@@ -90,7 +90,7 @@ async def delete_review(
     id: int,
     queries: ReviewQueries = Depends(),
     games_queries: GameQueries = Depends(),
-    review_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data)
 ):
     review_details = queries.get_review(id).dict()
     game_id = review_details["game_id"]
@@ -105,7 +105,7 @@ async def delete_review(
 
     games_queries.update_game(game_id, game_dict)
 
-    account_id = authenticate_user(review_data)
+    account_id = account_data["id"]
     return queries.delete_review(id, account_id)
 
 
@@ -121,8 +121,7 @@ async def update_review(
 
     review_details = queries.get_review(id).dict()
 
-    account_id = authenticate_user(account_data)
-
+    account_id = account_data["id"]
     game_id = review_details["game_id"]
     previous_rating = review_details["rating"]
     rating = review_dict["rating"]
