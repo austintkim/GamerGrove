@@ -15,6 +15,4 @@ async def get_store(
     rawg_pk: int,
     queries: StoresQueries = Depends(),
 ):
-    print(rawg_pk)
-    print(type(rawg_pk))
     return queries.get_stores(rawg_pk)
