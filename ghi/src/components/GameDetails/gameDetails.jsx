@@ -50,7 +50,8 @@ const GameDetails = () => {
     const [submittedReview, setSubmittedReview] = useState(false)
     const [boards, setBoards] = useState([])
     const [screenshots, setScreenshots] = useState([])
-    const [reviews, setReviews] = useState([])
+    const [votes, setVotes] = useState([])
+
 
     const fetchUserData = async () => {
         const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`
@@ -142,12 +143,39 @@ const GameDetails = () => {
         }
     }
 
+    const fetchVoteData = async (userId) => {
+        try {
+            const votesUrl = `${import.meta.env.VITE_API_HOST}/api/votes/users/${userId}`;
+
+            const votesConfig = {
+                credentials: 'include',
+            };
+
+            const response = await fetch(votesUrl, votesConfig);
+            if (response.ok) {
+                const votesData = await response.json();
+                setVotes(votesData);
+            } else {
+                throw new Error('Failed to retrieve votes')
+            }
+            } catch (error) {
+                console.error('Error retrieving votes')
+            }
+        }
+
+    const handleVote = async () => {
+        if (userDataDetails2?.id) {
+            await fetchVoteData(userDataDetails2.id)
+        }
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             fetchGamesData()
             const userData = await fetchUserData()
             if (userData?.id) {
                 await fetchLibraryData(userData.id)
+                await fetchVoteData(userData.id)
             }
         }
         fetchData()
@@ -382,37 +410,47 @@ const GameDetails = () => {
                             </button>
                             {boards.length > 0 ? (
                                 <label>
-                                <select
-                                    value={addToBoardText}
-                                    onChange={handleBoardClick}
+                                    <select
+                                        value={addToBoardText}
+                                        onChange={handleBoardClick}
+                                        className="GDButton"
+                                        style={{
+                                            color: 'black',
+                                            width: 'fit-content',
+                                            opacity: '1',
+                                        }}
+                                        disabled={
+                                            addToBoardText !== 'Add to Board'
+                                        }
+                                    >
+                                        <option value="">
+                                            {addToBoardText}
+                                        </option>
+                                        {boards.map((board) => {
+                                            return (
+                                                <option
+                                                    key={board.id}
+                                                    value={board.id}
+                                                >
+                                                    {board.board_name}
+                                                </option>
+                                            )
+                                        })}
+                                    </select>
+                                </label>
+                            ) : (
+                                <button
                                     className="GDButton"
                                     style={{
                                         color: 'black',
                                         width: 'fit-content',
-                                        opacity: '1',
                                     }}
-                                    disabled={addToBoardText !== 'Add to Board'}
+                                    onClick={() => {
+                                        navigate('/boards/create')
+                                    }}
                                 >
-                                    <option value="">{addToBoardText}</option>
-                                    {boards.map((board) => {
-                                        return (
-                                            <option
-                                                key={board.id}
-                                                value={board.id}
-                                            >
-                                                {board.board_name}
-                                            </option>
-                                        )
-                                    })}
-                                </select>
-                            </label>
-                            ): (
-                                <button
-                                    className="GDButton"
-                                    style={{ color: 'black', width: 'fit-content' }}
-                                    onClick={()=>{
-                                    navigate('/boards/create')
-                                }}> Create A Board
+                                    {' '}
+                                    Create A Board
                                 </button>
                             )}
 
@@ -696,6 +734,8 @@ const GameDetails = () => {
                                     newReview={submittedReview}
                                     gameId={gameData.id}
                                     accountId={userDataDetails2?.id}
+                                    userVotes={votes}
+                                    onVote={handleVote}
                                 />
                             </div>
                         </div>
