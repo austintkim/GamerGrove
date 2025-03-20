@@ -93,7 +93,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
           try {
                   const response = await fetch(upVoteUrl, upVoteConfig)
                   if (response.ok) {
-                    console.log('Upvote successfully created')
                     onVote();
                   } else {
                     throw new Error('Failed to create upvote')
@@ -123,7 +122,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
               try {
                 const response = await fetch(deleteUrl, deleteConfig)
                 if (response.ok) {
-                  console.log('Vote deleted')
                   onVote();
                 } else {
                   throw new Error('Failed to delete vote');
@@ -147,7 +145,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
               try {
                 const response = await fetch(upVoteUrl, upVoteConfig)
                 if (response.ok) {
-                  console.log('Vote updated from downvote to upvote')
                   onVote();
                 } else {
                   throw new Error('Failed to update vote from downvote to upvote')
@@ -172,7 +169,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
         try {
             const response = await fetch(upVoteUrl, upVoteConfig)
             if (response.ok) {
-                console.log('Upvote successfully created')
                 onVote();
             } else {
                 throw new Error('Failed to create upvote')
@@ -207,7 +203,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
         try {
             const response = await fetch(downVoteUrl, downVoteConfig)
             if (response.ok) {
-                console.log('Downvote successfully created')
                 onVote();
             } else {
                 throw new Error('Failed to create downvote')
@@ -237,7 +232,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
              try {
                  const response = await fetch(deleteUrl, deleteConfig)
                  if (response.ok) {
-                    console.log('Vote deleted')
                     onVote();
                  } else {
                     throw new Error('Failed to delete vote')
@@ -260,7 +254,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
               try {
                 const response = await fetch(downVoteUrl, downVoteConfig)
                 if (response.ok) {
-                  console.log('Vote updated from downvote to upvote')
                   onVote();
                 } else {
                   throw new Error('Failed to update vote from downvote to upvote')
@@ -285,7 +278,6 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
         try {
             const response = await fetch(downVoteUrl, downVoteConfig)
             if (response.ok) {
-                console.log('Downvote successfully created')
                 onVote();
             } else {
                 throw new Error('Failed to create downvote')
