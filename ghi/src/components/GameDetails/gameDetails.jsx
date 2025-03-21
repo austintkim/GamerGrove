@@ -12,6 +12,7 @@ import LargeNonUserReviewCard from '../Cards/largeNonUserReviewCard'
 import ScreenshotsCard from '../Cards/screenshotsCard'
 import StarRating from './StarRating'
 import parse from 'html-react-parser'
+import scribe from '../../assets/scribe.gif'
 
 const GameDetails = () => {
     useEffect(() => {
@@ -634,6 +635,17 @@ const GameDetails = () => {
                                 }}
                             >
                                 Write a Review
+                                <img
+                                    src={scribe}
+                                    alt=""
+                                    style={{
+                                        width: '70px',
+                                        objectFit: 'contain',
+                                        cursor: 'pointer',
+                                        padding: '4px',
+                                        position: 'relative',
+                                    }}
+                                />
                             </h1>
                             <form
                                 onSubmit={handleReviewSubmit}
@@ -957,6 +969,17 @@ const GameDetails = () => {
                                 }}
                             >
                                 Write a Review
+                                <img
+                                    src={scribe}
+                                    alt=""
+                                    style={{
+                                        width: '70px',
+                                        objectFit: 'contain',
+                                        cursor: 'pointer',
+                                        padding: '4px',
+                                        position: 'relative',
+                                    }}
+                                />
                             </h1>
                             <div className="rcontainer-title">
                                 <input
