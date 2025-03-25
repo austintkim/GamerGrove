@@ -5,6 +5,7 @@ import parse from 'html-react-parser'
 import './homeGameCard.css'
 import { Menu, MenuItem, SubMenu } from '@spaceymonk/react-radial-menu'
 import { useNavigate } from 'react-router-dom'
+import sparkles from '../../assets/sparkles.gif'
 
 function HomeGameCard({ games }) {
     const navigate = useNavigate()
@@ -267,6 +268,19 @@ function HomeGameCard({ games }) {
                                 <b>Options</b>
                             </button>
                             <div className="menu-wrapper">
+                                {show && id === gameData.id && (
+                                    <img
+                                        src={sparkles}
+                                        alt=""
+                                        style={{
+                                            width: '70px',
+                                            position: 'absolute',
+                                            left: position.x - 35,
+                                            top: position.y,
+                                            transform: 'translateY(85px)',
+                                        }}
+                                    />
+                                )}
                                 <Menu
                                     centerX={position.x}
                                     centerY={position.y}

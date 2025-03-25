@@ -266,7 +266,7 @@ function AllGameCard({ games }) {
                                         style={{
                                             width: '70px',
                                             position: 'absolute',
-                                            left: position.x - 30,
+                                            left: position.x - 35,
                                             top: position.y,
                                             transform: 'translateY(85px)'
                                         }}
