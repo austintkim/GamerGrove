@@ -5,6 +5,7 @@ import { Menu, MenuItem, SubMenu } from '@spaceymonk/react-radial-menu'
 import { Link } from 'react-router-dom'
 import parse from 'html-react-parser'
 import './allGameCard.css'
+import sparkles from '../../assets/sparkles.gif'
 
 function AllGameCard({ games }) {
     const navigate = useNavigate()
@@ -258,6 +259,19 @@ function AllGameCard({ games }) {
                                 <b>Options</b>
                             </button>
                             <div className="menu-wrapper">
+                                {show && id === gameData.id && (
+                                    <img
+                                        src={sparkles}
+                                        alt=""
+                                        style={{
+                                            width: '70px',
+                                            position: 'absolute',
+                                            left: position.x - 30,
+                                            top: position.y,
+                                            transform: 'translateY(85px)'
+                                        }}
+                                    />
+                                )}
                                 <Menu
                                     centerX={position.x}
                                     centerY={position.y}
