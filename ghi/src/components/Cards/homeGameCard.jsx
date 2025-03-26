@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useAuthContext } from '@galvanize-inc/jwtdown-for-react'
 import { Link } from 'react-router-dom'
 import parse from 'html-react-parser'
@@ -13,6 +13,27 @@ function HomeGameCard({ games }) {
     const [id, setId] = useState('')
     const [show, setShow] = useState(false)
     const [position, setPosition] = useState({ x: 0, y: 0 })
+
+    const menuRef = useRef(null)
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setShow(false)
+            }
+        }
+
+        if (show) {
+            document.addEventListener('mousedown', handleClickOutside)
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [show])
+
     const [boardDataList, setBoardDataList] = useState([])
     const [gameInWishList, setGameInWishList] = useState(null)
 
@@ -267,7 +288,7 @@ function HomeGameCard({ games }) {
                             >
                                 <b>Options</b>
                             </button>
-                            <div className="menu-wrapper">
+                            <div ref={menuRef} className="menu-wrapper">
                                 {show && id === gameData.id && (
                                     <img
                                         src={sparkles}
