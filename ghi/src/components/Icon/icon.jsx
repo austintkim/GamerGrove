@@ -27,14 +27,22 @@ const Icon = ({ homeUserData, dashboardUserData, allGamesUserData, gamesDetailsU
   }, [userData]);
 
   return (
-    <div>
-      {iconUrl ? (
-        <img src={iconUrl} alt="User Icon" style={{ width: '60px', height: '60px' }} />
-      ) : (
-        <img src="https://i.postimg.cc/SQCfRFsN/image-9.png" alt="Hardcoded Icon" style={{ width: '50px', height: '50px' }} />
-      )}
-    </div>
-  );
+      <div>
+          {iconUrl ? (
+              <img
+                  src={iconUrl}
+                  alt="User Icon"
+                  style={{ width: '60px', height: '60px' }}
+              />
+          ) : (
+              <img
+                  src="https://static.vecteezy.com/system/resources/thumbnails/034/715/051/small/user-icon-in-trendy-flat-style-isolated-on-black-background-user-silhouette-symbol-for-your-web-site-design-logo-app-ui-windows-vector.jpg"
+                  alt="Hardcoded Icon"
+                  style={{ width: '50px', height: '50px' }}
+              />
+          )}
+      </div>
+  )
 };
 
 export default Icon;
