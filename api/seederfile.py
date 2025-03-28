@@ -16,16 +16,15 @@ def seed_data():
                 result = cur.execute(
                     """
                     INSERT INTO icons (name, icon_url) VALUES
-                    ('A', 'https://i.postimg.cc/5yxsCz8C/dcf4rk1-ce5ee38e-34c1-461a-8815-5bae3cf3adfb.png'),
-                    ('B', 'https://i.postimg.cc/9FHTX9Gm/dc0qcnr-36005af2-9b18-4226-a2b6-952032896080.png'),
-                    ('C', 'https://i.postimg.cc/zXfNgtw0/The-Elder-Scrolls-PNG.png'),
-                    ('D', 'https://i.postimg.cc/WzHHrnjH/dc5vmno-66ed9f57-5f93-4c8e-b0f0-07a00167fd68.png'),
-                    ('E', 'https://i.postimg.cc/mkz0mqds/d4tuvoq-af1bddee-8cc5-493a-8ac8-ca9328ad6622.png'),
-                    ('F', 'https://i.postimg.cc/5t85Sm5R/dfih8sb-4c629b77-bf7f-4c27-b070-08c8950c082f.png'),
-                    ('G', 'https://i.postimg.cc/28B1WS7H/dfkhk4t-983e5687-c0a0-41fe-8db3-77916fb3d5f4.png'),
-                    ('H', 'https://i.postimg.cc/0NH6mMFB/destiny-2-2017-round-folder-icon-by-deoxsis-dbrp3zf-fullview.png'),
-                    ('I', 'https://i.postimg.cc/brqjwLLc/ddxpyca-15f46729-593d-46e3-b1a8-41f7649e3ffc.png'),
-                    ('J', 'https://i.postimg.cc/sg8wsbMN/Call-of-Duty-PNG-Clipart.png');
+                    ('A', 'https://i.redd.it/dpbwgm93b4921.gif'),
+                    ('B', 'https://awesomefriday.ca/wp-content/uploads/2013/12/tumblr_m9sz3aJaEy1qb8idyo1_500.gif'),
+                    ('C', 'https://i.pinimg.com/originals/91/05/3a/91053ac18b8b3368d29a1409ad6be5f1.gif'),
+                    ('D', 'https://giffiles.alphacoders.com/164/164315.gif'),
+                    ('E', 'https://i.pinimg.com/originals/eb/a8/9e/eba89e7bb2121d9f066fbc7d616a0dc0.gif'),
+                    ('F', 'https://i.redd.it/r778gpaze03d1.gif'),
+                    ('G', 'https://forums.terraria.org/index.php?attachments/tenguman-gif.252393/'),
+                    ('H', 'https://preview.redd.it/tib8dqapwv271.gif?width=256&auto=webp&s=7e16d45f329ef9b28614da50101672a8133ddbfb'),
+                    ('I', 'https://preview.redd.it/v92xo3jq15t61.gif?width=256&auto=webp&s=3659ba294d2ee2f922f6a2e1b5c68dbce1568386');
 
                     INSERT INTO gamesdb ("name", description, rating, dates, background_img, Xbox, PlayStation, Nintendo, PC, rating_count, rating_total, genre, developers, rawg_pk, reviews_count)
                     VALUES
