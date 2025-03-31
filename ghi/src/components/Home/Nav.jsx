@@ -16,6 +16,20 @@ const Nav = (
   const avatarContainerRef = useRef(null);
   const navigate = useNavigate();
   const [searching, setSearching] = useState(false);
+  const [userDataLoaded, setUserDataLoaded] = useState(false)
+
+  useEffect(() => {
+      if (
+          userData0 ||
+          userData ||
+          userData1 ||
+          userData2 ||
+          userData3 ||
+          userData4
+      ) {
+          setUserDataLoaded(true)
+      }
+  }, [userData0, userData, userData1, userData2, userData3, userData4])
 
   const closeDropdown = (e) => {
     if (avatarContainerRef.current && !avatarContainerRef.current.contains(e.target)) {
@@ -208,14 +222,16 @@ const Nav = (
                         className="nav__avatar-container"
                         onClick={handleDropdownClick}
                     >
-                        <Icon
-                            homeUserData={userData0}
-                            dashboardUserData={userData}
-                            allGamesUserData={userData1}
-                            gamesDetailsUserData={userData2}
-                            boardDetailsUserData={userData3}
-                            searchResultsUserData={userData4}
-                        />
+                        {userDataLoaded && (
+                            <Icon
+                                homeUserData={userData0}
+                                dashboardUserData={userData}
+                                allGamesUserData={userData1}
+                                gamesDetailsUserData={userData2}
+                                boardDetailsUserData={userData3}
+                                searchResultsUserData={userData4}
+                            />
+                        )}
                         {showDropdown && (
                             <div
                                 className="nav__dropdown"
@@ -278,7 +294,7 @@ const Nav = (
                       className="nav__avatar-container"
                       onClick={handleDropdownClick}
                   >
-                      <Icon />
+                      {userDataLoaded && <Icon />}
                       {showDropdown && (
                           <div
                               className="nav__dropdown"
