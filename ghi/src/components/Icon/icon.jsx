@@ -9,51 +9,62 @@ const Icon = ({
     searchResultsUserData,
 }) => {
     const [iconUrl, setIconUrl] = useState(null)
-    const [isLoading, setIsLoading] = useState(true)
+    const [userData, setUserData] = useState(null)
 
-    const userData =
-        homeUserData ||
-        dashboardUserData ||
-        allGamesUserData ||
-        gamesDetailsUserData ||
-        boardDetailsUserData ||
-        searchResultsUserData
+    const fetchUserIcon = async (iconID) => {
+        try {
+            const iconResponse = await fetch(
+                `${import.meta.env.VITE_API_HOST}/api/icons/${iconID}`
+            )
+            const iconData = await iconResponse.json()
+            setIconUrl(iconData.icon_url)
+        } catch (error) {
+            console.error('Error fetching icon:', error)
+        }
+    }
 
     useEffect(() => {
-        if (!userData?.icon_id) {
-            setIsLoading(false)
-            return
-        }
+        setUserData(
+            homeUserData ||
+                dashboardUserData ||
+                allGamesUserData ||
+                gamesDetailsUserData ||
+                boardDetailsUserData ||
+                searchResultsUserData
+        )
+    }, [
+        homeUserData,
+        dashboardUserData,
+        allGamesUserData,
+        gamesDetailsUserData,
+        boardDetailsUserData,
+        searchResultsUserData,
+    ])
 
-        const fetchUserIcon = async () => {
-            try {
-                const iconResponse = await fetch(
-                    `${import.meta.env.VITE_API_HOST}/api/icons/${
-                        userData.icon_id
-                    }`
-                )
-                const iconData = await iconResponse.json()
-                setIconUrl(iconData.icon_url)
-            } catch (error) {
-                console.error('Error fetching icon:', error)
-            }
-            setIsLoading(false)
+    useEffect(() => {
+        if (userData && userData.icon_id) {
+            fetchUserIcon(userData.icon_id)
+        } else {
+            setIconUrl(null)
         }
-
-        fetchUserIcon()
     }, [userData])
 
-    if (isLoading) return null 
-
     return (
-        <img
-            src={
-                iconUrl ||
-                'https://static.vecteezy.com/system/resources/thumbnails/034/715/051/small/user-icon-in-trendy-flat-style-isolated-on-black-background-user-silhouette-symbol-for-your-web-site-design-logo-app-ui-windows-vector.jpg'
-            }
-            alt="User Icon"
-            style={{ width: '60px', height: '60px' }}
-        />
+        <div>
+            {iconUrl ? (
+                <img
+                    src={iconUrl}
+                    alt="User Icon"
+                    style={{ width: '60px', height: '60px' }}
+                />
+            ) : (
+                <img
+                    src="https://static.vecteezy.com/system/resources/thumbnails/034/715/051/small/user-icon-in-trendy-flat-style-isolated-on-black-background-user-silhouette-symbol-for-your-web-site-design-logo-app-ui-windows-vector.jpg"
+                    alt="Hardcoded Icon"
+                    style={{ width: '50px', height: '50px' }}
+                />
+            )}
+        </div>
     )
 }
 
