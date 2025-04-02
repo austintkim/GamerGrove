@@ -36,6 +36,9 @@ function SignUpForm() {
   const [emailTaken, setEmailTaken] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(null);
+
 
   const { login } = useToken();
 
@@ -55,12 +58,44 @@ function SignUpForm() {
     fetchData();
   }, []);
 
-  const handleFormChange = (e) => {
-    setAccountFormData({
-      ...accountFormData,
-      [e.target.name]: e.target.value
-    })
+  const checkPasswordStrength = (password) => {
+      let strength = 0
+
+      if (password.length >= 8) {
+          setIsPasswordValid(true)
+      } else {
+          setIsPasswordValid(false)
+      }
+
+      if (password.length >= 8 && (/[A-Z]/.test(password))) strength++
+      if (password.length >= 8 && (/[a-z]/.test(password))) strength++
+      if (password.length >= 8 && (/[0-9]/.test(password))) strength++
+      if (password.length >= 8 &&(/[^A-Za-z0-9]/.test(password))) strength++
+
+      const strengthLabels = {
+        '0': '',
+        '1': 'Weak',
+        '2': 'Moderate',
+        '3': 'Strong',
+        '4': 'Very Strong'
+      }
+      setPasswordStrength(strengthLabels[String(strength)])
   }
+
+
+  const handleFormChange = (e) => {
+      const { name, value } = e.target
+
+      setAccountFormData({
+          ...accountFormData,
+          [name]: value,
+      })
+
+      if (name === 'password') {
+          checkPasswordStrength(value)
+      }
+  }
+
 
   const passwordConfirmChange = (e) => {
     setPasswordConfirm(
@@ -287,6 +322,27 @@ function SignUpForm() {
                                               value={accountFormData.password}
                                               style={{ marginBottom: '15px' }}
                                           />
+                                          {passwordStrength &&
+                                              !isPasswordValid && (
+                                                  <p style={{ color: 'Red' }}>
+                                                      Password Invalid
+                                                  </p>
+                                              )}
+
+                                          {passwordStrength && isPasswordValid && (
+                                              <p
+                                                  style={{
+                                                      color:
+                                                          passwordStrength ===
+                                                          'Weak'
+                                                              ? 'red'
+                                                              : 'green',
+                                                  }}
+                                              >
+                                                  Password Strength:{' '}
+                                                  {passwordStrength}
+                                              </p>
+                                          )}
                                       </div>
                                       <div
                                           className="form-floating mb-3"
@@ -465,7 +521,12 @@ function SignUpForm() {
                                           className="mb-3"
                                           style={{ textAlign: 'center' }}
                                       >
-                                          <button>Create</button>
+                                          <button
+                                              type="submit"
+                                              disabled={!isPasswordValid || passwordStrength === 'Weak' || passwordStrength === 'Moderate'}
+                                          >
+                                              Create
+                                          </button>
                                       </div>
                                   </form>
                               </div>
