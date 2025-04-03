@@ -36,10 +36,9 @@ function SignUpForm() {
   const [emailTaken, setEmailTaken] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
-
-
+console.log(accountFormData);
+console.log(accountFormData.password.length);
   const { login } = useToken();
 
   const fetchData = async () => {
@@ -61,16 +60,10 @@ function SignUpForm() {
   const checkPasswordStrength = (password) => {
       let strength = 0
 
-      if (password.length >= 8) {
-          setIsPasswordValid(true)
-      } else {
-          setIsPasswordValid(false)
-      }
-
       if (password.length >= 8 && (/[A-Z]/.test(password))) strength++
       if (password.length >= 8 && (/[a-z]/.test(password))) strength++
-      if (password.length >= 8 && (/[0-9]/.test(password))) strength++
-      if (password.length >= 8 &&(/[^A-Za-z0-9]/.test(password))) strength++
+      if (password.length >= 8 && /[0-9]/.test(password)) strength++
+      if (password.length >= 8 && /[^A-Za-z0-9]/.test(password)) strength++
 
       const strengthLabels = {
         '0': '',
@@ -322,27 +315,34 @@ function SignUpForm() {
                                               value={accountFormData.password}
                                               style={{ marginBottom: '15px' }}
                                           />
-                                          {passwordStrength &&
-                                              !isPasswordValid && (
+                                          {accountFormData.password &&
+                                              accountFormData.password.length < 8 && (
                                                   <p style={{ color: 'Red' }}>
                                                       Password Invalid
                                                   </p>
                                               )}
 
-                                          {passwordStrength && isPasswordValid && (
-                                              <p
-                                                  style={{
-                                                      color:
-                                                          passwordStrength ===
-                                                          'Weak'
-                                                              ? 'red'
-                                                              : 'green',
-                                                  }}
-                                              >
-                                                  Password Strength:{' '}
-                                                  {passwordStrength}
-                                              </p>
-                                          )}
+                                          {accountFormData.password &&
+                                              accountFormData.password.length >= 8 && (
+                                                  <p
+                                                      style={{
+                                                          color:
+                                                              passwordStrength ===
+                                                              'Weak'
+                                                                  ? 'orange'
+                                                                  : passwordStrength ===
+                                                                    'Moderate'
+                                                                  ? 'yellow'
+                                                                  : passwordStrength ===
+                                                                    'Strong'
+                                                                  ? 'darkgreen'
+                                                                  : 'green',
+                                                      }}
+                                                  >
+                                                      Password Strength:{' '}
+                                                      {passwordStrength}
+                                                  </p>
+                                              )}
                                       </div>
                                       <div
                                           className="form-floating mb-3"
@@ -523,7 +523,12 @@ function SignUpForm() {
                                       >
                                           <button
                                               type="submit"
-                                              disabled={!isPasswordValid || passwordStrength === 'Weak' || passwordStrength === 'Moderate'}
+                                              disabled={
+                                                  accountFormData.password.length < 8 ||
+                                                  passwordStrength === 'Weak' ||
+                                                  passwordStrength ===
+                                                      'Moderate'
+                                              }
                                           >
                                               Create
                                           </button>
