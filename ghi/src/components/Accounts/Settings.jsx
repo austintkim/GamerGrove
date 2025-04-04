@@ -238,6 +238,10 @@ if (accountFormData.new_password && newPasswordConfirm) {
   };
 
   const togglePasswordFields = () => {
+    if (showPasswordFields) {
+      accountFormData.new_password = '';
+      setNewPasswordConfirm('');
+    }
     setShowPasswordFields(!showPasswordFields);
   };
 
