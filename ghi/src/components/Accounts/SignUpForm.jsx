@@ -37,8 +37,6 @@ function SignUpForm() {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
-console.log(accountFormData);
-console.log(accountFormData.password.length);
   const { login } = useToken();
 
   const fetchData = async () => {
