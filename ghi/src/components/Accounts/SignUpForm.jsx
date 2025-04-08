@@ -34,6 +34,8 @@ function SignUpForm() {
   const [accountFormData, setAccountFormData] = useState(initialAccountData);
   const [usernameTaken, setUserNameTaken] = useState(false);
   const [emailTaken, setEmailTaken] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
@@ -54,6 +56,14 @@ function SignUpForm() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  }
 
   const checkPasswordStrength = (password) => {
       let strength = 0
@@ -303,25 +313,59 @@ function SignUpForm() {
                                           <label htmlFor="password">
                                               Password
                                           </label>
-                                          <input
-                                              onChange={handleFormChange}
-                                              required
-                                              type="password"
-                                              name="password"
-                                              id="password"
-                                              className="form-control"
-                                              value={accountFormData.password}
-                                              style={{ marginBottom: '15px' }}
-                                          />
+                                          <div style={{ position: 'relative' }}>
+                                              <input
+                                                  onChange={handleFormChange}
+                                                  required
+                                                  type={
+                                                      showPassword
+                                                          ? 'text'
+                                                          : 'password'
+                                                  }
+                                                  name="password"
+                                                  id="password"
+                                                  className="form-control"
+                                                  value={
+                                                      accountFormData.password
+                                                  }
+                                                  style={{
+                                                      marginBottom: '15px',
+                                                      paddingRight: '40px',
+                                                  }}
+                                              />
+                                              <button
+                                                  type="button"
+                                                  disabled={
+                                                      !accountFormData.password
+                                                  }
+                                                  onClick={
+                                                      togglePasswordVisibility
+                                                  }
+                                                  style={{
+                                                      position: 'absolute',
+                                                      right: '10px',
+                                                      top: '50%',
+                                                      transform:
+                                                          'translateY(-50%)',
+                                                      background: 'none',
+                                                      border: 'none',
+                                                      cursor: 'pointer',
+                                                  }}
+                                              >
+                                                  {showPassword ? '👁️' : '👁️‍🗨️'}
+                                              </button>
+                                          </div>
                                           {accountFormData.password &&
-                                              accountFormData.password.length < 8 && (
+                                              accountFormData.password.length <
+                                                  8 && (
                                                   <p style={{ color: 'Red' }}>
                                                       Password Invalid
                                                   </p>
                                               )}
 
                                           {accountFormData.password &&
-                                              accountFormData.password.length >= 8 && (
+                                              accountFormData.password.length >=
+                                                  8 && (
                                                   <p
                                                       style={{
                                                           color:
@@ -349,15 +393,49 @@ function SignUpForm() {
                                           <label htmlFor="password">
                                               Password Confirmation
                                           </label>
-                                          <input
-                                              onChange={passwordConfirmChange}
-                                              required
-                                              type="password"
-                                              name="password-confirm"
-                                              id="password-confirm"
-                                              className="form-control"
-                                              style={{ marginBottom: '15px' }}
-                                          />
+                                          <div style={{ position: 'relative' }}>
+                                              <input
+                                                  onChange={
+                                                      passwordConfirmChange
+                                                  }
+                                                  required
+                                                  type={
+                                                      showConfirmPassword
+                                                          ? 'text'
+                                                          : 'password'
+                                                  }
+                                                  name="password-confirm"
+                                                  id="password-confirm"
+                                                  className="form-control"
+                                                  style={{
+                                                      marginBottom: '15px',
+                                                      paddingRight: '40px',
+                                                  }}
+                                              />
+                                              <button
+                                                  type="button"
+                                                  disabled={
+                                                      !passwordConfirm
+                                                  }
+                                                  onClick={
+                                                      toggleConfirmPasswordVisibility
+                                                  }
+                                                  style={{
+                                                      position: 'absolute',
+                                                      right: '10px',
+                                                      top: '50%',
+                                                      transform:
+                                                          'translateY(-50%)',
+                                                      background: 'none',
+                                                      border: 'none',
+                                                      cursor: 'pointer',
+                                                  }}
+                                              >
+                                                  {showConfirmPassword
+                                                      ? '👁️'
+                                                      : '👁️‍🗨️'}
+                                              </button>
+                                          </div>
                                       </div>
                                       <div
                                           className="alert alert-warning mb-0"
@@ -522,7 +600,8 @@ function SignUpForm() {
                                           <button
                                               type="submit"
                                               disabled={
-                                                  accountFormData.password.length < 8 ||
+                                                  accountFormData.password
+                                                      .length < 8 ||
                                                   passwordStrength === 'Weak' ||
                                                   passwordStrength ===
                                                       'Moderate'
