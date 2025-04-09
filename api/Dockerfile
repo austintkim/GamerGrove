@@ -1,7 +1,7 @@
 FROM python:3.10-bullseye
 
 # Upgrades pip to the latest version
-RUN python -m pip install --upgrade pip
+RUN python -m pip install --upgrade pip wheel
 
 # Sets the working directory inside the container where our app will run
 WORKDIR /app
