@@ -33,11 +33,32 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
 
     const [showPasswordFields, setShowPasswordFields] = useState(false)
     const [newPasswordConfirm, setNewPasswordConfirm] = useState('')
+    const [showNewPassword, setShowNewPassword] = useState(false)
+    const [showNewConfirmPassword, setShowNewConfirmPassword] = useState(false)
     const [newPasswordMismatch, setNewPasswordMismatch] = useState(false)
+    const [newPasswordStrength, setNewPasswordStrength] = useState(null)
+
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [passwordConfirm, setPasswordConfirm] = useState('')
     const [passwordMismatch, setPasswordMismatch] = useState(false)
-    const [newPasswordStrength, setNewPasswordStrength] = useState(null)
     const [updatedAccount, setUpdatedAccount] = useState(false)
+
+    const toggleNewPasswordVisibility = () => {
+        setShowNewPassword(!showNewPassword)
+    }
+
+    const toggleNewConfirmPasswordVisibility = () => {
+        setShowNewConfirmPassword(!showNewConfirmPassword)
+    }
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword)
+    }
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword)
+    }
 
     const checkNewPasswordStrength = (new_password) => {
         let strength = 0
@@ -538,19 +559,61 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                     <label htmlFor="new-password">
                                                         New Password
                                                     </label>
-                                                    <input
-                                                        onChange={
-                                                            handleFormChange
-                                                        }
-                                                        required
-                                                        type="password"
-                                                        name="new_password"
-                                                        id="new-password"
-                                                        className="form-control"
-                                                        value={
-                                                            accountFormData.new_password
-                                                        }
-                                                    />
+                                                    <div
+                                                        style={{
+                                                            position:
+                                                                'relative',
+                                                        }}
+                                                    >
+                                                        <input
+                                                            onChange={
+                                                                handleFormChange
+                                                            }
+                                                            required
+                                                            type={
+                                                                showNewPassword
+                                                                    ? 'text'
+                                                                    : 'password'
+                                                            }
+                                                            name="new_password"
+                                                            id="new-password"
+                                                            className="form-control"
+                                                            value={
+                                                                accountFormData.new_password
+                                                            }
+                                                            style={{
+                                                                marginBottom:
+                                                                    '15px',
+                                                                paddingRight:
+                                                                    '40px',
+                                                            }}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            disabled={
+                                                                !accountFormData.new_password
+                                                            }
+                                                            onClick={
+                                                                toggleNewPasswordVisibility
+                                                            }
+                                                            style={{
+                                                                position:
+                                                                    'absolute',
+                                                                right: '10px',
+                                                                top: '50%',
+                                                                transform:
+                                                                    'translateY(-50%)',
+                                                                background:
+                                                                    'none',
+                                                                border: 'none',
+                                                                cursor: 'pointer',
+                                                            }}
+                                                        >
+                                                            {showNewPassword
+                                                                ? '👁️'
+                                                                : '👁️‍🗨️'}
+                                                        </button>
+                                                    </div>
                                                     {accountFormData.new_password &&
                                                         accountFormData
                                                             .new_password
@@ -593,9 +656,13 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                     <div
                                                         className="alert alert-warning mb-0"
                                                         id="warning-message-newpassword"
-                                                        style={alertStyleNewPassword}
+                                                        style={
+                                                            alertStyleNewPassword
+                                                        }
                                                     >
-                                                        Please change your password to something new!
+                                                        Please change your
+                                                        password to something
+                                                        new!
                                                         <button
                                                             onClick={
                                                                 handleDismissNewPassword
@@ -622,19 +689,61 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                         New Password
                                                         Confirmation
                                                     </label>
-                                                    <input
-                                                        onChange={
-                                                            newPasswordConfirmChange
-                                                        }
-                                                        required
-                                                        type="password"
-                                                        name="newPasswordConfirm"
-                                                        id="new-password-confirm"
-                                                        className="form-control"
-                                                        value={
-                                                            newPasswordConfirm
-                                                        }
-                                                    />
+                                                    <div
+                                                        style={{
+                                                            position:
+                                                                'relative',
+                                                        }}
+                                                    >
+                                                        <input
+                                                            onChange={
+                                                                newPasswordConfirmChange
+                                                            }
+                                                            required
+                                                            type={
+                                                                showNewConfirmPassword
+                                                                    ? 'text'
+                                                                    : 'password'
+                                                            }
+                                                            name="newPasswordConfirm"
+                                                            id="new-password-confirm"
+                                                            className="form-control"
+                                                            value={
+                                                                newPasswordConfirm
+                                                            }
+                                                            style={{
+                                                                marginBottom:
+                                                                    '15px',
+                                                                paddingRight:
+                                                                    '40px',
+                                                            }}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            disabled={
+                                                                !newPasswordConfirm
+                                                            }
+                                                            onClick={
+                                                                toggleNewConfirmPasswordVisibility
+                                                            }
+                                                            style={{
+                                                                position:
+                                                                    'absolute',
+                                                                right: '10px',
+                                                                top: '50%',
+                                                                transform:
+                                                                    'translateY(-50%)',
+                                                                background:
+                                                                    'none',
+                                                                border: 'none',
+                                                                cursor: 'pointer',
+                                                            }}
+                                                        >
+                                                            {showNewConfirmPassword
+                                                                ? '👁️'
+                                                                : '👁️‍🗨️'}
+                                                        </button>
+                                                    </div>
                                                 </div>
                                                 <div
                                                     className={
@@ -723,40 +832,109 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                         </div>
                                     </div>
 
-                                    <div className="form-floating mb-3">
+                                    <div
+                                        className="form-floating mb-3"
+                                        style={{
+                                            textAlign: 'center',
+                                            marginTop: '8px',
+                                        }}
+                                    >
                                         <label htmlFor="password">
                                             Password
                                         </label>
-                                        <input
-                                            onChange={handleFormChange}
-                                            required
-                                            type="password"
-                                            name="password"
-                                            id="password"
-                                            className="form-control"
-                                            value={accountFormData.password}
-                                            style={{ marginBottom: '15px' }}
-                                        />
+                                        <div style={{ position: 'relative' }}>
+                                            <input
+                                                onChange={handleFormChange}
+                                                required
+                                                type={
+                                                    showPassword
+                                                        ? 'text'
+                                                        : 'password'
+                                                }
+                                                name="password"
+                                                id="password"
+                                                className="form-control"
+                                                value={accountFormData.password}
+                                                style={{
+                                                    marginBottom: '15px',
+                                                    paddingRight: '40px',
+                                                }}
+                                            />
+                                            <button
+                                                type="button"
+                                                disabled={
+                                                    !accountFormData.password
+                                                }
+                                                onClick={
+                                                    togglePasswordVisibility
+                                                }
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform:
+                                                        'translateY(-50%)',
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                {showPassword ? '👁️' : '👁️‍🗨️'}
+                                            </button>
+                                        </div>
                                         <small className="form-text text-muted">
                                             Enter original password to either
                                             change it or confirm other profile
                                             settings updates
                                         </small>
                                     </div>
-                                    <div className="form-floating mb-3">
+                                    <div
+                                        className="form-floating mb-3"
+                                        style={{ textAlign: 'center' }}
+                                    >
                                         <label htmlFor="password">
                                             Password Confirmation
                                         </label>
-                                        <input
-                                            onChange={passwordConfirmChange}
-                                            required
-                                            type="password"
-                                            name="password-confirm"
-                                            id="password-confirm"
-                                            className="form-control"
-                                            value={passwordConfirm}
-                                            style={{ marginBottom: '15px' }}
-                                        />
+                                        <div style={{ position: 'relative' }}>
+                                            <input
+                                                onChange={passwordConfirmChange}
+                                                required
+                                                type={
+                                                    showConfirmPassword
+                                                        ? 'text'
+                                                        : 'password'
+                                                }
+                                                name="password-confirm"
+                                                id="password-confirm"
+                                                className="form-control"
+                                                value={passwordConfirm}
+                                                style={{
+                                                    marginBottom: '15px',
+                                                    paddingRight: '40px',
+                                                }}
+                                            />
+                                            <button
+                                                type="button"
+                                                disabled={!passwordConfirm}
+                                                onClick={
+                                                    toggleConfirmPasswordVisibility
+                                                }
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '10px',
+                                                    top: '50%',
+                                                    transform:
+                                                        'translateY(-50%)',
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                {showConfirmPassword
+                                                    ? '👁️'
+                                                    : '👁️‍🗨️'}
+                                            </button>
+                                        </div>
                                     </div>
                                     <div
                                         className={warningClasses}
