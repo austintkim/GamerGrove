@@ -1,7 +1,10 @@
 FROM python:3.10-bullseye
 
-# Upgrades pip to the latest version
-RUN python -m pip install --upgrade pip wheel
+# Install system dependencies (build tools)
+RUN apt-get update && apt-get install -y build-essential && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip, setuptools, and install wheel
+RUN python -m pip install --upgrade pip setuptools wheel
 
 # Sets the working directory inside the container where our app will run
 WORKDIR /app
