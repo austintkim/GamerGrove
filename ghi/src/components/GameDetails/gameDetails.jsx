@@ -15,24 +15,25 @@ import parse from 'html-react-parser'
 import scribe from '../../assets/scribe.gif'
 
 const GameDetails = () => {
+    const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-        setTimeout(() => {
-            const element = document.getElementById(hash);
-            if (element) {
-                const rect = element.getBoundingClientRect();
-                const offset = 170;
-                const scrollPosition = window.scrollY + rect.top - offset;
+        const hash = window.location.hash.slice(1)
+        if (hash) {
+            setTimeout(() => {
+                const element = document.getElementById(hash)
+                if (element) {
+                    const rect = element.getBoundingClientRect()
+                    const offset = 170
+                    const scrollPosition = window.scrollY + rect.top - offset
 
-                window.scrollTo({
-                    top: scrollPosition,
-                    behavior: 'smooth',
-                });
-            }
-        }, 100);
-    }
-}, [location.hash]);
+                    window.scrollTo({
+                        top: scrollPosition,
+                        behavior: 'smooth',
+                    })
+                }
+            }, 100)
+        }
+    }, [location.hash])
 
     const navigate = useNavigate()
     const { id } = useParams()
@@ -52,7 +53,6 @@ const GameDetails = () => {
     const [boards, setBoards] = useState([])
     const [screenshots, setScreenshots] = useState([])
     const [votes, setVotes] = useState([])
-
 
     const fetchUserData = async () => {
         const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`
@@ -146,23 +146,25 @@ const GameDetails = () => {
 
     const fetchVoteData = async (userId) => {
         try {
-            const votesUrl = `${import.meta.env.VITE_API_HOST}/api/votes/users/${userId}`;
+            const votesUrl = `${
+                import.meta.env.VITE_API_HOST
+            }/api/votes/users/${userId}`
 
             const votesConfig = {
                 credentials: 'include',
-            };
+            }
 
-            const response = await fetch(votesUrl, votesConfig);
+            const response = await fetch(votesUrl, votesConfig)
             if (response.ok) {
-                const votesData = await response.json();
-                setVotes(votesData);
+                const votesData = await response.json()
+                setVotes(votesData)
             } else {
                 throw new Error('Failed to retrieve votes')
             }
-            } catch (error) {
-                console.error('Error retrieving votes')
-            }
+        } catch (error) {
+            console.error('Error retrieving votes')
         }
+    }
 
     const handleVote = async () => {
         if (userDataDetails2?.id) {
@@ -172,15 +174,25 @@ const GameDetails = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            fetchGamesData()
-            const userData = await fetchUserData()
-            if (userData?.id) {
-                await fetchLibraryData(userData.id)
-                await fetchVoteData(userData.id)
+            try {
+                await fetchGamesData()
+                const userData = await fetchUserData()
+                if (userData?.id) {
+                    await fetchLibraryData(userData.id)
+                    await fetchVoteData(userData.id)
+                }
+                setIsLoading(false)
+            } catch (error) {
+                console.error('Error loading data:', error)
+                setIsLoading(false)
             }
         }
         fetchData()
     }, [userToken2])
+
+    if (isLoading) {
+        return <div className="loading-screen">Loading game details...</div>
+    }
 
     if (!gameData) {
         return null
@@ -374,72 +386,33 @@ const GameDetails = () => {
 
     return (
         <div>
-            {userToken2 ? (
-                <div>
-                    <SideMenu />
-                    <Nav
-                        userCookie2={userToken2}
-                        userData2={userDataDetails2}
-                    />
-
-                    <div className="gamescard-img2">
-                        <img
-                            src={gameData.background_img}
-                            alt="Background"
-                            className="background-image"
+            {!isLoading &&
+                (userToken2 ? (
+                    <div>
+                        <SideMenu />
+                        <Nav
+                            userCookie2={userToken2}
+                            userData2={userDataDetails2}
                         />
-                        <div>
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <h3 className="gamesh1">
-                                <Link to="/games">Games</Link>/{gameData.name}
-                            </h3>
 
-                            <h5 className="gamesh2">Buy Here</h5>
-                            <hr className="gamessolid" />
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                onClick={() => {
-                                    handleWishListClick()
-                                }}
-                                disabled={wishListText === 'Added to Wishlist!'}
-                            >
-                                {wishListText}
-                            </button>
-                            {boards.length > 0 ? (
-                                <label>
-                                    <select
-                                        value={addToBoardText}
-                                        onChange={handleBoardClick}
-                                        className="GDButton"
-                                        style={{
-                                            color: 'black',
-                                            width: 'fit-content',
-                                            opacity: '1',
-                                        }}
-                                        disabled={
-                                            addToBoardText !== 'Add to Board'
-                                        }
-                                    >
-                                        <option value="">
-                                            {addToBoardText}
-                                        </option>
-                                        {boards.map((board) => {
-                                            return (
-                                                <option
-                                                    key={board.id}
-                                                    value={board.id}
-                                                >
-                                                    {board.board_name}
-                                                </option>
-                                            )
-                                        })}
-                                    </select>
-                                </label>
-                            ) : (
+                        <div className="gamescard-img2">
+                            <img
+                                src={gameData.background_img}
+                                alt="Background"
+                                className="background-image"
+                            />
+                            <div>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <h3 className="gamesh1">
+                                    <Link to="/games">Games</Link>/
+                                    {gameData.name}
+                                </h3>
+
+                                <h5 className="gamesh2">Buy Here</h5>
+                                <hr className="gamessolid" />
                                 <button
                                     className="GDButton"
                                     style={{
@@ -447,232 +420,665 @@ const GameDetails = () => {
                                         width: 'fit-content',
                                     }}
                                     onClick={() => {
-                                        navigate('/boards/create')
+                                        handleWishListClick()
                                     }}
+                                    disabled={
+                                        wishListText === 'Added to Wishlist!'
+                                    }
                                 >
-                                    {' '}
-                                    Create A Board
+                                    {wishListText}
                                 </button>
-                            )}
+                                {boards.length > 0 ? (
+                                    <label>
+                                        <select
+                                            value={addToBoardText}
+                                            onChange={handleBoardClick}
+                                            className="GDButton"
+                                            style={{
+                                                color: 'black',
+                                                width: 'fit-content',
+                                                opacity: '1',
+                                            }}
+                                            disabled={
+                                                addToBoardText !==
+                                                'Add to Board'
+                                            }
+                                        >
+                                            <option value="">
+                                                {addToBoardText}
+                                            </option>
+                                            {boards.map((board) => {
+                                                return (
+                                                    <option
+                                                        key={board.id}
+                                                        value={board.id}
+                                                    >
+                                                        {board.board_name}
+                                                    </option>
+                                                )
+                                            })}
+                                        </select>
+                                    </label>
+                                ) : (
+                                    <button
+                                        className="GDButton"
+                                        style={{
+                                            color: 'black',
+                                            width: 'fit-content',
+                                        }}
+                                        onClick={() => {
+                                            navigate('/boards/create')
+                                        }}
+                                    >
+                                        {' '}
+                                        Create A Board
+                                    </button>
+                                )}
 
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                disabled
-                            >
-                                {gameData.rating_count} ratings
-                            </button>
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                disabled
-                            >
-                                Ovr. Rating:{' '}
-                                {'⭐'.repeat(gameData.rating.toFixed(1))}{' '}
-                                {gameData.rating.toFixed(1)}
-                            </button>
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                disabled
-                            >
-                                Released: {gameData.dates}
-                            </button>
+                                <button
+                                    className="GDButton"
+                                    style={{
+                                        color: 'black',
+                                        width: 'fit-content',
+                                    }}
+                                    disabled
+                                >
+                                    {gameData.rating_count} ratings
+                                </button>
+                                <button
+                                    className="GDButton"
+                                    style={{
+                                        color: 'black',
+                                        width: 'fit-content',
+                                    }}
+                                    disabled
+                                >
+                                    Ovr. Rating:{' '}
+                                    {'⭐'.repeat(gameData.rating.toFixed(1))}{' '}
+                                    {gameData.rating.toFixed(1)}
+                                </button>
+                                <button
+                                    className="GDButton"
+                                    style={{
+                                        color: 'black',
+                                        width: 'fit-content',
+                                    }}
+                                    disabled
+                                >
+                                    Released: {gameData.dates}
+                                </button>
 
-                            <img
-                                className="GDIcon1"
-                                src="https://i.postimg.cc/nrDT7szB/image-5.png"
-                                width="35px"
-                                height="35px"
-                                alt="Icon 1"
-                            />
-                            {gameData.xbox && (
                                 <img
-                                    className="GDIcon"
+                                    className="GDIcon1"
                                     src="https://i.postimg.cc/nrDT7szB/image-5.png"
                                     width="35px"
                                     height="35px"
                                     alt="Icon 1"
-                                    type="button"
-                                    onClick={() =>
-                                        handleClick('Xbox', gameData.rawg_pk)
-                                    }
                                 />
-                            )}
-                            {gameData.playstation && (
-                                <img
-                                    className="GDIcon"
-                                    src="https://banner2.cleanpng.com/20180710/xsc/aawqt4puu.webp"
-                                    width="35px"
-                                    height="35px"
-                                    alt="Icon 2"
-                                    type="button"
-                                    onClick={() =>
-                                        handleClick(
-                                            'PlayStation',
-                                            gameData.rawg_pk
-                                        )
-                                    }
-                                />
-                            )}
-                            {gameData.nintendo && (
-                                <img
-                                    className="GDIcon"
-                                    src="https://i.postimg.cc/R0qXLppc/image-3.png"
-                                    width="35px"
-                                    height="35px"
-                                    alt="Icon 3"
-                                    type="button"
-                                    onClick={() =>
-                                        handleClick(
-                                            'Nintendo',
-                                            gameData.rawg_pk
-                                        )
-                                    }
-                                />
-                            )}
-                            {gameData.pc && (
-                                <img
-                                    className="GDIcon"
-                                    src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
-                                    width="35px"
-                                    height="35px"
-                                    alt="Icon 4"
-                                    type="button"
-                                    onClick={() =>
-                                        handleClick('PC', gameData.rawg_pk)
-                                    }
-                                />
-                            )}
-
-                            <br />
-                            <div className="flex-container">
-                                <div className="flex-item">
-                                    <br />
-                                    <br />
-                                    <p className="text-title">About Game:</p>
-                                    <div className="text">
-                                        {parse(gameData.description)}
-                                    </div>
-                                    <br />
-                                    <p className="text-genres-dev">Genres:</p>
-                                    <p className="text-title1">
-                                        {gameData.genre}
-                                    </p>
-                                    <br />
-                                    <p className="text-genres-dev">
-                                        Developers:
-                                    </p>
-                                    <p className="text-title1">
-                                        {gameData.developers}
-                                    </p>
-                                </div>
-                                <div className="flex-item">
-                                    <br />
-                                </div>
-                                <div className="flex-item">
-                                    <h1 className="gameTitle">
-                                        {gameData.name}
-                                    </h1>
-
+                                {gameData.xbox && (
                                     <img
-                                        className="divider"
-                                        src="https://i.postimg.cc/6pP3GtxW/image-11.png"
-                                        alt="Divider"
+                                        className="GDIcon"
+                                        src="https://i.postimg.cc/nrDT7szB/image-5.png"
+                                        width="35px"
+                                        height="35px"
+                                        alt="Icon 1"
+                                        type="button"
+                                        onClick={() =>
+                                            handleClick(
+                                                'Xbox',
+                                                gameData.rawg_pk
+                                            )
+                                        }
                                     />
+                                )}
+                                {gameData.playstation && (
+                                    <img
+                                        className="GDIcon"
+                                        src="https://banner2.cleanpng.com/20180710/xsc/aawqt4puu.webp"
+                                        width="35px"
+                                        height="35px"
+                                        alt="Icon 2"
+                                        type="button"
+                                        onClick={() =>
+                                            handleClick(
+                                                'PlayStation',
+                                                gameData.rawg_pk
+                                            )
+                                        }
+                                    />
+                                )}
+                                {gameData.nintendo && (
+                                    <img
+                                        className="GDIcon"
+                                        src="https://i.postimg.cc/R0qXLppc/image-3.png"
+                                        width="35px"
+                                        height="35px"
+                                        alt="Icon 3"
+                                        type="button"
+                                        onClick={() =>
+                                            handleClick(
+                                                'Nintendo',
+                                                gameData.rawg_pk
+                                            )
+                                        }
+                                    />
+                                )}
+                                {gameData.pc && (
+                                    <img
+                                        className="GDIcon"
+                                        src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
+                                        width="35px"
+                                        height="35px"
+                                        alt="Icon 4"
+                                        type="button"
+                                        onClick={() =>
+                                            handleClick('PC', gameData.rawg_pk)
+                                        }
+                                    />
+                                )}
 
-                                    <div
-                                        className="screenshotsHero"
-                                        onClick={handleScreenshotClick}
-                                    >
-                                        <ScreenshotsCard
-                                            rawgPk={gameData.rawg_pk}
-                                        />
-                                    </div>
-                                    <div className="container">
-                                        <p className="rec">
-                                            Recommendation:{' '}
-                                            {getRecommendation(gameData.rating)}
+                                <br />
+                                <div className="flex-container">
+                                    <div className="flex-item">
+                                        <br />
+                                        <br />
+                                        <p className="text-title">
+                                            About Game:
+                                        </p>
+                                        <div className="text">
+                                            {parse(gameData.description)}
+                                        </div>
+                                        <br />
+                                        <p className="text-genres-dev">
+                                            Genres:
+                                        </p>
+                                        <p className="text-title1">
+                                            {gameData.genre}
+                                        </p>
+                                        <br />
+                                        <p className="text-genres-dev">
+                                            Developers:
+                                        </p>
+                                        <p className="text-title1">
+                                            {gameData.developers}
                                         </p>
                                     </div>
-                                    <div id="big-screenshots">
-                                        <button
-                                            onClick={handleXbutton}
-                                            style={{
-                                                backgroundColor: 'darkgray',
-                                            }}
-                                        >
-                                            ❌
-                                        </button>
-                                        <Slider {...settings}>
-                                            {screenshots.map((shot) => (
-                                                <div key={shot.id}>
-                                                    <img
-                                                        src={shot.image_url}
-                                                        className="d-block"
-                                                        style={{
-                                                            maxHeight: '550px',
-                                                            margin: 'auto',
+                                    <div className="flex-item">
+                                        <br />
+                                    </div>
+                                    <div className="flex-item">
+                                        <h1 className="gameTitle">
+                                            {gameData.name}
+                                        </h1>
 
-                                                            borderRadius:
-                                                                '40px',
-                                                        }}
+                                        <img
+                                            className="divider"
+                                            src="https://i.postimg.cc/6pP3GtxW/image-11.png"
+                                            alt="Divider"
+                                        />
+
+                                        <div
+                                            className="screenshotsHero"
+                                            onClick={handleScreenshotClick}
+                                        >
+                                            <ScreenshotsCard
+                                                rawgPk={gameData.rawg_pk}
+                                            />
+                                        </div>
+                                        <div className="container">
+                                            <p className="rec">
+                                                Recommendation:{' '}
+                                                {getRecommendation(
+                                                    gameData.rating
+                                                )}
+                                            </p>
+                                        </div>
+                                        <div id="big-screenshots">
+                                            <button
+                                                onClick={handleXbutton}
+                                                style={{
+                                                    backgroundColor: 'darkgray',
+                                                }}
+                                            >
+                                                ❌
+                                            </button>
+                                            <Slider {...settings}>
+                                                {screenshots.map((shot) => (
+                                                    <div key={shot.id}>
+                                                        <img
+                                                            src={shot.image_url}
+                                                            className="d-block"
+                                                            style={{
+                                                                maxHeight:
+                                                                    '550px',
+                                                                margin: 'auto',
+
+                                                                borderRadius:
+                                                                    '40px',
+                                                            }}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </Slider>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <h1
+                                    className="gamesh1"
+                                    style={{
+                                        textAlign: 'center',
+                                        textDecoration: 'underline',
+                                        marginBottom: '20px',
+                                    }}
+                                >
+                                    Write a Review
+                                    <img
+                                        src={scribe}
+                                        alt=""
+                                        style={{
+                                            width: '70px',
+                                            objectFit: 'contain',
+                                            cursor: 'pointer',
+                                            padding: '4px',
+                                            position: 'relative',
+                                        }}
+                                    />
+                                </h1>
+                                <form
+                                    onSubmit={handleReviewSubmit}
+                                    id="create-review"
+                                >
+                                    <div className="rcontainer-title">
+                                        <input
+                                            onChange={handleFormChange}
+                                            placeholder="Review Title..."
+                                            required
+                                            type="text"
+                                            name="title"
+                                            id="title"
+                                            className="form-control"
+                                            value={reviewFormData.title}
+                                        />
+                                    </div>
+                                    <div className="rcontainer">
+                                        <input
+                                            onChange={handleFormChange}
+                                            placeholder="Write a review..."
+                                            required
+                                            type="text"
+                                            name="body"
+                                            id="body"
+                                            className="form-control"
+                                            value={reviewFormData.body}
+                                        />
+                                    </div>
+                                    <div className="rcontainer">
+                                        <div className="white-container">
+                                            <label
+                                                htmlFor="rating"
+                                                style={{ marginBottom: '0rem' }}
+                                            >
+                                                Give a rating out of 5:
+                                            </label>
+                                            <div className="rating-container">
+                                                <div className="star-rating">
+                                                    <StarRating
+                                                        rating={
+                                                            reviewFormData.rating
+                                                        }
+                                                        onStarClick={
+                                                            handleStarClick
+                                                        }
                                                     />
                                                 </div>
-                                            ))}
-                                        </Slider>
+                                            </div>
+                                        </div>
+                                        <button style={{ marginTop: '20px' }}>
+                                            Submit
+                                        </button>
                                     </div>
+                                </form>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <div
+                                    className="rcontainer"
+                                    id="review"
+                                    style={{ marginTop: '10px' }}
+                                >
+                                    <div
+                                        className={messageReviewClasses}
+                                        id="success-message"
+                                        style={alertStyle}
+                                    >
+                                        Your review has been submitted!
+                                        <button
+                                            onClick={handleDismissSuccess}
+                                            type="button"
+                                            className="close"
+                                            style={{
+                                                position: 'absolute',
+                                                top: '0',
+                                                right: '5px',
+                                                fontSize: '16px',
+                                            }}
+                                        >
+                                            <span aria-hidden="true">
+                                                &times;
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <h1
+                                    className="gamesh1"
+                                    style={{
+                                        textAlign: 'center',
+                                        textDecoration: 'underline',
+                                        marginTop: '5px',
+                                    }}
+                                >
+                                    Reviews
+                                </h1>
+                                <div className="moveright">
+                                    <LargeUserReviewCard
+                                        newReview={submittedReview}
+                                        gameId={gameData.id}
+                                        accountId={userDataDetails2?.id}
+                                        userVotes={votes}
+                                        onVote={handleVote}
+                                    />
                                 </div>
                             </div>
                             <br />
-                            <br />
-                            <h1
-                                className="gamesh1"
-                                style={{
-                                    textAlign: 'center',
-                                    textDecoration: 'underline',
-                                    marginBottom: '20px',
-                                }}
-                            >
-                                Write a Review
-                                <img
-                                    src={scribe}
-                                    alt=""
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <SideMenu />
+                        <Nav />
+
+                        <div className="gamescard-img2">
+                            <img
+                                src={gameData.background_img}
+                                alt="Background"
+                                className="background-image"
+                            />
+                            <div>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <h3 className="gamesh1">
+                                    Games/{gameData.name}
+                                </h3>
+                                <h5 className="gamesh2">Buy Here</h5>
+                                <hr className="gamessolid" />
+                                <button
+                                    className="GDButton"
                                     style={{
-                                        width: '70px',
-                                        objectFit: 'contain',
-                                        cursor: 'pointer',
-                                        padding: '4px',
-                                        position: 'relative',
+                                        color: 'black',
+                                        width: 'fit-content',
                                     }}
+                                    onClick={() => {
+                                        navigate(
+                                            `/games/${gameData.id}/nonuser`
+                                        )
+                                    }}
+                                >
+                                    {wishListText}
+                                </button>
+                                <button
+                                    className="GDButton"
+                                    style={{
+                                        color: 'black',
+                                        width: 'fit-content',
+                                    }}
+                                    onClick={() => {
+                                        navigate(
+                                            `/games/${gameData.id}/nonuser`
+                                        )
+                                    }}
+                                >
+                                    Add to Board
+                                </button>
+                                <button
+                                    className="GDButton"
+                                    style={{
+                                        color: 'black',
+                                        width: 'fit-content',
+                                    }}
+                                    disabled
+                                >
+                                    {gameData.rating_count} ratings
+                                </button>
+                                <button
+                                    className="GDButton"
+                                    style={{
+                                        color: 'black',
+                                        width: 'fit-content',
+                                    }}
+                                    disabled
+                                >
+                                    Ovr. Rating:{' '}
+                                    {'⭐'.repeat(gameData.rating.toFixed(1))}{' '}
+                                    {gameData.rating.toFixed(1)}
+                                </button>
+                                <button
+                                    className="GDButton"
+                                    style={{
+                                        color: 'black',
+                                        width: 'fit-content',
+                                    }}
+                                    disabled
+                                >
+                                    Released: {gameData.dates}
+                                </button>
+                                <img
+                                    className="GDIcon1"
+                                    src="https://i.postimg.cc/nrDT7szB/image-5.png"
+                                    width="35px"
+                                    height="35px"
+                                    alt="Icon 1"
                                 />
-                            </h1>
-                            <form
-                                onSubmit={handleReviewSubmit}
-                                id="create-review"
-                            >
+                                {gameData.xbox && (
+                                    <img
+                                        className="GDIcon"
+                                        src="https://i.postimg.cc/nrDT7szB/image-5.png"
+                                        width="35px"
+                                        height="35px"
+                                        alt="Icon 1"
+                                        type="button"
+                                        onClick={() =>
+                                            handleClick(
+                                                'Xbox',
+                                                gameData.rawg_pk
+                                            )
+                                        }
+                                    />
+                                )}
+                                {gameData.playstation && (
+                                    <img
+                                        className="GDIcon"
+                                        src="https://banner2.cleanpng.com/20180710/xsc/aawqt4puu.webp"
+                                        width="35px"
+                                        height="35px"
+                                        alt="Icon 2"
+                                        type="button"
+                                        onClick={() =>
+                                            handleClick(
+                                                'PlayStation',
+                                                gameData.rawg_pk
+                                            )
+                                        }
+                                    />
+                                )}
+                                {gameData.nintendo && (
+                                    <img
+                                        className="GDIcon"
+                                        src="https://i.postimg.cc/R0qXLppc/image-3.png"
+                                        width="35px"
+                                        height="35px"
+                                        alt="Icon 3"
+                                        type="button"
+                                        onClick={() =>
+                                            handleClick(
+                                                'Nintendo',
+                                                gameData.rawg_pk
+                                            )
+                                        }
+                                    />
+                                )}
+                                {gameData.pc && (
+                                    <img
+                                        className="GDIcon"
+                                        src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
+                                        width="35px"
+                                        height="35px"
+                                        alt="Icon 4"
+                                        type="button"
+                                        onClick={() =>
+                                            handleClick('PC', gameData.rawg_pk)
+                                        }
+                                    />
+                                )}
+
+                                <br />
+                                <div className="flex-container">
+                                    <div className="flex-item">
+                                        <br />
+                                        <br />
+                                        <p className="text-title">
+                                            About Game:
+                                        </p>
+                                        <div className="text">
+                                            {parse(gameData.description)}
+                                        </div>
+
+                                        <br />
+                                        <p className="text-genres-dev">
+                                            Genres:
+                                        </p>
+                                        <p className="text-title1">
+                                            {gameData.genre}
+                                        </p>
+                                        <br />
+                                        <p className="text-genres-dev">
+                                            Developers:
+                                        </p>
+                                        <p className="text-title1">
+                                            {gameData.developers}
+                                        </p>
+                                    </div>
+                                    <div className="flex-item"></div>
+                                    <div className="flex-item">
+                                        <h1 className="gameTitle">
+                                            {gameData.name}
+                                        </h1>
+                                        <img
+                                            className="divider"
+                                            src="https://i.postimg.cc/6pP3GtxW/image-11.png"
+                                            alt="Divider"
+                                        />
+
+                                        <div
+                                            className="screenshotsHero"
+                                            onClick={handleScreenshotClick}
+                                        >
+                                            <ScreenshotsCard
+                                                rawgPk={gameData.rawg_pk}
+                                            />
+                                        </div>
+                                        <div id="big-screenshots">
+                                            <button
+                                                onClick={handleXbutton}
+                                                style={{
+                                                    backgroundColor: 'darkgray',
+                                                }}
+                                            >
+                                                ❌
+                                            </button>
+                                            <Slider {...settings}>
+                                                {screenshots.map((shot) => (
+                                                    <div key={shot.id}>
+                                                        <img
+                                                            src={shot.image_url}
+                                                            className="d-block w-100"
+                                                            style={{
+                                                                maxHeight:
+                                                                    '550px',
+                                                                margin: 'auto',
+
+                                                                borderRadius:
+                                                                    '40px',
+                                                            }}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </Slider>
+                                        </div>
+
+                                        <div className="container">
+                                            <p className="rec">
+                                                Recommendation:{' '}
+                                                {getRecommendation(
+                                                    gameData.rating
+                                                )}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <h1
+                                    className="gamesh1"
+                                    style={{
+                                        textAlign: 'center',
+                                        textDecoration: 'underline',
+                                        marginBottom: '20px',
+                                    }}
+                                >
+                                    Write a Review
+                                    <img
+                                        src={scribe}
+                                        alt=""
+                                        style={{
+                                            width: '70px',
+                                            objectFit: 'contain',
+                                            cursor: 'pointer',
+                                            padding: '4px',
+                                            position: 'relative',
+                                        }}
+                                    />
+                                </h1>
                                 <div className="rcontainer-title">
                                     <input
-                                        onChange={handleFormChange}
+                                        onClick={() => {
+                                            navigate(
+                                                `/games/${gameData.id}/nonuser`
+                                            )
+                                        }}
                                         placeholder="Review Title..."
                                         required
                                         type="text"
                                         name="title"
                                         id="title"
-                                        className="form-control"
-                                        value={reviewFormData.title}
                                     />
                                 </div>
                                 <div className="rcontainer">
                                     <input
-                                        onChange={handleFormChange}
+                                        onClick={() => {
+                                            navigate(
+                                                `/games/${gameData.id}/nonuser`
+                                            )
+                                        }}
                                         placeholder="Write a review..."
                                         required
                                         type="text"
                                         name="body"
                                         id="body"
-                                        className="form-control"
-                                        value={reviewFormData.body}
                                     />
                                 </div>
                                 <div className="rcontainer">
@@ -686,384 +1092,52 @@ const GameDetails = () => {
                                         <div className="rating-container">
                                             <div className="star-rating">
                                                 <StarRating
-                                                    rating={
-                                                        reviewFormData.rating
-                                                    }
-                                                    onStarClick={
-                                                        handleStarClick
-                                                    }
+                                                    onStarClick={() => {
+                                                        navigate(
+                                                            `/games/${gameData.id}/nonuser`
+                                                        )
+                                                    }}
                                                 />
                                             </div>
                                         </div>
                                     </div>
-                                    <button style={{ marginTop: '20px' }}>
+                                    <button
+                                        style={{ marginTop: '20px' }}
+                                        onClick={() => {
+                                            navigate(
+                                                `/games/${gameData.id}/nonuser`
+                                            )
+                                        }}
+                                    >
                                         Submit
                                     </button>
                                 </div>
-                            </form>
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <div
-                                className="rcontainer"
-                                id="review"
-                                style={{ marginTop: '10px' }}
-                            >
-                                <div
-                                    className={messageReviewClasses}
-                                    id="success-message"
-                                    style={alertStyle}
-                                >
-                                    Your review has been submitted!
-                                    <button
-                                        onClick={handleDismissSuccess}
-                                        type="button"
-                                        className="close"
-                                        style={{
-                                            position: 'absolute',
-                                            top: '0',
-                                            right: '5px',
-                                            fontSize: '16px',
-                                        }}
-                                    >
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <h1
-                                className="gamesh1"
-                                style={{
-                                    textAlign: 'center',
-                                    textDecoration: 'underline',
-                                    marginTop: '5px',
-                                }}
-                            >
-                                Reviews
-                            </h1>
-                            <div className="moveright">
-                                <LargeUserReviewCard
-                                    newReview={submittedReview}
-                                    gameId={gameData.id}
-                                    accountId={userDataDetails2?.id}
-                                    userVotes={votes}
-                                    onVote={handleVote}
-                                />
-                            </div>
-                        </div>
-                        <br />
-                    </div>
-                </div>
-            ) : (
-                <div>
-                    <SideMenu />
-                    <Nav />
 
-                    <div className="gamescard-img2">
-                        <img
-                            src={gameData.background_img}
-                            alt="Background"
-                            className="background-image"
-                        />
-                        <div>
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <h3 className="gamesh1">Games/{gameData.name}</h3>
-                            <h5 className="gamesh2">Buy Here</h5>
-                            <hr className="gamessolid" />
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                onClick={() => {
-                                    navigate(`/games/${gameData.id}/nonuser`)
-                                }}
-                            >
-                                {wishListText}
-                            </button>
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                onClick={() => {
-                                    navigate(`/games/${gameData.id}/nonuser`)
-                                }}
-                            >
-                                Add to Board
-                            </button>
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                disabled
-                            >
-                                {gameData.rating_count} ratings
-                            </button>
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                disabled
-                            >
-                                Ovr. Rating:{' '}
-                                {'⭐'.repeat(gameData.rating.toFixed(1))}{' '}
-                                {gameData.rating.toFixed(1)}
-                            </button>
-                            <button
-                                className="GDButton"
-                                style={{ color: 'black', width: 'fit-content' }}
-                                disabled
-                            >
-                                Released: {gameData.dates}
-                            </button>
-                            <img
-                                className="GDIcon1"
-                                src="https://i.postimg.cc/nrDT7szB/image-5.png"
-                                width="35px"
-                                height="35px"
-                                alt="Icon 1"
-                            />
-                            {gameData.xbox && (
-                                <img
-                                    className="GDIcon"
-                                    src="https://i.postimg.cc/nrDT7szB/image-5.png"
-                                    width="35px"
-                                    height="35px"
-                                    alt="Icon 1"
-                                    type="button"
-                                    onClick={() =>
-                                        handleClick('Xbox', gameData.rawg_pk)
-                                    }
-                                />
-                            )}
-                            {gameData.playstation && (
-                                <img
-                                    className="GDIcon"
-                                    src="https://banner2.cleanpng.com/20180710/xsc/aawqt4puu.webp"
-                                    width="35px"
-                                    height="35px"
-                                    alt="Icon 2"
-                                    type="button"
-                                    onClick={() =>
-                                        handleClick(
-                                            'PlayStation',
-                                            gameData.rawg_pk
-                                        )
-                                    }
-                                />
-                            )}
-                            {gameData.nintendo && (
-                                <img
-                                    className="GDIcon"
-                                    src="https://i.postimg.cc/R0qXLppc/image-3.png"
-                                    width="35px"
-                                    height="35px"
-                                    alt="Icon 3"
-                                    type="button"
-                                    onClick={() =>
-                                        handleClick(
-                                            'Nintendo',
-                                            gameData.rawg_pk
-                                        )
-                                    }
-                                />
-                            )}
-                            {gameData.pc && (
-                                <img
-                                    className="GDIcon"
-                                    src="https://i.postimg.cc/BnPmRt60/Daco-2328688.png"
-                                    width="35px"
-                                    height="35px"
-                                    alt="Icon 4"
-                                    type="button"
-                                    onClick={() =>
-                                        handleClick('PC', gameData.rawg_pk)
-                                    }
-                                />
-                            )}
-
-                            <br />
-                            <div className="flex-container">
-                                <div className="flex-item">
-                                    <br />
-                                    <br />
-                                    <p className="text-title">About Game:</p>
-                                    <div className="text">
-                                        {parse(gameData.description)}
-                                    </div>
-
-                                    <br />
-                                    <p className="text-genres-dev">Genres:</p>
-                                    <p className="text-title1">
-                                        {gameData.genre}
-                                    </p>
-                                    <br />
-                                    <p className="text-genres-dev">
-                                        Developers:
-                                    </p>
-                                    <p className="text-title1">
-                                        {gameData.developers}
-                                    </p>
-                                </div>
-                                <div className="flex-item"></div>
-                                <div className="flex-item">
-                                    <h1 className="gameTitle">
-                                        {gameData.name}
-                                    </h1>
-                                    <img
-                                        className="divider"
-                                        src="https://i.postimg.cc/6pP3GtxW/image-11.png"
-                                        alt="Divider"
-                                    />
-
-                                    <div
-                                        className="screenshotsHero"
-                                        onClick={handleScreenshotClick}
-                                    >
-                                        <ScreenshotsCard
-                                            rawgPk={gameData.rawg_pk}
-                                        />
-                                    </div>
-                                    <div id="big-screenshots">
-                                        <button
-                                            onClick={handleXbutton}
-                                            style={{
-                                                backgroundColor: 'darkgray',
-                                            }}
-                                        >
-                                            ❌
-                                        </button>
-                                        <Slider {...settings}>
-                                            {screenshots.map((shot) => (
-                                                <div key={shot.id}>
-                                                    <img
-                                                        src={shot.image_url}
-                                                        className="d-block w-100"
-                                                        style={{
-                                                            maxHeight: '550px',
-                                                            margin: 'auto',
-
-                                                            borderRadius:
-                                                                '40px',
-                                                        }}
-                                                    />
-                                                </div>
-                                            ))}
-                                        </Slider>
-                                    </div>
-
-                                    <div className="container">
-                                        <p className="rec">
-                                            Recommendation:{' '}
-                                            {getRecommendation(gameData.rating)}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-                            <br />
-                            <h1
-                                className="gamesh1"
-                                style={{
-                                    textAlign: 'center',
-                                    textDecoration: 'underline',
-                                    marginBottom: '20px',
-                                }}
-                            >
-                                Write a Review
-                                <img
-                                    src={scribe}
-                                    alt=""
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <div style={{ marginTop: '10px' }}></div>
+                                <h1
+                                    className="gamesh1"
                                     style={{
-                                        width: '70px',
-                                        objectFit: 'contain',
-                                        cursor: 'pointer',
-                                        padding: '4px',
-                                        position: 'relative',
-                                    }}
-                                />
-                            </h1>
-                            <div className="rcontainer-title">
-                                <input
-                                    onClick={() => {
-                                        navigate(
-                                            `/games/${gameData.id}/nonuser`
-                                        )
-                                    }}
-                                    placeholder="Review Title..."
-                                    required
-                                    type="text"
-                                    name="title"
-                                    id="title"
-                                />
-                            </div>
-                            <div className="rcontainer">
-                                <input
-                                    onClick={() => {
-                                        navigate(
-                                            `/games/${gameData.id}/nonuser`
-                                        )
-                                    }}
-                                    placeholder="Write a review..."
-                                    required
-                                    type="text"
-                                    name="body"
-                                    id="body"
-                                />
-                            </div>
-                            <div className="rcontainer">
-                                <div className="white-container">
-                                    <label
-                                        htmlFor="rating"
-                                        style={{ marginBottom: '0rem' }}
-                                    >
-                                        Give a rating out of 5:
-                                    </label>
-                                    <div className="rating-container">
-                                        <div className="star-rating">
-                                            <StarRating
-                                                onStarClick={() => {
-                                                    navigate(
-                                                        `/games/${gameData.id}/nonuser`
-                                                    )
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <button
-                                    style={{ marginTop: '20px' }}
-                                    onClick={() => {
-                                        navigate(
-                                            `/games/${gameData.id}/nonuser`
-                                        )
+                                        textAlign: 'center',
+                                        textDecoration: 'underline',
+                                        marginTop: '5px',
                                     }}
                                 >
-                                    Submit
-                                </button>
+                                    Reviews
+                                </h1>
+                                <div className="moveright">
+                                    <LargeNonUserReviewCard
+                                        gameId={gameData.id}
+                                    />
+                                </div>
                             </div>
-
                             <br />
-                            <br />
-                            <br />
-                            <br />
-                            <div style={{ marginTop: '10px' }}></div>
-                            <h1
-                                className="gamesh1"
-                                style={{
-                                    textAlign: 'center',
-                                    textDecoration: 'underline',
-                                    marginTop: '5px',
-                                }}
-                            >
-                                Reviews
-                            </h1>
-                            <div className="moveright">
-                                <LargeNonUserReviewCard gameId={gameData.id} />
-                            </div>
                         </div>
-                        <br />
                     </div>
-                </div>
-            )}
+                ))}
         </div>
     )
 }
