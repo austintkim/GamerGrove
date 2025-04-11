@@ -148,15 +148,37 @@ class AccountQueries:
                     )
                     row = result.fetchone()
                     if row is not None:
-                        record = {}
-                        for i, column in enumerate(db.description):
-                            record[column.name] = row[i]
-                        return AccountOutWithPassword(**record)
-                except Exception:
+                        password_store = db.execute(
+                            """
+                            INSERT INTO accounts_password_history (account_id, hashed_password)
+                            VALUES (%s, %s)
+                            RETURNING id, account_id, hashed_password, created_at;
+                            """,
+                            [
+                                row[0],
+                                row[2]
+                            ]
+                        )
+                        password_row = password_store.fetchone()
+
+                        if password_row is not None:
+                            record = {
+                                "id": row[0],
+                                "username": row[1],
+                                "hashed_password": row[2],
+                                "first_name": row[3],
+                                "last_name": row[4],
+                                "email": row[5],
+                                "icon_id": row[6]
+                            }
+                            return AccountOutWithPassword(**record)
+
+                except Exception as e:
                     raise HTTPException(
                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        detail="Something went wrong during account creation"
+                        detail= f'Something went wrong during account creation: {e}'
                     )
+
 
     def delete(self, id: int, username: str) -> bool:
         with pool.connection() as conn:
@@ -280,15 +302,3 @@ class AccountQueries:
                         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
                         detail="Something went wrong during updating of account"
                     )
-
-                # except errors.UniqueViolation as e:
-                #     if "email" in str(e):
-                #         raise HTTPException(
-                #             status_code=status.HTTP_400_BAD_REQUEST,
-                #             detail="That email is already taken"
-                #         )
-                #     elif "username" in str(e):
-                #         raise HTTPException(
-                #             status_code=status.HTTP_400_BAD_REQUEST,
-                #             detail="That username is already taken"
-                #         )
