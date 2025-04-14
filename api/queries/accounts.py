@@ -3,6 +3,7 @@ from psycopg_pool import ConnectionPool
 from psycopg import errors
 from jwtdown_fastapi.authentication import Token
 from pydantic import BaseModel
+from typing import Optional
 from fastapi import (HTTPException, status)
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
@@ -16,6 +17,16 @@ class AccountIn(BaseModel):
     email: str
     icon_id: int
 
+
+class AccountInUpdate(BaseModel):
+    username: str
+    password: str
+    new_password: Optional[str]
+    first_name: str
+    last_name: str
+    email: str
+    icon_id: int
+    
 
 class AccountOut(BaseModel):
     id: int
