@@ -5,6 +5,7 @@ from fastapi import (
 from typing import Union
 from queries.accounts import (
     AccountIn,
+    AccountInUpdate,
     AccountOut,
     AccountQueries,
     AccountToken,
