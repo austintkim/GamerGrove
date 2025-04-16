@@ -26,7 +26,7 @@ class AccountInUpdate(BaseModel):
     last_name: str
     email: str
     icon_id: int
-    
+
 
 class AccountOut(BaseModel):
     id: int
@@ -226,7 +226,72 @@ class AccountQueries:
                     )
                 return True
 
-    def update(self, id: int, username: str, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
+    def passwords_check(self, id: int, current_password: str, new_password: str = None) -> bool:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                if current_password and new_password:
+                    password_check = db.execute(
+                        """
+                        SELECT 1
+                        FROM accounts_password_history
+                        WHERE hashed_password = %s
+                        AND account_id = %s
+                        """,
+                        [current_password, id]
+                    )
+                    new_password_check = db.execute(
+                        """
+                        SELECT 1
+                        FROM accounts_password_history
+                        WHERE hashed_password = %s
+                        AND account_id = %s
+                        """,
+                        [new_password, id]
+                    )
+                    if password_check.fetchone() and not new_password_check.fetchone():
+                        return 1
+                    elif not password_check.fetchone() and new_password_check.fetchone():
+                        return 2
+                    elif not password_check.fetchone() and not new_password_check.fetchone():
+                        return 3
+                    else:
+                        return 4
+                else:
+                    password_check = db.execute(
+                        """
+                        SELECT 1
+                        FROM accounts_password_history
+                        WHERE hashed_password = %s
+                        AND account_id = %s
+                        """,
+                        [current_password, id]
+                    )
+                    if not password_check.fetchone():
+                        return 5
+
+    def update(self, id: int, username: str, data: AccountIn, hashed_password: str #, hashed_new_password: str = None
+               ) -> AccountOutWithPassword:
+        # detail_messages = {
+        #     1: 'Password changed - successful',
+        #     2: 'Password changed - previous password incorrect and new password entered before',
+        #     3: 'Password changed - new password not entered before but previous password incorrect',
+        #     4: 'Password changed - previous password entered correctly but new password entered before',
+        #     5: 'Password not changed - current password entered incorrectly'
+        # }
+        # if not hashed_new_password:
+        #     if self.passwords_check(id, hashed_password) == 5:
+        #         raise HTTPException(
+                    # status_code = status.HTTP_400_BAD_REQUEST,
+                    # detail = detail_messages[5]
+        #         )
+        # else:
+            # result = self.passwords_check(id, hashed_password, hashed_new_password)
+            # if result > 1:
+            #     raise HTTPException(
+            #         status_code = status.HTTP_400_BAD_REQUEST,
+            #         detail = detail_messages[result]
+            #     )
+
         if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
