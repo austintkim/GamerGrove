@@ -269,7 +269,8 @@ class AccountQueries:
                     if not password_check.fetchone():
                         return 5
 
-    def update(self, id: int, username: str, data: AccountIn, hashed_password: str #, hashed_new_password: str = None
+    def update(self, id: int, username: str, data: AccountIn, # data: AccountInUpdate
+               hashed_password: str #, hashed_new_password: str = None
                ) -> AccountOutWithPassword:
         # detail_messages = {
         #     1: 'Password changed - successful',
