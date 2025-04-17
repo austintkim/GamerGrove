@@ -285,6 +285,92 @@ class AccountQueries:
                     # status_code = status.HTTP_400_BAD_REQUEST,
                     # detail = detail_messages[5]
         #         )
+        # if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
+        #     raise HTTPException(
+        #         status_code=status.HTTP_400_BAD_REQUEST,
+        #         detail="Both the username and email are taken"
+        #     )
+        # elif not self.is_unique("username", data.username, id):
+        #     raise HTTPException(
+        #         status_code=status.HTTP_400_BAD_REQUEST,
+        #         detail="That username is taken"
+        #     )
+        # elif not self.is_unique("email", data.email, id):
+        #     raise HTTPException(
+        #         status_code=status.HTTP_400_BAD_REQUEST,
+        #         detail="That email is taken"
+        #     )
+
+        # with pool.connection() as conn:
+        #     with conn.cursor() as db:
+        #         try:
+        #             id_check = db.execute(
+        #                 """
+        #                 SELECT * FROM accounts
+        #                 WHERE id = %s
+        #                 """,
+        #                 [id]
+        #             )
+        #             id_row = id_check.fetchone()
+        #             if id_row is None:
+        #                 raise HTTPException(
+        #                     status_code=status.HTTP_404_NOT_FOUND,
+        #                     detail="An account with that id does not exist in the database"
+        #                 )
+
+        #             username_check = db.execute(
+        #                 """
+        #                 UPDATE accounts
+        #                 SET username = %s,
+        #                     hashed_password = %s,
+        #                     first_name = %s,
+        #                     last_name = %s,
+        #                     email = %s,
+        #                     icon_id = %s
+        #                 WHERE id = %s AND username = %s
+        #                 """,
+        #                 [
+        #                  data.username,
+        #                  hashed_password,
+        #                  data.first_name,
+        #                  data.last_name,
+        #                  data.email,
+        #                  data.icon_id,
+        #                  id,
+        #                  username
+        #                 ]
+        #             )
+
+        #             if username_check.rowcount == 0:
+        #                 raise HTTPException(
+        #                     status_code=status.HTTP_401_UNAUTHORIZED,
+        #                     detail="You are attempting to update an account that you did not create"
+        #                 )
+
+        #             update_result = db.execute(
+        #                 """
+        #                 SELECT *
+        #                 FROM accounts
+        #                 WHERE username = %s AND hashed_password = %s
+        #                 """,
+        #                 [
+        #                  data.username,
+        #                  hashed_password
+        #                 ]
+        #             )
+
+        #             row = update_result.fetchone()
+
+        #             if row is not None:
+        #                 record = {}
+        #                 for i, column in enumerate(db.description):
+        #                     record[column.name] = row[i]
+        #                 return AccountOutWithPassword(**record)
+        #         except Exception:
+        #             raise HTTPException(
+        #                 status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+        #                 detail="Something went wrong during updating of account"
+        #             )
         # else:
             # result = self.passwords_check(id, hashed_password, hashed_new_password)
             # if result > 1:
@@ -292,6 +378,98 @@ class AccountQueries:
             #         status_code = status.HTTP_400_BAD_REQUEST,
             #         detail = detail_messages[result]
             #     )
+            # if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
+            #     raise HTTPException(
+            #         status_code=status.HTTP_400_BAD_REQUEST,
+            #         detail="Both the username and email are taken"
+            # )
+            # elif not self.is_unique("username", data.username, id):
+            #     raise HTTPException(
+            #         status_code=status.HTTP_400_BAD_REQUEST,
+            #         detail="That username is taken"
+            #     )
+            # elif not self.is_unique("email", data.email, id):
+            #     raise HTTPException(
+            #         status_code=status.HTTP_400_BAD_REQUEST,
+            #         detail="That email is taken"
+            #     )
+            # with pool.connection() as conn:
+            #     with conn.cursor() as db:
+            #         try:
+            #             id_check = db.execute(
+            #                 """
+            #                 SELECT * FROM accounts
+            #                 WHERE id = %s
+            #                 """,
+            #                 [id]
+            #             )
+            #             id_row = id_check.fetchone()
+            #             if id_row is None:
+            #                 raise HTTPException(
+            #                     status_code=status.HTTP_404_NOT_FOUND,
+            #                     detail="An account with that id does not exist in the database"
+            #                 )
+
+            #             username_check = db.execute(
+            #                 """
+            #                 UPDATE accounts
+            #                 SET username = %s,
+            #                     hashed_password = %s,
+            #                     first_name = %s,
+            #                     last_name = %s,
+            #                     email = %s,
+            #                     icon_id = %s
+            #                 WHERE id = %s AND username = %s
+            #                 RETURNING *
+            #                 """,
+            #                 [
+            #                 data.username,
+            #                 hashed_new_password,
+            #                 data.first_name,
+            #                 data.last_name,
+            #                 data.email,
+            #                 data.icon_id,
+            #                 id,
+            #                 username
+            #                 ]
+            #             )
+
+            #             if username_check.rowcount == 0:
+            #                 raise HTTPException(
+            #                     status_code=status.HTTP_401_UNAUTHORIZED,
+            #                     detail="You are attempting to update an account that you did not create"
+            #                 )
+            #             row = username_check.fetchone()
+            #             if row is not None:
+            #               password_store = db.execute(
+            #                   """
+            #                   INSERT INTO accounts_password_history
+            #                   VALUES (%s, %s)
+            #                   RETURNING id, account_id, hashed_password
+            #                   """,
+            #                   [
+            #                       id,
+            #                       row[1]
+            #                   ]
+            #              )
+            #              password_row = password_store.fetchone()
+
+            #              if password_row is Not None:
+            #                   record = {
+            #                         "id": id,
+            #                         "username": row[0],
+            #                         "hashed_password": row[1],
+            #                         "first_name": row[2],
+            #                         "last_name": row[3],
+            #                         "email": row[4],
+            #                         "icon_id": row[5]
+            #                   }
+            #                   return AccountOutWithPassword(**record)
+            # except Exception as e:
+            #    raise HTTPException(
+            #        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            #        detail= f'Something went wrong during account updating" {e}'
+            #    )
 
         if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
             raise HTTPException(
