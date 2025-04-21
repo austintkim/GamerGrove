@@ -2,9 +2,12 @@ import os
 from fastapi import Depends
 from jwtdown_fastapi.authentication import Authenticator
 from queries.accounts import AccountOut, AccountQueries, AccountOutWithPassword
+from passlib.context import CryptContext
 
 
 class MyAuthenticator(Authenticator):
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
     async def get_account_data(
         self,
         username: str,
@@ -32,5 +35,8 @@ class MyAuthenticator(Authenticator):
             account = AccountOutWithPassword(**account)
 
         return account.username, account.dict()
+
+    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
+        return self.pwd_context.verify(plain_password, hashed_password)
 
 authenticator = MyAuthenticator(os.environ["SIGNING_KEY"])

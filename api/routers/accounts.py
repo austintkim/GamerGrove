@@ -67,7 +67,6 @@ async def delete_account(
 async def update_account(
     id: int,
     data: AccountIn,
-    # data: AccountInUpdate
     request: Request,
     response: Response,
     queries: AccountQueries = Depends(),
@@ -75,19 +74,12 @@ async def update_account(
 ):
     hashed_password = authenticator.hash_password(data.password)
     username = account_data["username"]
-    # if new_password in data:
-        # hashed_new_password = authenticator.hash_password(data.new_password)
-        # updated_account = queries.update(id, username, data, hashed_password, new_hashed_password)
-
-        # form = AccountForm(username=data.username, password=data.new_password)
-        # token = await authenticator.login(response, request, form, queries)
-        # return AccountToken(account=updated_account, **token.dict())
-
     updated_account = queries.update(id, username, data, hashed_password)
 
     form = AccountForm(username=data.username, password=data.password)
     token = await authenticator.login(response, request, form, queries)
     return AccountToken(account=updated_account, **token.dict())
+
 
 
 @router.get("/token", response_model=AccountToken | None)
