@@ -3,7 +3,6 @@ from psycopg_pool import ConnectionPool
 from psycopg import errors
 from jwtdown_fastapi.authentication import Token
 from pydantic import BaseModel
-from authenticator import authenticator
 from typing import Optional
 from fastapi import (HTTPException, status)
 
@@ -227,48 +226,48 @@ class AccountQueries:
                     )
                 return True
 
-    def passwords_check(self, id: int, current_password: str, new_password: str = None) -> bool:
-        with pool.connection() as conn:
-            with conn.cursor() as db:
-                if current_password and new_password:
-                    password_check = db.execute(
-                        """
-                        SELECT 1
-                        FROM accounts_password_history
-                        WHERE hashed_password = %s
-                        AND account_id = %s
-                        """,
-                        [current_password, id]
-                    )
-                    new_password_check = db.execute(
-                        """
-                        SELECT 1
-                        FROM accounts_password_history
-                        WHERE hashed_password = %s
-                        AND account_id = %s
-                        """,
-                        [new_password, id]
-                    )
-                    if password_check.fetchone() and not new_password_check.fetchone():
-                        return 1
-                    elif not password_check.fetchone() and new_password_check.fetchone():
-                        return 2
-                    elif not password_check.fetchone() and not new_password_check.fetchone():
-                        return 3
-                    else:
-                        return 4
-                else:
-                    password_check = db.execute(
-                        """
-                        SELECT 1
-                        FROM accounts_password_history
-                        WHERE hashed_password = %s
-                        AND account_id = %s
-                        """,
-                        [current_password, id]
-                    )
-                    if not password_check.fetchone():
-                        return 5
+    # def passwords_check(self, id: int, current_password: str, new_password: str = None) -> bool:
+    #     with pool.connection() as conn:
+    #         with conn.cursor() as db:
+    #             if current_password and new_password:
+    #                 password_check = db.execute(
+    #                     """
+    #                     SELECT 1
+    #                     FROM accounts_password_history
+    #                     WHERE hashed_password = %s
+    #                     AND account_id = %s
+    #                     """,
+    #                     [current_password, id]
+    #                 )
+    #                 new_password_check = db.execute(
+    #                     """
+    #                     SELECT 1
+    #                     FROM accounts_password_history
+    #                     WHERE hashed_password = %s
+    #                     AND account_id = %s
+    #                     """,
+    #                     [new_password, id]
+    #                 )
+    #                 if password_check.fetchone() and not new_password_check.fetchone():
+    #                     return 1
+    #                 elif not password_check.fetchone() and new_password_check.fetchone():
+    #                     return 2
+    #                 elif not password_check.fetchone() and not new_password_check.fetchone():
+    #                     return 3
+    #                 else:
+    #                     return 4
+    #             else:
+    #                 password_check = db.execute(
+    #                     """
+    #                     SELECT 1
+    #                     FROM accounts_password_history
+    #                     WHERE hashed_password = %s
+    #                     AND account_id = %s
+    #                     """,
+    #                     [current_password, id]
+    #                 )
+    #                 if not password_check.fetchone():
+    #                     return 5
 
     def update(self, id: int, username: str, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
         if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
