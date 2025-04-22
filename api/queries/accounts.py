@@ -226,48 +226,48 @@ class AccountQueries:
                     )
                 return True
 
-    # def passwords_check(self, id: int, current_password: str, new_password: str = None) -> bool:
-    #     with pool.connection() as conn:
-    #         with conn.cursor() as db:
-    #             if current_password and new_password:
-    #                 password_check = db.execute(
-    #                     """
-    #                     SELECT 1
-    #                     FROM accounts_password_history
-    #                     WHERE hashed_password = %s
-    #                     AND account_id = %s
-    #                     """,
-    #                     [current_password, id]
-    #                 )
-    #                 new_password_check = db.execute(
-    #                     """
-    #                     SELECT 1
-    #                     FROM accounts_password_history
-    #                     WHERE hashed_password = %s
-    #                     AND account_id = %s
-    #                     """,
-    #                     [new_password, id]
-    #                 )
-    #                 if password_check.fetchone() and not new_password_check.fetchone():
-    #                     return 1
-    #                 elif not password_check.fetchone() and new_password_check.fetchone():
-    #                     return 2
-    #                 elif not password_check.fetchone() and not new_password_check.fetchone():
-    #                     return 3
-    #                 else:
-    #                     return 4
-    #             else:
-    #                 password_check = db.execute(
-    #                     """
-    #                     SELECT 1
-    #                     FROM accounts_password_history
-    #                     WHERE hashed_password = %s
-    #                     AND account_id = %s
-    #                     """,
-    #                     [current_password, id]
-    #                 )
-    #                 if not password_check.fetchone():
-    #                     return 5
+    def passwords_check(self, id: int, current_password: str, new_password: str = None) -> bool:
+        from authenticator import authenticator
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                db.execute(
+                    """
+                    SELECT hashed_password
+                    FROM accounts_password_history
+                    WHERE account_id = %s AND is_current = TRUE
+                    """,
+                    [id]
+                )
+                current_pw_row = db.fetchone()
+                current_pw_valid = False
+                if current_pw_row:
+                    current_pw_valid = authenticator.verify_password(current_password, current_pw_row[0])
+
+                new_pw_used = False
+                if new_password:
+                    db.execute(
+                        """
+                        SELECT hashed_password
+                        FROM accounts_password_history
+                        WHERE account_id = %s
+                        """,
+                        [id]
+                    )
+                    all_pw_rows = db.fetchall()
+                    new_pw_used = any(authenticator.verify_password(new_password, row[0]) for row in all_pw_rows)
+
+                if current_password and new_password:
+                    if current_pw_valid and not new_pw_used:
+                        return 1
+                    elif not current_pw_valid and new_pw_used:
+                        return 2
+                    elif not current_pw_valid and not new_pw_used:
+                        return 3
+                    else:
+                        return 4
+                else:
+                    if not current_pw_valid:
+                        return 5
 
     def update(self, id: int, username: str, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
         if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
