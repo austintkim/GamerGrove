@@ -266,8 +266,10 @@ class AccountQueries:
                     else:
                         return 4
                 else:
-                    if not current_pw_valid:
+                    if current_pw_valid:
                         return 5
+                    else:
+                        return 6
 
     def update(self, id: int, username: str, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
         if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
