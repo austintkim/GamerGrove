@@ -226,10 +226,40 @@ class AccountQueries:
                     )
                 return True
 
-    def passwords_check(self, id: int, current_password: str, new_password: str = None) -> bool:
+    def passwords_check(self, id: int, username: str, current_password: str, new_password: str = None) -> bool:
         from authenticator import authenticator
         with pool.connection() as conn:
             with conn.cursor() as db:
+                id_check = db.execute(
+                        """
+                        SELECT * FROM accounts
+                        WHERE id = %s
+                        """,
+                        [id]
+                    )
+                id_row = id_check.fetchone()
+                if id_row is None:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail="An account with that id does not exist in the database"
+                    )
+
+                username_check = db.execute(
+                    """
+                    SELECT * FROM accounts
+                    WHERE id = %s AND username = %s
+                    """,
+                    [id,
+                     username
+                     ]
+                )
+                username_row = username_check.fetchone()
+                if username_row is None:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="You are attempting to update an account that you did not create"
+                    )
+                
                 db.execute(
                     """
                     SELECT hashed_password
