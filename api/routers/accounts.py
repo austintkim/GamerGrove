@@ -75,7 +75,9 @@ async def update_account(
     username = account_data["username"]
     updated_account = queries.update(id, username, data)
 
-    form = AccountForm(username=data.username, password=data.password)
+    password_for_login = data.new_password if data.new_password else data.password
+
+    form = AccountForm(username=data.username, password=password_for_login)
     token = await authenticator.login(response, request, form, queries)
     return AccountToken(account=updated_account, **token.dict())
 

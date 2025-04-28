@@ -302,7 +302,7 @@ class AccountQueries:
                     else:
                         return 6
 
-    def update(self, id: int, username: str, data: AccountInUpdate, hashed_password: str) -> AccountOutWithPassword:
+    def update(self, id: int, username: str, data: AccountInUpdate) -> AccountOutWithPassword:
         if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -319,73 +319,147 @@ class AccountQueries:
                 detail="That email is taken"
             )
 
-        with pool.connection() as conn:
-            with conn.cursor() as db:
-                try:
-                    id_check = db.execute(
-                        """
-                        SELECT * FROM accounts
-                        WHERE id = %s
-                        """,
-                        [id]
-                    )
-                    id_row = id_check.fetchone()
-                    if id_row is None:
-                        raise HTTPException(
-                            status_code=status.HTTP_404_NOT_FOUND,
-                            detail="An account with that id does not exist in the database"
+        detail_messages = {
+            1: 'Password changed - successful',
+            2: 'Password changed - previous password incorrect and new password entered before',
+            3: 'Password changed - new password not entered before but previous password incorrect',
+            4: 'Password changed - previous password entered correctly but new password entered before',
+            5: 'Password not changed - successful',
+            6: 'Password not changed - current password entered incorrectly'
+        }
+
+        result = self.passwords_check(id, username, data.password, data.new_password)
+
+        if result == 1:
+            from authenticator import authenticator
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    try:
+                        db.execute(
+                            """
+                            UPDATE accounts_password_history
+                            SET is_current = FALSE
+                            WHERE account_id = %s AND is_current = TRUE;
+                            """,
+                            [id]
+                        )
+                        hashed_pw = authenticator.hash_password(data.new_password)
+
+                        db.execute(
+                            """
+                            INSERT INTO accounts_password_history
+                            (account_id, hashed_password, is_current)
+                            VALUES(%s, %s, TRUE);
+                            """,
+                            [id, hashed_pw]
                         )
 
-                    username_check = db.execute(
-                        """
-                        UPDATE accounts
-                        SET username = %s,
-                            hashed_password = %s,
-                            first_name = %s,
-                            last_name = %s,
-                            email = %s,
-                            icon_id = %s
-                        WHERE id = %s AND username = %s
-                        """,
-                        [
-                         data.username,
-                         hashed_password,
-                         data.first_name,
-                         data.last_name,
-                         data.email,
-                         data.icon_id,
-                         id,
-                         username
-                        ]
-                    )
-
-                    if username_check.rowcount == 0:
-                        raise HTTPException(
-                            status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="You are attempting to update an account that you did not create"
+                        update = db.execute(
+                            """
+                            UPDATE accounts
+                            SET
+                                username = %s,
+                                hashed_password = %s,
+                                first_name = %s,
+                                last_name = %s,
+                                email = %s,
+                                icon_id = %s
+                            WHERE
+                                id = %s AND username = %s
+                            RETURNING
+                                id,
+                                username,
+                                hashed_password,
+                                first_name,
+                                last_name,
+                                email,
+                                icon_id;
+                            """,
+                            [
+                                data.username,
+                                hashed_pw,
+                                data.first_name,
+                                data.last_name,
+                                data.email,
+                                data.icon_id,
+                                id,
+                                username
+                            ]
                         )
+                        update_row = update.fetchone()
 
-                    update_result = db.execute(
-                        """
-                        SELECT *
-                        FROM accounts
-                        WHERE username = %s AND hashed_password = %s
-                        """,
-                        [
-                         data.username,
-                         hashed_password
-                        ]
-                    )
+                        if update_row is not None:
+                            record = {
+                                "id": update_row[0],
+                                "username": update_row[1],
+                                "hashed_password": update_row[2],
+                                "first_name": update_row[3],
+                                "last_name": update_row[4],
+                                "email": update_row[5],
+                                "icon_id": update_row[6]
+                            }
+                            return AccountOutWithPassword(**record)
 
-                    row = update_result.fetchone()
+                    except Exception as e:
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail= f'Something went wrong during account updating: {e}'
+                        )
+        elif result == 5:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    try:
+                        update = db.execute(
+                            """
+                            UPDATE accounts
+                            SET
+                                username = %s,
+                                first_name = %s,
+                                last_name = %s,
+                                email = %s,
+                                icon_id = %s
+                            WHERE
+                                id = %s AND username = %s
+                            RETURNING
+                                id,
+                                username,
+                                hashed_password,
+                                first_name,
+                                last_name,
+                                email,
+                                icon_id;
+                            """,
+                            [
+                                data.username,
+                                data.first_name,
+                                data.last_name,
+                                data.email,
+                                data.icon_id,
+                                id,
+                                username
+                            ]
+                        )
+                        update_row = update.fetchone()
 
-                    if row is not None:
-                        record = {}
-                        for i, column in enumerate(db.description):
-                            record[column.name] = row[i]
-                        return AccountOutWithPassword(**record)
-                except Exception:
-                    raise HTTPException(
-                        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        detail="Something went wrong during updating of account"
-                    )
+                        if update_row is not None:
+                            record = {
+                                "id": update_row[0],
+                                "username": update_row[1],
+                                "hashed_password": update_row[2],
+                                "first_name": update_row[3],
+                                "last_name": update_row[4],
+                                "email": update_row[5],
+                                "icon_id": update_row[6]
+                            }
+                            return AccountOutWithPassword(**record)
+
+                    except Exception as e:
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail= f'Something went wrong during account updating: {e}'
+                        )
+        else:
+            raise HTTPException(
+                status_code = status.HTTP_400_BAD_REQUEST,
+                detail = detail_messages[result]
+            )
