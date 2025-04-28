@@ -161,13 +161,14 @@ class AccountQueries:
                     if row is not None:
                         password_store = db.execute(
                             """
-                            INSERT INTO accounts_password_history (account_id, hashed_password)
-                            VALUES (%s, %s)
-                            RETURNING id, account_id, hashed_password, created_at;
+                            INSERT INTO accounts_password_history (account_id, hashed_password, is_current)
+                            VALUES (%s, %s, %s)
+                            RETURNING id, account_id, hashed_password, is_current, created_at;
                             """,
                             [
                                 row[0],
-                                row[2]
+                                row[2],
+                                True
                             ]
                         )
                         password_row = password_store.fetchone()
@@ -259,7 +260,7 @@ class AccountQueries:
                         status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="You are attempting to update an account that you did not create"
                     )
-                
+
                 db.execute(
                     """
                     SELECT hashed_password
@@ -301,7 +302,7 @@ class AccountQueries:
                     else:
                         return 6
 
-    def update(self, id: int, username: str, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
+    def update(self, id: int, username: str, data: AccountInUpdate, hashed_password: str) -> AccountOutWithPassword:
         if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
