@@ -158,9 +158,6 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                 userData.id
             }/${userData.username}`
 
-            accountFormData.password = accountFormData.new_password
-            delete accountFormData.new_password
-
             const updateFetchConfig = {
                 method: 'put',
                 body: JSON.stringify(accountFormData),
@@ -210,8 +207,6 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
             const updateUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${
                 userData.id
             }/${userData.username}`
-
-            delete accountFormData.new_password
 
             const updateFetchConfig = {
                 method: 'put',
