@@ -111,46 +111,14 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
             throw new Error('Both old and new passwords do not match!')
         }
 
-        const loginUrl = `${import.meta.env.VITE_API_HOST}/token`
-        const form = new FormData()
-        form.append('username', userData.username)
-        form.append('password', accountFormData.password)
-        const loginConfig = {
-            method: 'post',
-            body: form,
-        }
-
-        const loginResponse = await fetch(loginUrl, loginConfig)
-
-        if (
-            !loginResponse.ok &&
-            newPasswordConfirm !== accountFormData.new_password
-        ) {
-            setIncorrectLogin(true)
-            setNewPasswordMismatch(true)
-            throw new Error(
-                'New passwords do not match and old password invalid!'
-            )
-        }
-
         if (passwordConfirm !== accountFormData.password) {
             setPasswordMismatch(true)
             throw new Error('Passwords do not match!')
         }
 
-        if (!loginResponse.ok) {
-            setIncorrectLogin(true)
-            throw new Error('Invalid password!')
-        }
-
         if (newPasswordConfirm !== accountFormData.new_password) {
             setNewPasswordMismatch(true)
             throw new Error('New passwords do not match!')
-        }
-
-        if (accountFormData.new_password === accountFormData.password){
-            setNewPasswordTaken(true)
-            throw new Error('New password is not different from current password!')
         }
 
         if (accountFormData.new_password && newPasswordConfirm) {
@@ -181,7 +149,6 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                 setUpdatedAccount(true)
                 onSettingsUpdate()
             } else {
-                accountFormData.new_password = ''
                 const data = await updateResponse.json()
                 if (
                     data.detail.includes('username') &&
@@ -200,8 +167,22 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                 } else if (data.detail.includes('email')) {
                     setEmailTaken(true)
                     throw new Error('Failed to update account - email is taken')
+                } if (
+                    data.detail.includes('3')
+                ) {
+                    setIncorrectLogin(true)
+                } else if (
+                    data.detail.includes('4')
+                ) {
+                    setNewPasswordTaken(true)
+                } else {
+                    setIncorrectLogin(true)
+                    setNewPasswordTaken(true)
                 }
-                throw new Error('Failed to update account settings')
+
+                throw new Error(
+                    `Failed to update account settings --> ${data.detail}`
+                )
             }
         } else {
             const updateUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/${
@@ -227,7 +208,6 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                 setUpdatedAccount(true)
                 onSettingsUpdate()
             } else {
-                accountFormData.new_password = ''
                 const data = await updateResponse.json()
                 if (
                     data.detail.includes('username') &&
@@ -241,13 +221,17 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                 } else if (data.detail.includes('username')) {
                     setUserNameTaken(true)
                     throw new Error(
-                        'Failed to create account - username is taken'
+                        'Failed to update account - username is taken'
                     )
                 } else if (data.detail.includes('email')) {
                     setEmailTaken(true)
-                    throw new Error('Failed to create account - email is taken')
+                    throw new Error('Failed to update account - email is taken')
+                } if (data.detail.includes('6')) {
+                    setIncorrectLogin(true)
                 }
-                throw new Error('Failed to update account settings')
+                throw new Error(
+                    `Failed to update account settings --> ${data.detail}`
+                )
             }
         }
     }
@@ -292,7 +276,7 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
 
     const alertStyleNewPassword = {
         display: newPasswordTaken ? 'flex' : 'none',
-        maxWidth: '380px',
+        maxWidth: '395px',
         padding: '5px',
         whiteSpace: 'nowrap',
         opacity: newPasswordTaken ? '1' : '0',
@@ -655,9 +639,7 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                             alertStyleNewPassword
                                                         }
                                                     >
-                                                        Please change your
-                                                        password to something
-                                                        new!
+                                                        Please input a password you have not used before!
                                                         <button
                                                             onClick={
                                                                 handleDismissNewPassword
