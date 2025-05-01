@@ -963,14 +963,18 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                         <button
                                             style={{ marginTop: '16px' }}
                                             disabled={
-                                                showPasswordFields &&
+                                                !accountFormData.password || passwordConfirm.length != accountFormData.password.length
+                                                || (showPasswordFields &&
                                                 (!accountFormData.new_password ||
                                                     accountFormData.new_password
                                                         .length < 8 ||
                                                     newPasswordStrength ===
                                                         'Weak' ||
                                                     newPasswordStrength ===
-                                                        'Moderate')
+                                                        'Moderate' ||
+                                                    newPasswordConfirm.length != accountFormData.new_password.length)
+                                                )
+
                                             }
                                         >
                                             Update
