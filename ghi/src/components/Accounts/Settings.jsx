@@ -550,9 +550,10 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                             }
                                                             required
                                                             type={
-                                                                showNewPassword
-                                                                    ? 'text'
-                                                                    : 'password'
+                                                                !showNewPassword ||
+                                                                !accountFormData.new_password
+                                                                    ? 'password'
+                                                                    : 'text'
                                                             }
                                                             name="new_password"
                                                             id="new-password"
@@ -588,7 +589,8 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                                 cursor: 'pointer',
                                                             }}
                                                         >
-                                                            {showNewPassword
+                                                            {!showNewPassword ||
+                                                            !accountFormData.new_password
                                                                 ? '👁️'
                                                                 : '👁️‍🗨️'}
                                                         </button>
@@ -639,7 +641,9 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                             alertStyleNewPassword
                                                         }
                                                     >
-                                                        Please input a password you have not used before!
+                                                        Please input a password
+                                                        you have not used
+                                                        before!
                                                         <button
                                                             onClick={
                                                                 handleDismissNewPassword
@@ -678,9 +682,10 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                             }
                                                             required
                                                             type={
-                                                                showNewConfirmPassword
-                                                                    ? 'text'
-                                                                    : 'password'
+                                                                !showNewConfirmPassword ||
+                                                                !newPasswordConfirm
+                                                                    ? 'password'
+                                                                    : 'text'
                                                             }
                                                             name="newPasswordConfirm"
                                                             id="new-password-confirm"
@@ -716,7 +721,8 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                                 cursor: 'pointer',
                                                             }}
                                                         >
-                                                            {showNewConfirmPassword
+                                                            {!showNewConfirmPassword ||
+                                                            !newPasswordConfirm
                                                                 ? '👁️'
                                                                 : '👁️‍🗨️'}
                                                         </button>
@@ -824,9 +830,10 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                 onChange={handleFormChange}
                                                 required
                                                 type={
-                                                    showPassword
-                                                        ? 'text'
-                                                        : 'password'
+                                                    !showPassword ||
+                                                    !accountFormData.password
+                                                        ? 'password'
+                                                        : 'text'
                                                 }
                                                 name="password"
                                                 id="password"
@@ -856,7 +863,10 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                     cursor: 'pointer',
                                                 }}
                                             >
-                                                {showPassword ? '👁️' : '👁️‍🗨️'}
+                                                {!showPassword ||
+                                                !accountFormData.password
+                                                    ? '👁️'
+                                                    : '👁️‍🗨️'}
                                             </button>
                                         </div>
                                         <small className="form-text text-muted">
@@ -877,9 +887,10 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                 onChange={passwordConfirmChange}
                                                 required
                                                 type={
-                                                    showConfirmPassword
-                                                        ? 'text'
-                                                        : 'password'
+                                                    !showConfirmPassword ||
+                                                    !passwordConfirm
+                                                        ? 'password'
+                                                        : 'text'
                                                 }
                                                 name="password-confirm"
                                                 id="password-confirm"
@@ -907,7 +918,8 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                     cursor: 'pointer',
                                                 }}
                                             >
-                                                {showConfirmPassword
+                                                {!showConfirmPassword ||
+                                                !passwordConfirm
                                                     ? '👁️'
                                                     : '👁️‍🗨️'}
                                             </button>
@@ -963,18 +975,23 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                         <button
                                             style={{ marginTop: '16px' }}
                                             disabled={
-                                                !accountFormData.password || passwordConfirm.length != accountFormData.password.length
-                                                || (showPasswordFields &&
-                                                (!accountFormData.new_password ||
-                                                    accountFormData.new_password
-                                                        .length < 8 ||
-                                                    newPasswordStrength ===
-                                                        'Weak' ||
-                                                    newPasswordStrength ===
-                                                        'Moderate' ||
-                                                    newPasswordConfirm.length != accountFormData.new_password.length)
-                                                )
-
+                                                !accountFormData.password ||
+                                                passwordConfirm.length !=
+                                                    accountFormData.password
+                                                        .length ||
+                                                (showPasswordFields &&
+                                                    (!accountFormData.new_password ||
+                                                        accountFormData
+                                                            .new_password
+                                                            .length < 8 ||
+                                                        newPasswordStrength ===
+                                                            'Weak' ||
+                                                        newPasswordStrength ===
+                                                            'Moderate' ||
+                                                        newPasswordConfirm.length !=
+                                                            accountFormData
+                                                                .new_password
+                                                                .length))
                                             }
                                         >
                                             Update

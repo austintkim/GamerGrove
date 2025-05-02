@@ -318,9 +318,10 @@ function SignUpForm() {
                                                   onChange={handleFormChange}
                                                   required
                                                   type={
-                                                      showPassword
-                                                          ? 'text'
-                                                          : 'password'
+                                                      !showPassword ||
+                                                      !accountFormData.password
+                                                          ? 'password'
+                                                          : 'text'
                                                   }
                                                   name="password"
                                                   id="password"
@@ -352,7 +353,10 @@ function SignUpForm() {
                                                       cursor: 'pointer',
                                                   }}
                                               >
-                                                  {showPassword ? '👁️' : '👁️‍🗨️'}
+                                                  {!showPassword ||
+                                                  !accountFormData.password
+                                                      ? '👁️'
+                                                      : '👁️‍🗨️'}
                                               </button>
                                           </div>
                                           {accountFormData.password &&
@@ -400,9 +404,9 @@ function SignUpForm() {
                                                   }
                                                   required
                                                   type={
-                                                      showConfirmPassword
-                                                          ? 'text'
-                                                          : 'password'
+                                                      !showConfirmPassword || !passwordConfirm
+                                                          ? 'password'
+                                                          : 'text'
                                                   }
                                                   name="password-confirm"
                                                   id="password-confirm"
@@ -414,9 +418,7 @@ function SignUpForm() {
                                               />
                                               <button
                                                   type="button"
-                                                  disabled={
-                                                      !passwordConfirm
-                                                  }
+                                                  disabled={!passwordConfirm}
                                                   onClick={
                                                       toggleConfirmPasswordVisibility
                                                   }
@@ -431,7 +433,8 @@ function SignUpForm() {
                                                       cursor: 'pointer',
                                                   }}
                                               >
-                                                  {showConfirmPassword
+                                                  {!showConfirmPassword ||
+                                                  !passwordConfirm
                                                       ? '👁️'
                                                       : '👁️‍🗨️'}
                                               </button>

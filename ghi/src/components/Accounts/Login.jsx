@@ -14,8 +14,15 @@ const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [incorrectLogin, setIncorrectLogin] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
   const { login } = useToken();
   const navigate = useNavigate();
+
+  console.log(showPassword);
+
+  const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,18 +119,55 @@ const LoginForm = () => {
                                           }
                                       />
                                   </div>
-                                  <div className="mb-3">
-                                      <label className="form-label">
+                                  <div
+                                      className="form-floating mb-3"
+                                      style={{
+                                          textAlign: 'center',
+                                          marginTop: '8px',
+                                      }}
+                                  >
+                                      <label htmlFor="password">
                                           Password:
                                       </label>
-                                      <input
-                                          name="password"
-                                          type="password"
-                                          className="form-control"
-                                          onChange={(e) =>
-                                              setPassword(e.target.value)
-                                          }
-                                      />
+                                      <div style={{ position: 'relative' }}>
+                                          <input
+                                              onChange={(e) =>
+                                                  setPassword(e.target.value)
+                                              }
+                                              required
+                                              type={
+                                                  !showPassword || !password
+                                                      ? 'password'
+                                                      : 'text'
+                                              }
+                                              name="password"
+                                              id="password"
+                                              className="form-control"
+                                              value={password}
+                                              style={{
+                                                  marginBottom: '15px',
+                                                  paddingRight: '40px',
+                                              }}
+                                          />
+                                          <button
+                                              type="button"
+                                              disabled={!password}
+                                              onClick={togglePasswordVisibility}
+                                              style={{
+                                                  position: 'absolute',
+                                                  right: '10px',
+                                                  top: '50%',
+                                                  transform: 'translateY(-50%)',
+                                                  background: 'none',
+                                                  border: 'none',
+                                                  cursor: 'pointer',
+                                              }}
+                                          >
+                                              {!showPassword || !password
+                                                  ? '👁️'
+                                                  : '👁️‍🗨️'}
+                                          </button>
+                                      </div>
                                   </div>
                                   <div>
                                       <input
