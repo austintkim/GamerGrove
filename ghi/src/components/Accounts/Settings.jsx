@@ -986,8 +986,6 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                             .length < 8 ||
                                                         newPasswordStrength ===
                                                             'Weak' ||
-                                                        newPasswordStrength ===
-                                                            'Moderate' ||
                                                         newPasswordConfirm.length !=
                                                             accountFormData
                                                                 .new_password

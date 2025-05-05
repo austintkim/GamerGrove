@@ -1,6 +1,6 @@
 from fastapi import (
     APIRouter, Depends, Request,
-    Response
+    Response, HTTPException, status
 )
 from typing import Union
 from queries.accounts import (
@@ -21,6 +21,59 @@ class HttpError(BaseModel):
 
 router = APIRouter()
 
+import string
+
+def password_strength(password: str) -> tuple:
+    if len(password) < 8:
+        upper_score = 0
+        lower_score = 0
+        number_score = 0
+        special_score = 0
+
+        if any(c.isupper() for c in password):
+            upper_score += 1
+        if any(c.islower() for c in password):
+            lower_score += 1
+        if any(c.isdigit() for c in password):
+            number_score += 1
+        if any(c in string.punctuation for c in password):
+            special_score += 1
+
+        score = 0
+
+        requirements = {}
+        requirements['upper_score'] = upper_score
+        requirements['lower_score'] = lower_score
+        requirements['number_score'] = number_score
+        requirements['special_score'] = special_score
+
+        return (score, 'Invalid - it must contain at least 8 characters', requirements)
+
+
+    upper_score = 0
+    lower_score = 0
+    number_score = 0
+    special_score = 0
+
+    if any(c.isupper() for c in password):
+        upper_score += 1
+    if any(c.islower() for c in password):
+        lower_score += 1
+    if any(c.isdigit() for c in password):
+        number_score += 1
+    if any(c in string.punctuation for c in password):
+        special_score += 1
+
+    score = (upper_score + lower_score + number_score + special_score)
+
+
+    requirements = {}
+    requirements['upper_score'] = upper_score
+    requirements['lower_score'] = lower_score
+    requirements['number_score'] = number_score
+    requirements['special_score'] = special_score
+
+    return (score, requirements)
 
 @router.post("/api/accounts", response_model=Union[AccountToken, HttpError])
 async def create_account(
@@ -29,6 +82,51 @@ async def create_account(
     response: Response,
     queries: AccountQueries = Depends(),
 ):
+
+    password_score, conditions = password_strength(data.password)
+
+    if not password_score:
+        missing_parts = []
+        if not conditions['upper_score']:
+            missing_parts.append('at least one uppercase letter')
+        if not conditions['lower_score']:
+            missing_parts.append('at least one lowercase letter')
+        if not conditions['number_score']:
+            missing_parts.append('at least one digit from 0-9')
+        if not conditions['special_score']:
+            missing_parts.append('at least one special character')
+
+        if len(missing_parts) == 1:
+            missing = missing_parts[0]
+        else:
+            missing = ', '.join(missing_parts[:-1]) + f', and {missing_parts[-1]}'
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f'Your password strength is invalid - it must be at least 8 characters. It must also be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.'
+        )
+    elif password_score < 3:
+        missing_parts = []
+        if not conditions['upper_score']:
+            missing_parts.append('at least one uppercase letter')
+        if not conditions['lower_score']:
+            missing_parts.append('at least one lowercase letter')
+        if not conditions['number_score']:
+            missing_parts.append('at least one digit from 0-9')
+        if not conditions['special_score']:
+            missing_parts.append('at least one special character')
+
+        if len(missing_parts) == 1:
+            missing = missing_parts[0]
+        else:
+            missing = ', '.join(missing_parts[:-1]) + f', and {missing_parts[-1]}'
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f'Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least one of the following missing requirements: {missing}.'
+        )
+
+
     hashed_password = authenticator.hash_password(data.password)
 
     account = queries.create(data, hashed_password)

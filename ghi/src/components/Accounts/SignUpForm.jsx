@@ -605,9 +605,7 @@ function SignUpForm() {
                                               disabled={
                                                   accountFormData.password
                                                       .length < 8 ||
-                                                  passwordStrength === 'Weak' ||
-                                                  passwordStrength ===
-                                                      'Moderate'
+                                                  passwordStrength === 'Weak'
                                               }
                                           >
                                               Create
