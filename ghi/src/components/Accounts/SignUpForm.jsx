@@ -38,7 +38,7 @@ function SignUpForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState(null);
+  const [passwordScore, setPasswordScore] = useState(null);
   const { login } = useToken();
 
   const fetchData = async () => {
@@ -66,21 +66,14 @@ function SignUpForm() {
   }
 
   const checkPasswordStrength = (password) => {
-      let strength = 0
+      let score = 0
 
-      if (password.length >= 8 && (/[A-Z]/.test(password))) strength++
-      if (password.length >= 8 && (/[a-z]/.test(password))) strength++
-      if (password.length >= 8 && /[0-9]/.test(password)) strength++
-      if (password.length >= 8 && /[^A-Za-z0-9]/.test(password)) strength++
+      if (password.length >= 8 && (/[A-Z]/.test(password))) score++
+      if (password.length >= 8 && (/[a-z]/.test(password))) score++
+      if (password.length >= 8 && /[0-9]/.test(password)) score++
+      if (password.length >= 8 && /[^A-Za-z0-9]/.test(password)) score++
 
-      const strengthLabels = {
-        '0': '',
-        '1': 'Weak',
-        '2': 'Moderate',
-        '3': 'Strong',
-        '4': 'Very Strong'
-      }
-      setPasswordStrength(strengthLabels[String(strength)])
+      setPasswordScore(score)
   }
 
 
@@ -370,23 +363,33 @@ function SignUpForm() {
                                           {accountFormData.password &&
                                               accountFormData.password.length >=
                                                   8 && (
-                                                  <p
-                                                      style={{
-                                                          color:
-                                                              passwordStrength ===
-                                                              'Weak'
-                                                                  ? 'orange'
-                                                                  : passwordStrength ===
-                                                                    'Moderate'
-                                                                  ? 'yellow'
-                                                                  : passwordStrength ===
-                                                                    'Strong'
-                                                                  ? 'darkgreen'
-                                                                  : 'green',
-                                                      }}
-                                                  >
+                                                  <p style={{ color: 'white' }}>
                                                       Password Strength:{' '}
-                                                      {passwordStrength}
+                                                      <span
+                                                          style={{
+                                                              color:
+                                                                  passwordScore <
+                                                                  3
+                                                                      ? 'orange'
+                                                                      : passwordScore ===
+                                                                        3
+                                                                      ? 'yellow'
+                                                                      : passwordScore ===
+                                                                        4
+                                                                      ? 'green'
+                                                                      : 'white',
+                                                          }}
+                                                      >
+                                                          {passwordScore < 3
+                                                              ? 'Weak'
+                                                              : passwordScore ===
+                                                                3
+                                                              ? 'Moderate'
+                                                              : passwordScore ===
+                                                                4
+                                                              ? 'Strong'
+                                                              : ''}
+                                                      </span>
                                                   </p>
                                               )}
                                       </div>
@@ -404,7 +407,8 @@ function SignUpForm() {
                                                   }
                                                   required
                                                   type={
-                                                      !showConfirmPassword || !passwordConfirm
+                                                      !showConfirmPassword ||
+                                                      !passwordConfirm
                                                           ? 'password'
                                                           : 'text'
                                                   }
@@ -605,7 +609,7 @@ function SignUpForm() {
                                               disabled={
                                                   accountFormData.password
                                                       .length < 8 ||
-                                                  passwordStrength === 'Weak'
+                                                  passwordScore < 3
                                               }
                                           >
                                               Create
