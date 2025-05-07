@@ -47,7 +47,7 @@ def password_strength(password: str) -> tuple:
         requirements['number_score'] = number_score
         requirements['special_score'] = special_score
 
-        return (score, 'Invalid - it must contain at least 8 characters', requirements)
+        return (score, requirements)
 
 
     upper_score = 0
@@ -86,25 +86,25 @@ async def create_account(
     password_score, conditions = password_strength(data.password)
 
     if not password_score:
-        missing_parts = []
-        if not conditions['upper_score']:
-            missing_parts.append('at least one uppercase letter')
-        if not conditions['lower_score']:
-            missing_parts.append('at least one lowercase letter')
-        if not conditions['number_score']:
-            missing_parts.append('at least one digit from 0-9')
-        if not conditions['special_score']:
-            missing_parts.append('at least one special character')
+            missing_parts = []
+            if not conditions['upper_score']:
+                missing_parts.append('at least one uppercase letter')
+            if not conditions['lower_score']:
+                missing_parts.append('at least one lowercase letter')
+            if not conditions['number_score']:
+                missing_parts.append('at least one digit from 0-9')
+            if not conditions['special_score']:
+                missing_parts.append('at least one special character')
 
-        if len(missing_parts) == 1:
-            missing = missing_parts[0]
-        else:
-            missing = ', '.join(missing_parts[:-1]) + f', and {missing_parts[-1]}'
+            if len(missing_parts) == 1:
+                missing = missing_parts[0]
+            else:
+                missing = ', '.join(missing_parts[:-1]) + f', and {missing_parts[-1]}'
 
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f'Your password strength is invalid - it must be at least 8 characters. It must also be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.'
-        )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'Your password strength is invalid - it must be at least 8 characters. It must also be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.'
+            )
     elif password_score < 3:
         missing_parts = []
         if not conditions['upper_score']:
@@ -121,10 +121,16 @@ async def create_account(
         else:
             missing = ', '.join(missing_parts[:-1]) + f', and {missing_parts[-1]}'
 
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f'Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least one of the following missing requirements: {missing}.'
-        )
+        if password_score == 1:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.'
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least one of the following missing requirements: {missing}.'
+            )
 
 
     hashed_password = authenticator.hash_password(data.password)
@@ -171,9 +177,63 @@ async def update_account(
     account_data: dict = Depends(authenticator.get_current_account_data)
 ):
     username = account_data["username"]
-    updated_account = queries.update(id, username, data)
 
-    password_for_login = data.new_password if data.new_password else data.password
+    password_for_login = data.password
+
+    if data.new_password:
+
+        password_for_login = data.new_password
+
+        password_score, conditions = password_strength(data.new_password)
+
+        if not password_score:
+            missing_parts = []
+            if not conditions['upper_score']:
+                missing_parts.append('at least one uppercase letter')
+            if not conditions['lower_score']:
+                missing_parts.append('at least one lowercase letter')
+            if not conditions['number_score']:
+                missing_parts.append('at least one digit from 0-9')
+            if not conditions['special_score']:
+                missing_parts.append('at least one special character')
+
+            if len(missing_parts) == 1:
+                missing = missing_parts[0]
+            else:
+                missing = ', '.join(missing_parts[:-1]) + f', and {missing_parts[-1]}'
+
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'Your password strength is invalid - it must be at least 8 characters. It must also be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.'
+            )
+        elif password_score < 3:
+            missing_parts = []
+            if not conditions['upper_score']:
+                missing_parts.append('at least one uppercase letter')
+            if not conditions['lower_score']:
+                missing_parts.append('at least one lowercase letter')
+            if not conditions['number_score']:
+                missing_parts.append('at least one digit from 0-9')
+            if not conditions['special_score']:
+                missing_parts.append('at least one special character')
+
+            if len(missing_parts) == 1:
+                missing = missing_parts[0]
+            else:
+                missing = ', '.join(missing_parts[:-1]) + f', and {missing_parts[-1]}'
+
+            if password_score == 1:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f'Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.'
+                )
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f'Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least one of the following missing requirements: {missing}.'
+                )
+
+    updated_account = queries.update(id, username, data)
 
     form = AccountForm(username=data.username, password=password_for_login)
     token = await authenticator.login(response, request, form, queries)
