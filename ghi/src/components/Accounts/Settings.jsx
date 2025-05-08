@@ -36,7 +36,7 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
     const [showNewPassword, setShowNewPassword] = useState(false)
     const [showNewConfirmPassword, setShowNewConfirmPassword] = useState(false)
     const [newPasswordMismatch, setNewPasswordMismatch] = useState(false)
-    const [newPasswordStrength, setNewPasswordStrength] = useState(null)
+    const [newPasswordScore, setNewPasswordScore] = useState(null)
 
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -61,22 +61,15 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
     }
 
     const checkNewPasswordStrength = (new_password) => {
-        let strength = 0
+        let score = 0
 
-        if (new_password.length >= 8 && /[A-Z]/.test(new_password)) strength++
-        if (new_password.length >= 8 && /[a-z]/.test(new_password)) strength++
-        if (new_password.length >= 8 && /[0-9]/.test(new_password)) strength++
+        if (new_password.length >= 8 && /[A-Z]/.test(new_password)) score++
+        if (new_password.length >= 8 && /[a-z]/.test(new_password)) score++
+        if (new_password.length >= 8 && /[0-9]/.test(new_password)) score++
         if (new_password.length >= 8 && /[^A-Za-z0-9]/.test(new_password))
-            strength++
+            score++
 
-        const strengthLabels = {
-            0: '',
-            1: 'Weak',
-            2: 'Moderate',
-            3: 'Strong',
-            4: 'Very Strong',
-        }
-        setNewPasswordStrength(strengthLabels[String(strength)])
+        setNewPasswordScore(score)
     }
 
     const handleFormChange = (e) => {
@@ -614,24 +607,37 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                             .length >= 8 && (
                                                             <p
                                                                 style={{
-                                                                    color:
-                                                                        newPasswordStrength ===
-                                                                        'Weak'
-                                                                            ? 'orange'
-                                                                            : newPasswordStrength ===
-                                                                              'Moderate'
-                                                                            ? 'yellow'
-                                                                            : newPasswordStrength ===
-                                                                              'Strong'
-                                                                            ? 'darkgreen'
-                                                                            : 'green',
+                                                                    color: 'white',
                                                                 }}
                                                             >
                                                                 Password
                                                                 Strength:{' '}
-                                                                {
-                                                                    newPasswordStrength
-                                                                }
+                                                                <span
+                                                                    style={{
+                                                                        color:
+                                                                            newPasswordScore <
+                                                                            3
+                                                                                ? 'orange'
+                                                                                : newPasswordScore ===
+                                                                                  3
+                                                                                ? 'yellow'
+                                                                                : newPasswordScore ===
+                                                                                  4
+                                                                                ? 'green'
+                                                                                : 'white',
+                                                                    }}
+                                                                >
+                                                                    {newPasswordScore <
+                                                                    3
+                                                                        ? 'Weak'
+                                                                        : newPasswordScore ===
+                                                                          3
+                                                                        ? 'Moderate'
+                                                                        : newPasswordScore ===
+                                                                          4
+                                                                        ? 'Strong'
+                                                                        : ''}
+                                                                </span>
                                                             </p>
                                                         )}
                                                     <div
@@ -984,8 +990,7 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
                                                         accountFormData
                                                             .new_password
                                                             .length < 8 ||
-                                                        newPasswordStrength ===
-                                                            'Weak' ||
+                                                        newPasswordScore < 3 ||
                                                         newPasswordConfirm.length !=
                                                             accountFormData
                                                                 .new_password
