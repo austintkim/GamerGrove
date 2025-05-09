@@ -85,6 +85,10 @@ function SignUpForm() {
           [name]: value,
       })
 
+      if (!accountFormData.password) {
+        setShowPassword(false)
+      }
+
       if (name === 'password') {
           checkPasswordStrength(value)
       }
@@ -95,6 +99,9 @@ function SignUpForm() {
     setPasswordConfirm(
       e.target.value
     )
+    if (!passwordConfirm) {
+        setShowConfirmPassword(false)
+    }
   }
 
   const handleSubmit = async (event) => {
