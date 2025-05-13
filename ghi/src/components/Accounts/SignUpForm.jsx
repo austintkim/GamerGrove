@@ -35,6 +35,7 @@ function SignUpForm() {
   const [usernameTaken, setUserNameTaken] = useState(false);
   const [emailTaken, setEmailTaken] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordHint, setShowPasswordHint] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
@@ -399,6 +400,220 @@ function SignUpForm() {
                                                       </span>
                                                   </p>
                                               )}
+                                          <div
+                                              style={{
+                                                  position: 'relative',
+                                                  display: 'inline-block',
+                                              }}
+                                          >
+                                              <button
+                                                  type="button"
+                                                  onClick={() =>
+                                                      setShowPasswordHint(
+                                                          !showPasswordHint
+                                                      )
+                                                  }
+                                                  style={{
+                                                      background: 'none',
+                                                      border: 'none',
+                                                      color: 'white',
+                                                      textDecoration:
+                                                          'underline',
+                                                      cursor: 'pointer',
+                                                      padding: 0,
+                                                      fontSize: 'inherit',
+                                                  }}
+                                              >
+                                                  Password requirements
+                                              </button>
+                                              {showPasswordHint && (
+                                                  <div
+                                                      style={{
+                                                          position: 'fixed',
+                                                          bottom: '100px',
+                                                          right: '100px',
+                                                          backgroundColor:
+                                                              '#333',
+                                                          color: 'white',
+                                                          padding: '15px',
+                                                          borderRadius: '5px',
+                                                          width: '300px',
+                                                          boxShadow:
+                                                              '0 2px 15px rgba(0,0,0,0.3)',
+                                                          zIndex: 1000,
+                                                          maxHeight: '80vh',
+                                                          overflowY: 'auto',
+                                                      }}
+                                                  >
+                                                      <div
+                                                          style={{
+                                                              display: 'flex',
+                                                              justifyContent:
+                                                                  'space-between',
+                                                          }}
+                                                      >
+                                                          <strong>
+                                                              Password
+                                                              Requirements:
+                                                          </strong>
+                                                          <button
+                                                              onClick={() =>
+                                                                  setShowPasswordHint(
+                                                                      false
+                                                                  )
+                                                              }
+                                                              style={{
+                                                                  background:
+                                                                      'none',
+                                                                  border: 'none',
+                                                                  color: 'white',
+                                                                  cursor: 'pointer',
+                                                                  padding:
+                                                                      '0 0 0 10px',
+                                                              }}
+                                                          >
+                                                              ×
+                                                          </button>
+                                                      </div>
+                                                      <div
+                                                          style={{
+                                                              marginTop: '8px',
+                                                          }}
+                                                      >
+                                                          {accountFormData
+                                                              .password.length <
+                                                          8 ? (
+                                                              <p
+                                                                  style={{
+                                                                      color: 'red',
+                                                                      margin: '5px 0',
+                                                                  }}
+                                                              >
+                                                                  ❌ Password
+                                                                  must be at
+                                                                  least 8
+                                                                  characters
+                                                              </p>
+                                                          ) : (
+                                                              <p
+                                                                  style={{
+                                                                      color: 'green',
+                                                                      margin: '5px 0',
+                                                                  }}
+                                                              >
+                                                                  ✅ Minimum
+                                                                  length (8
+                                                                  characters)
+                                                              </p>
+                                                          )}
+
+                                                          <p
+                                                              style={{
+                                                                  margin: '10px 0 5px 0',
+                                                                  fontWeight:
+                                                                      'bold',
+                                                              }}
+                                                          >
+                                                              Must meet at least
+                                                              3 of these 4
+                                                              conditions:
+                                                          </p>
+                                                          <ul
+                                                              style={{
+                                                                  margin: '5px 0 0 0',
+                                                                  paddingLeft:
+                                                                      '20px',
+                                                              }}
+                                                          >
+                                                              <li
+                                                                  style={{
+                                                                      color: /[a-z]/.test(
+                                                                          accountFormData.password
+                                                                      )
+                                                                          ? 'green'
+                                                                          : 'inherit',
+                                                                  }}
+                                                              >
+                                                                  {/[a-z]/.test(
+                                                                      accountFormData.password
+                                                                  )
+                                                                      ? '✅'
+                                                                      : '❌'}{' '}
+                                                                  Lowercase
+                                                                  letter
+                                                              </li>
+                                                              <li
+                                                                  style={{
+                                                                      color: /[A-Z]/.test(
+                                                                          accountFormData.password
+                                                                      )
+                                                                          ? 'green'
+                                                                          : 'inherit',
+                                                                  }}
+                                                              >
+                                                                  {/[A-Z]/.test(
+                                                                      accountFormData.password
+                                                                  )
+                                                                      ? '✅'
+                                                                      : '❌'}{' '}
+                                                                  Uppercase
+                                                                  letter
+                                                              </li>
+                                                              <li
+                                                                  style={{
+                                                                      color: /[0-9]/.test(
+                                                                          accountFormData.password
+                                                                      )
+                                                                          ? 'green'
+                                                                          : 'inherit',
+                                                                  }}
+                                                              >
+                                                                  {/[0-9]/.test(
+                                                                      accountFormData.password
+                                                                  )
+                                                                      ? '✅'
+                                                                      : '❌'}{' '}
+                                                                  Number
+                                                              </li>
+                                                              <li
+                                                                  style={{
+                                                                      color: /[^A-Za-z0-9]/.test(
+                                                                          accountFormData.password
+                                                                      )
+                                                                          ? 'green'
+                                                                          : 'inherit',
+                                                                  }}
+                                                              >
+                                                                  {/[^A-Za-z0-9]/.test(
+                                                                      accountFormData.password
+                                                                  )
+                                                                      ? '✅'
+                                                                      : '❌'}{' '}
+                                                                  Special
+                                                                  character
+                                                              </li>
+                                                          </ul>
+                                                          <p
+                                                              style={{
+                                                                  margin: '10px 0 0 0',
+                                                                  fontStyle:
+                                                                      'italic',
+                                                              }}
+                                                          >
+                                                              <strong>
+                                                                  Note:
+                                                              </strong>{' '}
+                                                              Strength must be
+                                                              at least
+                                                              &quot;Moderate&quot;
+                                                              (meet 3
+                                                              conditions) to be
+                                                              accepted.
+                                                          </p>
+                                                      </div>
+                                                  </div>
+                                              )}
+                                          </div>
                                       </div>
                                       <div
                                           className="form-floating mb-3"
