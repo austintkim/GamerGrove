@@ -80,6 +80,14 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
             [name]: value,
         })
 
+        if (!accountFormData.password) {
+            setShowPassword(false)
+        }
+
+        if (!accountFormData.new_password) {
+            setShowNewPassword(false)
+        }
+
         if (name === 'new_password') {
             checkNewPasswordStrength(value)
         }
@@ -87,10 +95,16 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
 
     const newPasswordConfirmChange = (e) => {
         setNewPasswordConfirm(e.target.value)
+        if (!newPasswordConfirm) {
+            setShowNewConfirmPassword(false)
+        }
     }
 
     const passwordConfirmChange = (e) => {
         setPasswordConfirm(e.target.value)
+        if (!passwordConfirm) {
+            setShowConfirmPassword(false)
+        }
     }
 
     const handleSubmit = async (event) => {
