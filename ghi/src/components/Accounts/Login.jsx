@@ -119,13 +119,7 @@ const LoginForm = () => {
                                           }
                                       />
                                   </div>
-                                  <div
-                                      className="form-floating mb-3"
-                                      style={{
-                                          textAlign: 'center',
-                                          marginTop: '8px',
-                                      }}
-                                  >
+                                  <div className="mb-3">
                                       <label htmlFor="password">
                                           Password:
                                       </label>
