@@ -18,8 +18,6 @@ const LoginForm = () => {
   const { login } = useToken();
   const navigate = useNavigate();
 
-  console.log(showPassword);
-
   const togglePasswordVisibility = () => {
       setShowPassword(!showPassword)
   }
