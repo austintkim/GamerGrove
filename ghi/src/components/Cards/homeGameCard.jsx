@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react'
-import { useAuthContext } from '@galvanize-inc/jwtdown-for-react'
 import { Link } from 'react-router-dom'
 import parse from 'html-react-parser'
 import './homeGameCard.css'
@@ -7,9 +6,8 @@ import { Menu, MenuItem, SubMenu } from '@spaceymonk/react-radial-menu'
 import { useNavigate } from 'react-router-dom'
 import sparkles from '../../assets/sparkles.gif'
 
-function HomeGameCard({ games }) {
+function HomeGameCard({ games, userCookie0, userData0 }) {
     const navigate = useNavigate()
-    const { token } = useAuthContext()
     const [id, setId] = useState('')
     const [show, setShow] = useState(false)
     const [position, setPosition] = useState({ x: 0, y: 0 })
@@ -17,20 +15,37 @@ function HomeGameCard({ games }) {
     const menuRef = useRef(null)
 
     useEffect(() => {
-        function handleClickOutside(event) {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
+        const handleClickOutside = (event) => {
+            // Get all elements in the click path (works for SVG)
+            const path = event.composedPath()
+
+            // Check if click is inside either:
+            // 1. Your menuRef container
+            // 2. Any radial menu element (including SVG components)
+            const shouldStayOpen = path.some((el) => {
+                // Check against menuRef
+                if (menuRef.current && el === menuRef.current) return true
+
+                // Check for radial menu elements by their unique attributes
+                if (el.tagName === 'foreignObject') return true
+                if (el.getAttribute?.('data-radial-menu')) return true
+
+                // Add any other identifiers from your debug output
+                return false
+            })
+
+            if (!shouldStayOpen) {
                 setShow(false)
             }
         }
 
         if (show) {
-            document.addEventListener('mousedown', handleClickOutside)
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside)
+            // Use capture phase to catch events before they bubble
+            document.addEventListener('mousedown', handleClickOutside, true)
         }
 
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
+            document.removeEventListener('mousedown', handleClickOutside, true)
         }
     }, [show])
 
@@ -40,61 +55,55 @@ function HomeGameCard({ games }) {
     const handleOptionsClick = async (gameId) => {
         setGameInWishList(false)
 
-        const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`
-
         const config = {
             credentials: 'include',
         }
 
-        try {
-            const tokenResponse = await fetch(tokenUrl, config)
-            const userData = await tokenResponse.json()
-            if (userData) {
-                const libraryUrl = `${
-                    import.meta.env.VITE_API_HOST
-                }/api/users/libraries/${userData.account.id}`
-                const boardUrl = `${
-                    import.meta.env.VITE_API_HOST
-                }/api/boards/users/${userData.account.id}`
+        const libraryUrl = `${
+            import.meta.env.VITE_API_HOST
+        }/api/users/libraries/${userData0.id}`
+        const boardUrl = `${
+            import.meta.env.VITE_API_HOST
+        }/api/boards/users/${userData0.id}`
 
-                const [libraryResponse, boardResponse] = await Promise.all([
-                    fetch(libraryUrl, config),
-                    fetch(boardUrl, config),
-                ])
-                const libraryData = await libraryResponse.json()
-                const boardData = await boardResponse.json()
+        const [libraryResponse, boardResponse] = await Promise.all([
+            fetch(libraryUrl, config),
+            fetch(boardUrl, config),
+        ])
+        const libraryData = await libraryResponse.json()
+        const boardData = await boardResponse.json()
 
-                let boardsToExclude = []
+        let boardsToExclude = []
 
-                if (!libraryData.detail) {
-                    for (const entry of libraryData) {
-                        if (
-                            entry['game_id'] === Number(gameId) &&
-                            entry['wishlist'] === true
-                        ) {
-                            setGameInWishList(true)
-                        } else if (entry['game_id'] === Number(gameId)) {
-                            boardsToExclude.push(entry['board_id'])
-                        }
-                    }
-                }
-
-                if (boardData.detail) {
-                    setBoardDataList([])
-                } else {
-                    const boardsToInclude = boardData.filter(
-                        (board) => !boardsToExclude.includes(board.id)
-                    )
-                    setBoardDataList(boardsToInclude)
+        if (!libraryData.detail) {
+            for (const entry of libraryData) {
+                if (
+                    entry['game_id'] === Number(gameId) &&
+                    entry['wishlist'] === true
+                ) {
+                    setGameInWishList(true)
+                } else if (entry['game_id'] === Number(gameId)) {
+                    boardsToExclude.push(entry['board_id'])
                 }
             }
-        } catch (error) {
-            console.error('Error fetching data', error)
+        }
+
+        if (boardData.detail) {
+            setBoardDataList([])
+        } else {
+            const boardsToInclude = boardData.filter(
+                (board) => !boardsToExclude.includes(board.id)
+            )
+            setBoardDataList(boardsToInclude)
         }
     }
 
-    const handleSubMenuClick = async () => {}
-    const handleDisplayClick = () => {}
+    const handleSubMenuClick = (e) => {
+        e.stopPropagation()
+    }
+    const handleDisplayClick = (e) => {
+        e.stopPropagation()
+    }
 
     const handleClick = async (platform, rawg_pk) => {
         const storeUrl = await fetchStoreUrl(platform, rawg_pk)
@@ -189,7 +198,7 @@ function HomeGameCard({ games }) {
         navigate('/boards/create')
     }
 
-    if (token) {
+    if (userCookie0) {
         return (
             <div className="hgcard-container">
                 {games.map((gameData) => (

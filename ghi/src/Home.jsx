@@ -159,11 +159,12 @@ function Home() {
             <Rows
                 path="/"
                 element={<Rows />}
+                userCookie0={userToken0}
+                userData0={userDataDetails0}
                 games={games}
-
             />
         </div>
-    );
+    )
 }
 
 export default Home;
