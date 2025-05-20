@@ -19,6 +19,7 @@ const Nav = ({
     userData3,
     userData4,
     userLogOut0,
+    userLogOut1
 }) => {
     const [showDropdown, setShowDropdown] = useState(false)
     const avatarContainerRef = useRef(null)
@@ -186,6 +187,7 @@ const Nav = ({
         if (response.ok) {
             navigate('/')
             userLogOut0()
+            userLogOut1()
             setShowDropdown(false)
             if (!response.ok) {
                 throw new Error('Failed to log out')

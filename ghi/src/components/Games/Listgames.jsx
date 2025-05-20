@@ -115,11 +115,17 @@ const Listgames = () => {
 
   }
 
+  const listGamesLogOut = () => {
+    setUserToken1(null);
+    setUserDataDetails1('');
+  }
+
   return (
     <div>
       <Nav
-        userCookie1 = {userToken1}
-        userData1 = {userDataDetails1}
+        userCookie1={userToken1}
+        userData1={userDataDetails1}
+        userLogOut1={listGamesLogOut}
       />
       <h1 className="titlegames" style={{ textDecoration: 'underline', textDecorationThickness: '1px' }}>{title}</h1>
 
@@ -127,7 +133,12 @@ const Listgames = () => {
 
         <SideMenu />
 
-        {games.length > 0 && <AllGameCard games={games} />}
+        {games.length > 0 &&
+        <AllGameCard
+          userCookie1={userToken1}
+          userData1={userDataDetails1}
+          games={games}
+        />}
 
       </div>
       <br />
