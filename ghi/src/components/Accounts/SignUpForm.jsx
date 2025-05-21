@@ -209,6 +209,19 @@ function SignUpForm() {
           >
               Back to Homepage
           </button>
+          <button
+              onClick={() => {
+                  navigate('/login')
+              }}
+              style={{
+                  position: 'absolute',
+                  top: '40px',
+                  left: '0',
+                  margin: '10px',
+              }}
+          >
+              Login instead
+          </button>
           <div>
               <img
                   src={liquidslime}
