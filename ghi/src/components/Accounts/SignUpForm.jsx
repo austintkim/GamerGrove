@@ -220,7 +220,7 @@ function SignUpForm() {
                   margin: '10px',
               }}
           >
-              Login instead
+              Login instead...
           </button>
           <div>
               <img

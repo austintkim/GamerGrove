@@ -74,6 +74,19 @@ const LoginForm = () => {
           >
               Back to Homepage
           </button>
+          <button
+              onClick={() => {
+                  navigate('/signup')
+              }}
+              style={{
+                  position: 'absolute',
+                  top: '40px',
+                  left: '0',
+                  margin: '10px',
+              }}
+          >
+              Sign up instead...
+          </button>
           <div>
               <img
                   src={metalslime}
