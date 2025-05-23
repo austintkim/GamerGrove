@@ -132,10 +132,6 @@ const SearchResults = () => {
         navigate(`/games/${v}`, { state: 'create-review' })
     }
 
-    const handleDetailClick = (event, index, data) => {
-        const v = data
-        navigate(`/games/${v}`)
-    }
 
     const handleWishClick = async (event, index, data) => {
         const addEntryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`
@@ -337,14 +333,6 @@ const SearchResults = () => {
                                                     data={gameData.id}
                                                 >
                                                     Wish
-                                                </MenuItem>
-                                                <MenuItem
-                                                    onItemClick={
-                                                        handleDetailClick
-                                                    }
-                                                    data={gameData.id}
-                                                >
-                                                    Details
                                                 </MenuItem>
                                                 {boardDataList.length > 0 ? (
                                                     <SubMenu
