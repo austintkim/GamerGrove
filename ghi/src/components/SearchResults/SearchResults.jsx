@@ -1,6 +1,6 @@
 import { useAuthContext } from '@galvanize-inc/jwtdown-for-react'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 import Nav from '../Home/Nav.jsx'
@@ -8,19 +8,59 @@ import SideMenu from '../Home/sideMenu.jsx'
 import parse from 'html-react-parser'
 import { Menu, MenuItem, SubMenu } from '@spaceymonk/react-radial-menu'
 import './SearchResults.css'
+import sparkles from '../../assets/sparkles.gif'
 
 const SearchResults = () => {
     const location = useLocation()
     const rawg_pks = location.state
     const [searchGames, setSearchGames] = useState([])
     const navigate = useNavigate()
+
     const { token } = useAuthContext()
+    const [userToken4, setUserToken4] = useState(null)
+    const [userDataDetails4, setUserDataDetails4] = useState('')
+
     const [id, setId] = useState('')
     const [show, setShow] = useState(false)
     const [position, setPosition] = useState({ x: 0, y: 0 })
 
-    const [userToken4, setUserToken4] = useState(null)
-    const [userDataDetails4, setUserDataDetails4] = useState('')
+    const menuRef = useRef(null)
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Get all elements in the click path (works for SVG)
+            const path = event.composedPath()
+
+            // Check if click is inside either:
+            // 1. Your menuRef container
+            // 2. Any radial menu element (including SVG components)
+            const shouldStayOpen = path.some((el) => {
+                // Check against menuRef
+                if (menuRef.current && el === menuRef.current) return true
+
+                // Check for radial menu elements by their unique attributes
+                if (el.tagName === 'foreignObject') return true
+                if (el.getAttribute?.('data-radial-menu')) return true
+
+                // Add any other identifiers from your debug output
+                return false
+            })
+
+            if (!shouldStayOpen) {
+                setShow(false)
+            }
+        }
+
+        if (show) {
+            // Use capture phase to catch events before they bubble
+            document.addEventListener('mousedown', handleClickOutside, true)
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside, true)
+        }
+    }, [show])
+
 
     const fetchUserData = async () => {
         const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`
@@ -304,7 +344,24 @@ const SearchResults = () => {
                                         >
                                             <b>Options</b>
                                         </button>
-                                        <div className="menu-wrapper">
+                                        <div
+                                            ref={menuRef}
+                                            className="menu-wrapper"
+                                        >
+                                            {show && id === gameData.id && (
+                                                <img
+                                                    src={sparkles}
+                                                    alt=""
+                                                    style={{
+                                                        width: '70px',
+                                                        position: 'absolute',
+                                                        left: position.x - 35,
+                                                        top: position.y,
+                                                        transform:
+                                                            'translateY(85px)',
+                                                    }}
+                                                />
+                                            )}
                                             <Menu
                                                 centerX={position.x}
                                                 centerY={position.y}

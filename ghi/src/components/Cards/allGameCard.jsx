@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react'
-// import { useAuthContext } from '@galvanize-inc/jwtdown-for-react'
 import { useNavigate } from 'react-router-dom'
 import { Menu, MenuItem, SubMenu } from '@spaceymonk/react-radial-menu'
 import { Link } from 'react-router-dom'
@@ -9,7 +8,6 @@ import sparkles from '../../assets/sparkles.gif'
 
 function AllGameCard({ games, userCookie1, userData1 }) {
     const navigate = useNavigate()
-    // const { token } = useAuthContext()
     const [id, setId] = useState('')
     const [show, setShow] = useState(false)
     const [position, setPosition] = useState({ x: 0, y: 0 })
