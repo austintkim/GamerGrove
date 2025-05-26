@@ -1,4 +1,3 @@
-import { useAuthContext } from '@galvanize-inc/jwtdown-for-react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
@@ -16,7 +15,6 @@ const SearchResults = () => {
     const [searchGames, setSearchGames] = useState([])
     const navigate = useNavigate()
 
-    const { token } = useAuthContext()
     const [userToken4, setUserToken4] = useState(null)
     const [userDataDetails4, setUserDataDetails4] = useState('')
 
@@ -234,7 +232,7 @@ const SearchResults = () => {
         navigate('/boards/create')
     }
 
-    if (token) {
+    if (userToken4) {
         return (
             <div>
                 <Nav userCookie4={userToken4} userData4={userDataDetails4} />
