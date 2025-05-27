@@ -59,6 +59,61 @@ const SearchResults = () => {
         }
     }, [show])
 
+    const [boardDataList, setBoardDataList] = useState([])
+    const [gameInWishList, setGameInWishList] = useState(null)
+
+    const handleOptionsClick = async (gameId) => {
+        setGameInWishList(false)
+
+        const config = {
+            credentials: 'include',
+        }
+
+        const libraryUrl = `${
+            import.meta.env.VITE_API_HOST
+        }/api/users/libraries/${userDataDetails4.id}`
+        const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${
+            userDataDetails4.id
+        }`
+
+        const [libraryResponse, boardResponse] = await Promise.all([
+            fetch(libraryUrl, config),
+            fetch(boardUrl, config),
+        ])
+        const libraryData = await libraryResponse.json()
+        const boardData = await boardResponse.json()
+
+        let boardsToExclude = []
+
+        if (!libraryData.detail) {
+            for (const entry of libraryData) {
+                if (
+                    entry['game_id'] === Number(gameId) &&
+                    entry['wishlist'] === true
+                ) {
+                    setGameInWishList(true)
+                } else if (entry['game_id'] === Number(gameId)) {
+                    boardsToExclude.push(entry['board_id'])
+                }
+            }
+        }
+
+        if (boardData.detail) {
+            setBoardDataList([])
+        } else {
+            const boardsToInclude = boardData.filter(
+                (board) => !boardsToExclude.includes(board.id)
+            )
+            setBoardDataList(boardsToInclude)
+        }
+    }
+
+    const handleSubMenuClick = (e) => {
+        e.stopPropagation()
+    }
+    const handleDisplayClick = (e) => {
+        e.stopPropagation()
+    }
 
     const fetchUserData = async () => {
         const tokenUrl = `${import.meta.env.VITE_API_HOST}/token`
@@ -79,47 +134,9 @@ const SearchResults = () => {
     }
 
     useEffect(() => {
+        fetchUserData()
         fetchGameData()
-        const fetchData = async () => {
-            const userId = await fetchUserData()
-            if (userId !== undefined) {
-                fetchBoardData(userId)
-            }
-        }
-        fetchData()
     }, [])
-
-    const [boardDataList, setBoardDataList] = useState([])
-
-    const handleDisplayClick = () => {}
-
-    const handleSubMenuClick = () => {}
-
-    const fetchBoardData = async (userId) => {
-        const boardUrl = `${
-            import.meta.env.VITE_API_HOST
-        }/api/boards/users/${userId}`
-        const boardConfig = {
-            credentials: 'include',
-        }
-
-        try {
-            const response = await fetch(boardUrl, boardConfig)
-            const boardData = await response.json()
-
-            if (boardData.detail) {
-                return []
-            }
-
-            const boards = []
-            for (const b of boardData) {
-                boards.push(b)
-            }
-            setBoardDataList(boards)
-        } catch (error) {
-            console.error('Error fetching data:', error)
-        }
-    }
 
     const fetchGameData = async () => {
         try {
@@ -167,9 +184,9 @@ const SearchResults = () => {
 
     const handleReviewClick = (event, index, data) => {
         const v = data
-        navigate(`/games/${v}`, { state: 'create-review' })
+        const url = `/games/${v}#create-review`
+        navigate(url, { state: 'create-review' })
     }
-
 
     const handleWishClick = async (event, index, data) => {
         const addEntryUrl = `${import.meta.env.VITE_API_HOST}/api/libraries`
@@ -329,10 +346,21 @@ const SearchResults = () => {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="shgbutton">
+                                    <div className="agcontent-body">
+                                        <small style={{ color: 'white' }}>
+                                            {parse(
+                                                gameData.description.slice(
+                                                    0,
+                                                    200
+                                                )
+                                            )}
+                                        </small>
+                                    </div>
+                                    <div className="agbutton">
                                         <button
                                             onClick={(e) => {
                                                 e.preventDefault()
+                                                handleOptionsClick(gameData.id)
                                                 setShow(!show)
                                                 setPosition({
                                                     x: e.clientX - 10,
@@ -372,44 +400,48 @@ const SearchResults = () => {
                                                 animationTimeout={200}
                                                 animateSubMenuChange={false}
                                             >
-                                                <MenuItem
-                                                    className="menuitem"
-                                                    onItemClick={
-                                                        handleReviewClick
-                                                    }
-                                                    data={gameData.id}
-                                                >
-                                                    Review
-                                                </MenuItem>
-                                                <MenuItem
-                                                    onItemClick={
-                                                        handleWishClick
-                                                    }
-                                                    data={gameData.id}
-                                                >
-                                                    Wish
-                                                </MenuItem>
-                                                {boardDataList.length > 0 ? (
-                                                    <SubMenu
-                                                        onDisplayClick={
-                                                            handleDisplayClick
-                                                        }
+                                                {[
+                                                    <MenuItem
+                                                        key="review"
                                                         onItemClick={
-                                                            handleSubMenuClick
+                                                            handleReviewClick
                                                         }
-                                                        itemView="Add to Board"
-                                                        data="2. Sub Menu"
-                                                        displayPosition="bottom"
+                                                        data={gameData.id}
                                                     >
-                                                        {boardDataList.map(
-                                                            (board) => {
-                                                                return (
+                                                        Review
+                                                    </MenuItem>,
+                                                    !gameInWishList && (
+                                                        <MenuItem
+                                                            key="wish"
+                                                            onItemClick={
+                                                                handleWishClick
+                                                            }
+                                                            data={gameData.id}
+                                                        >
+                                                            Wish
+                                                        </MenuItem>
+                                                    ),
+                                                    boardDataList.length > 0 ? (
+                                                        <SubMenu
+                                                            key="submenu"
+                                                            onDisplayClick={
+                                                                handleDisplayClick
+                                                            }
+                                                            onItemClick={
+                                                                handleSubMenuClick
+                                                            }
+                                                            itemView="Add to Board"
+                                                            data="2. Sub Menu"
+                                                            displayPosition="bottom"
+                                                        >
+                                                            {boardDataList.map(
+                                                                (board) => (
                                                                     <MenuItem
-                                                                        onItemClick={
-                                                                            handleBoardClick
-                                                                        }
                                                                         key={
                                                                             board.id
+                                                                        }
+                                                                        onItemClick={
+                                                                            handleBoardClick
                                                                         }
                                                                         data={[
                                                                             board.id,
@@ -421,25 +453,27 @@ const SearchResults = () => {
                                                                         }
                                                                     </MenuItem>
                                                                 )
-                                                            }
-                                                        )}
+                                                            )}
+                                                            <MenuItem
+                                                                key="create-new"
+                                                                onItemClick={
+                                                                    handleNewBoard
+                                                                }
+                                                            >
+                                                                Create New
+                                                            </MenuItem>
+                                                        </SubMenu>
+                                                    ) : (
                                                         <MenuItem
+                                                            key="create-board"
                                                             onItemClick={
                                                                 handleNewBoard
                                                             }
                                                         >
-                                                            Create New
+                                                            Create Board
                                                         </MenuItem>
-                                                    </SubMenu>
-                                                ) : (
-                                                    <MenuItem
-                                                        onItemClick={
-                                                            handleNewBoard
-                                                        }
-                                                    >
-                                                        Create Board
-                                                    </MenuItem>
-                                                )}
+                                                    ),
+                                                ].filter(Boolean)}
                                             </Menu>
                                         </div>
                                     </div>
