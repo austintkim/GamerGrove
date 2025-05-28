@@ -72,7 +72,7 @@ const LoginForm = () => {
                   margin: '10px',
               }}
           >
-              Back to Homepage
+              Back to Home Page!
           </button>
           <button
               onClick={() => {
@@ -85,7 +85,7 @@ const LoginForm = () => {
                   margin: '10px',
               }}
           >
-              Sign up instead...
+              Sign Up!
           </button>
           <div>
               <img
