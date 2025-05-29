@@ -207,7 +207,7 @@ function SignUpForm() {
                   margin: '10px',
               }}
           >
-              Back to Homepage
+              Home Page!
           </button>
           <button
               onClick={() => {
@@ -220,7 +220,7 @@ function SignUpForm() {
                   margin: '10px',
               }}
           >
-              Login instead...
+              Login!
           </button>
           <div>
               <img
