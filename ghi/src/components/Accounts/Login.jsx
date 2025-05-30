@@ -72,7 +72,7 @@ const LoginForm = () => {
                   margin: '10px',
               }}
           >
-              Back to Home Page!
+              Home Page!
           </button>
           <button
               onClick={() => {
