@@ -3,6 +3,7 @@ from psycopg_pool import ConnectionPool
 from typing import List
 from pydantic import BaseModel
 from fastapi import (HTTPException, status)
+from datetime import datetime
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -29,6 +30,8 @@ class VoteOut(BaseModel):
     account_id: int
     review_id: int
     upvote: bool
+    date_created: datetime
+    last_update: datetime
 
 
 class VoteQueries:
