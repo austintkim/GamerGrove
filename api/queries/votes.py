@@ -124,7 +124,9 @@ class VoteQueries:
                         RETURNING id,
                         account_id,
                         review_id,
-                        upvote
+                        upvote,
+                        date_created,
+                        last_update
                         """,
                         [
                             vote_dict["account_id"],
