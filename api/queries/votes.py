@@ -202,17 +202,21 @@ class VoteQueries:
                 db.execute(
                     """
                     UPDATE votes
-                    SET account_id = %s,
-                        review_id = %s,
-                        upvote = %s
-                    WHERE id = %s AND account_id = %s
+                    SET upvote = %s
+                    WHERE id = %s AND review_id = %s AND account_id = %s
+                    RETURNING
+                        id,
+                        account_id,
+                        review_id,
+                        upvote,
+                        date_created,
+                        last_update
                     """,
                     [
-                        vote_dict["account_id"],
-                        vote_dict["review_id"],
                         vote_dict["upvote"],
                         id,
-                        vote_dict["account_id"]
+                        vote_dict["review_id"],
+                        vote_dict["account_id"],
                     ]
                 )
             return VoteOut(id=id, **vote_dict)
