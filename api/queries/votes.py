@@ -199,7 +199,7 @@ class VoteQueries:
                         detail="A vote with that id does not exist in the database"
                     )
 
-                db.execute(
+                result = db.execute(
                     """
                     UPDATE votes
                     SET upvote = %s
@@ -219,4 +219,14 @@ class VoteQueries:
                         vote_dict["account_id"],
                     ]
                 )
-            return VoteOut(id=id, **vote_dict)
+                row = result.fetchone()
+                if row is not None:
+                    record = {}
+                    for i, column in enumerate(db.description):
+                        record[column.name] = row[i]
+                    return VoteOut(**record)
+                else:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="You are attempting to update a comment that you did not create"
+                    )
