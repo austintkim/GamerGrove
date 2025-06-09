@@ -32,6 +32,8 @@ function Dashboard() {
   const[userReviewDetails, setUserReviewDetails] = useState([]);
   const[reviewGameDetails, setReviewGameDetails] = useState([]);
 
+  const[userLikeDetails, setUserLikeDetails] = useState([]);
+
   const[userLibraryEntries, setUserLibraryEntries] = useState([]);
   const[libraryGameDetails, setLibraryGameDetails] = useState([]);
   const[savedGameDetails, setSavedGameDetails] = useState([]);
@@ -42,6 +44,8 @@ function Dashboard() {
   const handleBackToLogin = () => {
     navigate("/login");
   };
+
+  console.log(userLikeDetails);
 
   const fetchIcons = async () => {
     const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
@@ -181,7 +185,7 @@ const fetchUserData = async () => {
         setUserReviewDetails(sortedReviews);
       }
     } catch (error) {
-      console.error('Error fetching boards', error);
+      console.error('Error fetching reviews', error);
     }
   }
 
@@ -206,6 +210,27 @@ const fetchUserData = async () => {
 
   }
 
+  const fetchUserLikes = async(accountId) => {
+    const votesUrl = `${
+        import.meta.env.VITE_API_HOST
+    }/api/votes/users/${accountId}`
+
+    try {
+      const response = await fetch(votesUrl, { credentials: 'include' });
+      const voteData = await response.json();
+
+      if (voteData.detail) {
+        setUserLikeDetails([]);
+        return;
+      } else {
+        const sortedLikes = voteData.filter(i => i.upvote).sort((a, b) => new Date(b.last_update) - new Date(a.last_update));
+        setUserLikeDetails(sortedLikes);
+      }
+    } catch (error) {
+      console.error('Error fetching likes', error)
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
         const userData = await fetchUserData();
@@ -214,6 +239,7 @@ const fetchUserData = async () => {
             fetchUserBoards(userData.id),
             fetchUserReviews(userData.id),
             fetchUserGames(userData.id),
+            fetchUserLikes(userData.id)
           ]);
           setLoading(false);
         }
