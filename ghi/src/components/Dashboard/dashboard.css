@@ -14,7 +14,7 @@ main {
   padding: 30px;
   position: relative;
   right: 0;
-  margin-left: 400px;
+  margin-left: 200px;
   margin-right: 0;
 }
 
@@ -40,7 +40,7 @@ p {
 
 #tabs {
   padding: 0;
-  width: 1000px;
+  width: 1200px;
   margin-left: -30px;
   background: #333333;
   height: 40px;
@@ -116,6 +116,9 @@ p {
 #radio5:checked ~ #tabs::after {
 	transform: translateX(804px);
 }
+#radio6:checked ~ #tabs::after {
+	transform: translateX(1005px);
+}
 #content {
 	position: relative;
 	height: 1200px;
@@ -153,7 +156,8 @@ p {
 #radio2:checked ~ #content #content2,
 #radio3:checked ~ #content #content3,
 #radio4:checked ~ #content #content4,
-#radio5:checked ~ #content #content5 {
+#radio5:checked ~ #content #content5,
+#radio6:checked ~ #content #content6 {
   transform: translateY(0);
   opacity: 1;
   pointer-events: auto;

@@ -330,6 +330,7 @@ const fetchUserData = async () => {
               <input id="radio3" type="radio" name="css-tabs" />
               <input id="radio4" type="radio" name="css-tabs" />
               <input id="radio5" type="radio" name="css-tabs" />
+              <input id="radio6" type="radio" name="css-tabs" />
               <div id="tabs">
                   <label style={{ color: 'white' }} htmlFor="radio1">
                       Boards
@@ -338,12 +339,15 @@ const fetchUserData = async () => {
                       Reviews
                   </label>
                   <label style={{ color: 'white' }} htmlFor="radio3">
-                      Games
+                      Likes
                   </label>
                   <label style={{ color: 'white' }} htmlFor="radio4">
-                      Wishlist
+                      Games
                   </label>
                   <label style={{ color: 'white' }} htmlFor="radio5">
+                      Wishlist
+                  </label>
+                  <label style={{ color: 'white' }} htmlFor="radio6">
                       Settings
                   </label>
               </div>
@@ -372,12 +376,24 @@ const fetchUserData = async () => {
                       />
                       <br />
                   </section>
-                  <section id="content3">
+                  <section
+                      id="content3"
+                      style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          width: '100%',
+                          maxWidth: '935px',
+                      }}
+                  >
+                      <br />
+                  </section>
+                  <section id="content4">
                       <div className="gcard-container">
                           <GameCard games={savedGameDetails} />
                       </div>
                   </section>
-                  <section id="content4">
+                  <section id="content5">
                       <div>
                           <WishlistCard
                               onGameRemoved={handleGameRemoved}
@@ -387,7 +403,7 @@ const fetchUserData = async () => {
                           />
                       </div>
                   </section>
-                  <section style={{ marginLeft: '100px' }} id="content5">
+                  <section style={{ marginLeft: '100px' }} id="content6">
                       <Settings
                           iconData={icons}
                           userData={userDataDetails}
