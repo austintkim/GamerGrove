@@ -33,6 +33,7 @@ function Dashboard() {
   const[reviewGameDetails, setReviewGameDetails] = useState([]);
 
   const[userLikeDetails, setUserLikeDetails] = useState([]);
+  const[likeGameDetails, setLikeGameDetails] = useState([]);
 
   const[userLibraryEntries, setUserLibraryEntries] = useState([]);
   const[libraryGameDetails, setLibraryGameDetails] = useState([]);
@@ -46,6 +47,7 @@ function Dashboard() {
   };
 
   console.log(userLikeDetails);
+  console.log(likeGameDetails);
 
   const fetchIcons = async () => {
     const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
@@ -231,6 +233,51 @@ const fetchUserData = async () => {
     }
   }
 
+  const fetchLikeReviewGames = async (votes) => {
+      try {
+          // Step 1: Fetch reviews for each vote
+          const reviewResponses = await Promise.all(
+              votes.map((vote) =>
+                  fetch(
+                      `${import.meta.env.VITE_API_HOST}/api/reviews/${
+                          vote.review_id
+                      }`
+                  )
+              )
+          )
+          const reviewData = await Promise.all(
+              reviewResponses.map((res) => res.json())
+          )
+
+          // Step 2: Fetch games using game_id from each review
+          const gameResponses = await Promise.all(
+              reviewData.map((review) =>
+                  fetch(
+                      `${import.meta.env.VITE_API_HOST}/api/games/${
+                          review.game_id
+                      }`
+                  )
+              )
+          )
+          const gameData = await Promise.all(
+              gameResponses.map((res) => res.json())
+          )
+
+          // Optional: Remove duplicates
+          const seenIds = new Set()
+          const uniqueGameData = gameData.filter((game) => {
+              if (seenIds.has(game.id)) return false
+              seenIds.add(game.id)
+              return true
+          })
+
+          setLikeGameDetails(uniqueGameData);
+      } catch (error) {
+          console.error('Error fetching liked review games:', error)
+      }
+  }
+
+
   useEffect(() => {
     const fetchData = async () => {
         const userData = await fetchUserData();
@@ -255,6 +302,7 @@ const fetchUserData = async () => {
     }
   }, [userBoardDetails, boardGameDetails])
 
+
   useEffect(() => {
     const wishListGames = libraryGameDetails.filter((item) => item.wishlist === true);
     setWishListGameDetails(wishListGames);
@@ -267,6 +315,12 @@ const fetchUserData = async () => {
       fetchUserReviewGames(userReviewDetails)
     }
   }, [userReviewDetails])
+
+  useEffect(() => {
+      if (userLikeDetails.length) {
+          fetchLikeReviewGames(userLikeDetails)
+      }
+  }, [userLikeDetails])
 
   const handleGameRemoved = () => {
     fetchUserGames(userDataDetails.id);
