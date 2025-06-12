@@ -8,6 +8,7 @@ import WishlistCard from '../Cards/wishlistCard.jsx';
 import SideMenu from '../Home/sideMenu';
 import Nav from '../Home/Nav';
 import UserReviewCard from '../Cards/userReviewCard';
+import UserLikeCard from '../Cards/userLikeCard';
 import Settings from '../Accounts/Settings.jsx';
 import bmdashboard from '../../assets/bmdashboard.gif'
 
@@ -440,6 +441,10 @@ const fetchUserData = async () => {
                           maxWidth: '935px',
                       }}
                   >
+                    {/* <UserLikeCard
+                      likedReviews={userLikeDetails}
+                      likedReviewGames={likeGameDetails}
+                    /> */}
                       <br />
                   </section>
                   <section id="content4">
