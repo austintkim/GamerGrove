@@ -47,9 +47,6 @@ function Dashboard() {
     navigate("/login");
   };
 
-  console.log(userLikedReviewDetails);
-  console.log(likeGameDetails);
-
   const fetchIcons = async () => {
     const url = `${import.meta.env.VITE_API_HOST}/api/icons`;
     const response = await fetch(url);
