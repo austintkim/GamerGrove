@@ -33,7 +33,7 @@ function Dashboard() {
   const[userReviewDetails, setUserReviewDetails] = useState([]);
   const[reviewGameDetails, setReviewGameDetails] = useState([]);
 
-  const[userLikeDetails, setUserLikeDetails] = useState([]);
+  const[userLikedReviewDetails, setUserLikedReviewDetails] = useState([]);
   const[likeGameDetails, setLikeGameDetails] = useState([]);
 
   const[userLibraryEntries, setUserLibraryEntries] = useState([]);
@@ -47,7 +47,7 @@ function Dashboard() {
     navigate("/login");
   };
 
-  console.log(userLikeDetails);
+  console.log(userLikedReviewDetails);
   console.log(likeGameDetails);
 
   const fetchIcons = async () => {
@@ -213,7 +213,7 @@ const fetchUserData = async () => {
 
   }
 
-  const fetchUserLikes = async(accountId) => {
+  const fetchUserLikedReviews = async(accountId) => {
     const votesUrl = `${
         import.meta.env.VITE_API_HOST
     }/api/votes/users/${accountId}`
@@ -223,34 +223,34 @@ const fetchUserData = async () => {
       const voteData = await response.json();
 
       if (voteData.detail) {
-        setUserLikeDetails([]);
+        setUserLikedReviewDetails([]);
         return;
       } else {
         const sortedLikes = voteData.filter(i => i.upvote).sort((a, b) => new Date(b.last_update) - new Date(a.last_update));
-        setUserLikeDetails(sortedLikes);
-      }
+
+        const reviewResponses = await Promise.all(
+          sortedLikes.map((like) =>
+            fetch(
+              `${import.meta.env.VITE_API_HOST}/api/reviews/${
+                like.review_id
+                }`
+              )
+            )
+          )
+
+          const reviewData = await Promise.all(
+            reviewResponses.map((res) => res.json())
+          )
+          setUserLikedReviewDetails(reviewData)
+        }
     } catch (error) {
       console.error('Error fetching likes', error)
     }
   }
 
-  const fetchLikeReviewGames = async (votes) => {
+  const fetchLikeReviewGames = async (reviewData) => {
       try {
-          // Step 1: Fetch reviews for each vote
-          const reviewResponses = await Promise.all(
-              votes.map((vote) =>
-                  fetch(
-                      `${import.meta.env.VITE_API_HOST}/api/reviews/${
-                          vote.review_id
-                      }`
-                  )
-              )
-          )
-          const reviewData = await Promise.all(
-              reviewResponses.map((res) => res.json())
-          )
-
-          // Step 2: Fetch games using game_id from each review
+          // Fetch games using game_id from each review
           const gameResponses = await Promise.all(
               reviewData.map((review) =>
                   fetch(
@@ -287,7 +287,7 @@ const fetchUserData = async () => {
             fetchUserBoards(userData.id),
             fetchUserReviews(userData.id),
             fetchUserGames(userData.id),
-            fetchUserLikes(userData.id)
+            fetchUserLikedReviews(userData.id)
           ]);
           setLoading(false);
         }
@@ -318,10 +318,10 @@ const fetchUserData = async () => {
   }, [userReviewDetails])
 
   useEffect(() => {
-      if (userLikeDetails.length) {
-          fetchLikeReviewGames(userLikeDetails)
+      if (userLikedReviewDetails.length) {
+          fetchLikeReviewGames(userLikedReviewDetails)
       }
-  }, [userLikeDetails])
+  }, [userLikedReviewDetails])
 
   const handleGameRemoved = () => {
     fetchUserGames(userDataDetails.id);
@@ -441,10 +441,10 @@ const fetchUserData = async () => {
                           maxWidth: '935px',
                       }}
                   >
-                    {/* <UserLikeCard
-                      likedReviews={userLikeDetails}
+                    <UserLikeCard
+                      likedReviews={userLikedReviewDetails}
                       likedReviewGames={likeGameDetails}
-                    /> */}
+                    />
                       <br />
                   </section>
                   <section id="content4">
