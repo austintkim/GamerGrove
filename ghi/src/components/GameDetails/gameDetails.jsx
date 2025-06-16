@@ -34,7 +34,7 @@ const GameDetails = () => {
 
                 if (element) {
                     const rect = element.getBoundingClientRect()
-                    const offset = 170
+                    const offset = 190
                     const scrollPosition = window.scrollY + rect.top - offset
 
                     window.scrollTo({
