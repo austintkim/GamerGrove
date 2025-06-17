@@ -1,6 +1,6 @@
 import './userReviewCard.css';
 import StarRating from '../GameDetails/StarRating';
-import {Link, useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 
 function UserReviewCard({ reviews, reviewGames }) {
@@ -16,41 +16,56 @@ function UserReviewCard({ reviews, reviewGames }) {
       }
   })
 
+  const handleReviewClick = (reviewId, gameId) => {
+      navigate(`/games/${gameId}#review-${reviewId}`)
+  }
+
   return (
       <div>
           {reviews.length === 0 ? (
               <p style={{ color: 'white' }}>No reviews created yet.</p>
           ) : (
               reviews.map((review) => (
-                  <div key={review.id} className="urcard">
+                  <div
+                      key={review.id}
+                      className="urcard"
+                      onClick={() =>
+                          handleReviewClick(review.id, review.game_id)
+                      }
+                      style={{ cursor: 'pointer' }}
+                  >
                       <div className="urcard-content">
                           <div className="urcard-title">{review.title}</div>
                       </div>
                       <div className="urline"></div>
                       <div className="urcard-content">
-                        <Link to={`/games/${review.game_id}`}>
-                            <div
+                          <div
                               style={{
-                                textAlign: 'center',
-                                fontFamily:'K2D',
-                                color: 'white',
+                                  textAlign: 'center',
+                                  fontFamily: 'K2D',
+                                  color: 'white',
                               }}
-                            >
+                          >
                               {review.game_name}
-                            </div>
-                            <div className="urcard-content" style ={{marginBottom: '15px'}}>
-                                <img
-                                    src={review.background_img}
-                                    alt="Card Photo"
-                                />
-                            </div>
-                          </Link>
-                          <div className="urline" style = {{ marginBottom: '0px'}}></div>
+                          </div>
+                          <div
+                              className="urcard-content"
+                              style={{ marginBottom: '15px' }}
+                          >
+                              <img
+                                  src={review.background_img}
+                                  alt="Card Photo"
+                              />
+                          </div>
+                          <div
+                              className="urline"
+                              style={{ marginBottom: '0px' }}
+                          ></div>
                           <div className="urcard-details">
                               <div
                                   style={{
                                       textAlign: 'center',
-                                      fontFamily: 'K2D'
+                                      fontFamily: 'K2D',
                                   }}
                               >
                                   {review.body}

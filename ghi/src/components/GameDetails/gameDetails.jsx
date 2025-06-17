@@ -15,11 +15,23 @@ import parse from 'html-react-parser'
 import scribe from '../../assets/scribe.gif'
 
 const GameDetails = () => {
+    const navigate = useNavigate()
+    const { id } = useParams()
+
     useEffect(() => {
-        const hash = window.location.hash.slice(1)
-        if (hash) {
+        const handleHashScroll = () => {
+            const hash = window.location.hash.slice(1)
+
+            if (!hash) return
+
             setTimeout(() => {
-                const element = document.getElementById(hash)
+                // Handle both review- hashes and regular hashes
+                const elementId = hash.startsWith('review-')
+                    ? `review-${hash.replace('review-', '')}`
+                    : hash
+
+                const element = document.getElementById(elementId)
+
                 if (element) {
                     const rect = element.getBoundingClientRect()
                     const offset = 170
@@ -30,12 +42,19 @@ const GameDetails = () => {
                         behavior: 'smooth',
                     })
                 }
-            }, 100)
+            }, 300) // Unified delay
         }
-    }, [location.hash])
 
-    const navigate = useNavigate()
-    const { id } = useParams()
+        // Initial scroll on mount/params change
+        handleHashScroll()
+
+        // Handle subsequent hash changes
+        window.addEventListener('hashchange', handleHashScroll)
+
+        return () => {
+            window.removeEventListener('hashchange', handleHashScroll)
+        }
+    }, [id, location.hash]) // Dependencies cover all cases
 
     const [userToken2, setUserToken2] = useState(null)
     const [userDataDetails2, setUserDataDetails2] = useState('')

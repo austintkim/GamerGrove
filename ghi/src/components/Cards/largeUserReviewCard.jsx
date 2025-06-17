@@ -291,97 +291,158 @@ function LargeUserReviewCard({ gameId, accountId, newReview, userVotes, onVote }
   }
 
   return (
-    <div>
-      {Array.isArray(userReviews) && userReviews.length > 0 ? (
-        userReviews.map((review) => (
-          <div key={review.id} className="largercard">
-            <div>
-            <div className="lurcard-title">{review.title}</div>
-            </div>
-            <div style={{marginBottom: '10px'}}>
-              {review.account_id === accountId && (
-                <>
-                  <button
-                    className="lurcard-edit-delete"
-                    style={{ color: 'black' }}
-                    onClick={() => {
-                      navigate(`/reviews/update/${review.id}/${review.game_id}`)
-                    }}
+      <div>
+          {Array.isArray(userReviews) && userReviews.length > 0 ? (
+              userReviews.map((review) => (
+                  <div
+                      key={review.id}
+                      className="largercard"
+                      id={`review-${review.id}`}
                   >
-                    Edit
-                  </button>{' '}
-                  <button
-                    className="lurcard-delete"
-                    style={{ color: 'black', fontFamily: 'K2D', fontSize: '18px' }}
-                    onClick={() => {
-                      navigate(`/reviews/delete/${review.id}`)
-                    }}
-                  >
-                    Delete
-                  </button>{' '}
-                </>
-              )}
-            </div>
-            <div className="lurline"></div>
-            <div style={{color: 'white'}} className="lurcard-content">
-
-              <div className="lurcard-details">
-                <p>{review.body}</p>
-              </div>
-              <div className="lurcard-date">
-                  <div className="rating-container">
-                    <div className="star-rating" style={{marginTop: '75px'}}>
-                      <StarRating rating={review.rating} />
-                    </div>
+                      <div>
+                          <div className="lurcard-title">{review.title}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px' }}>
+                          {review.account_id === accountId && (
+                              <>
+                                  <button
+                                      className="lurcard-edit-delete"
+                                      style={{ color: 'black' }}
+                                      onClick={() => {
+                                          navigate(
+                                              `/reviews/update/${review.id}/${review.game_id}`
+                                          )
+                                      }}
+                                  >
+                                      Edit
+                                  </button>{' '}
+                                  <button
+                                      className="lurcard-delete"
+                                      style={{
+                                          color: 'black',
+                                          fontFamily: 'K2D',
+                                          fontSize: '18px',
+                                      }}
+                                      onClick={() => {
+                                          navigate(
+                                              `/reviews/delete/${review.id}`
+                                          )
+                                      }}
+                                  >
+                                      Delete
+                                  </button>{' '}
+                              </>
+                          )}
+                      </div>
+                      <div className="lurline"></div>
+                      <div
+                          style={{ color: 'white' }}
+                          className="lurcard-content"
+                      >
+                          <div className="lurcard-details">
+                              <p>{review.body}</p>
+                          </div>
+                          <div className="lurcard-date">
+                              <div className="rating-container">
+                                  <div
+                                      className="star-rating"
+                                      style={{ marginTop: '75px' }}
+                                  >
+                                      <StarRating rating={review.rating} />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div className="divthumbs">
+                          <button
+                              onClick={() => {
+                                  handleUpVoteClick(review.id, review.game_id)
+                              }}
+                              style={{
+                                  backgroundColor:
+                                      review.upvote === true
+                                          ? 'green'
+                                          : 'transparent',
+                              }}
+                          >
+                              <img
+                                  className="thumb-up"
+                                  src="https://i.postimg.cc/dV4GtWb9/Thumbs-Up-White.png"
+                                  alt="Thumbs Up"
+                              />
+                              <p
+                                  className="urp"
+                                  style={{
+                                      color: 'white',
+                                      margin: '0',
+                                      fontWeight: 'bold',
+                                      textAlign: 'center',
+                                  }}
+                              >
+                                  {review.upvote_count}
+                              </p>
+                          </button>
+                          <button
+                              className="down-btn"
+                              onClick={() => {
+                                  handleDownVoteClick(review.id, review.game_id)
+                              }}
+                              style={{
+                                  backgroundColor:
+                                      review.upvote === false
+                                          ? 'red'
+                                          : 'transparent',
+                              }}
+                          >
+                              <img
+                                  className="thumbs-down"
+                                  src="https://i.postimg.cc/fyNVvm4L/Thumbsdown-White.png"
+                                  alt="Thumbs Down"
+                              />
+                          </button>
+                          {review.last_update > review.date_created ? (
+                              <p
+                                  style={{
+                                      color: 'white',
+                                      marginRight: '10px',
+                                      marginBottom: '10px',
+                                      textAlign: 'right',
+                                  }}
+                              >
+                                  {' '}
+                                  Updated{' '}
+                                  {formatDistanceToNow(
+                                      new Date(`${review.last_update}Z`),
+                                      { addSuffix: true }
+                                  )}
+                              </p>
+                          ) : (
+                              <p
+                                  style={{
+                                      color: 'white',
+                                      marginRight: '10px',
+                                      marginBottom: '10px',
+                                      textAlign: 'right',
+                                  }}
+                              >
+                                  {' '}
+                                  Posted{' '}
+                                  {formatDistanceToNow(
+                                      new Date(`${review.date_created}Z`),
+                                      { addSuffix: true }
+                                  )}
+                              </p>
+                          )}
+                      </div>
                   </div>
-              </div>
-
-            </div>
-            <div className='divthumbs'>
-              <button onClick = {() => {
-                handleUpVoteClick(review.id, review.game_id)
-              }}
-              style={{ backgroundColor: review.upvote === true ? 'green' : 'transparent' }}
-              >
-              <img
-                className='thumb-up'
-                src="https://i.postimg.cc/dV4GtWb9/Thumbs-Up-White.png"
-                alt="Thumbs Up"
-              />
-              <p className="urp" style={{ color: 'white', margin: '0', fontWeight: 'bold', textAlign: 'center' }}>{review.upvote_count}</p>
-              </button>
-              <button className='down-btn' onClick = {() => {
-                handleDownVoteClick(review.id, review.game_id)
-              }}
-              style={{ backgroundColor: review.upvote === false ? 'red' : 'transparent' }}
-              >
-              <img
-                className="thumbs-down"
-                src="https://i.postimg.cc/fyNVvm4L/Thumbsdown-White.png"
-                alt="Thumbs Down"
-              />
-
-              </button>
-              {
-                review.last_update > review.date_created ?
-                <p
-                  style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right'}}> Updated {formatDistanceToNow(new Date(`${review.last_update}Z`), { addSuffix: true })}
-                </p>
-                :
-                <p
-                  style={{ color: 'white', marginRight: '10px', marginBottom: '10px', textAlign: 'right'}}> Posted {formatDistanceToNow(new Date(`${review.date_created}Z`), { addSuffix: true })}
-                </p>
-              }
-            </div>
-          </div>
-        ))
-      ) : (
-        <p style={{ textAlign: 'center', marginRight: '250px' }}>
-          No reviews available for this game.
-        </p>
-      )}
-    </div>
-  );
+              ))
+          ) : (
+              <p style={{ textAlign: 'center', marginRight: '250px' }}>
+                  No reviews available for this game.
+              </p>
+          )}
+      </div>
+  )
 }
 
 export default LargeUserReviewCard;
