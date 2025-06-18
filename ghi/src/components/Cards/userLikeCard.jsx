@@ -1,9 +1,10 @@
 import './userLikeCard.css';
 import StarRating from '../GameDetails/StarRating';
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
 
 function UserLikeCard({ likedReviews, likedReviewGames }) {
+    const navigate = useNavigate();
 
     const gamesMap = new Map(likedReviewGames.map((game) => [game.id, game]))
 
@@ -15,38 +16,47 @@ function UserLikeCard({ likedReviews, likedReviewGames }) {
         }
     })
 
+    const handleLikedReviewClick = (reviewId, gameId) => {
+        navigate(`/games/${gameId}#review-${reviewId}`)
+    }
+
     return (
         <div>
             {likedReviews.length === 0 ? (
                 <p style={{ color: 'white' }}>No liked reviews yet.</p>
             ) : (
                 likedReviews.map((review) => (
-                    <div key={review.id} className="urcard">
+                    <div
+                        key={review.id}
+                        className="urcard"
+                        onClick={() =>
+                            handleLikedReviewClick(review.id, review.game_id)
+                        }
+                        style={{ cursor: 'pointer' }}
+                    >
                         <div className="urcard-content">
                             <div className="urcard-title">{review.title}</div>
                         </div>
                         <div className="urline"></div>
                         <div className="urcard-content">
-                            <Link to={`/games/${review.game_id}`}>
-                                <div
-                                    style={{
-                                        textAlign: 'center',
-                                        fontFamily: 'K2D',
-                                        color: 'white',
-                                    }}
-                                >
-                                    {review.game_name}
-                                </div>
-                                <div
-                                    className="urcard-content"
-                                    style={{ marginBottom: '15px' }}
-                                >
-                                    <img
-                                        src={review.background_img}
-                                        alt="Card Photo"
-                                    />
-                                </div>
-                            </Link>
+                            <div
+                                style={{
+                                    textAlign: 'center',
+                                    fontFamily: 'K2D',
+                                    color: 'white',
+                                }}
+                            >
+                                {review.game_name}
+                            </div>
+                            <div
+                                className="urcard-content"
+                                style={{ marginBottom: '15px' }}
+                            >
+                                <img
+                                    src={review.background_img}
+                                    alt="Card Photo"
+                                />
+                            </div>
                             <div
                                 className="urline"
                                 style={{ marginBottom: '0px' }}
