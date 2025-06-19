@@ -26,14 +26,7 @@ function UserReviewCard({ reviews, reviewGames }) {
               <p style={{ color: 'white' }}>No reviews created yet.</p>
           ) : (
               reviews.map((review) => (
-                  <div
-                      key={review.id}
-                      className="urcard"
-                      onClick={() =>
-                          handleReviewClick(review.id, review.game_id)
-                      }
-                      style={{ cursor: 'pointer' }}
-                  >
+                  <div key={review.id} className="urcard">
                       <div className="urcard-content">
                           <div className="urcard-title">{review.title}</div>
                       </div>
@@ -55,6 +48,13 @@ function UserReviewCard({ reviews, reviewGames }) {
                               <img
                                   src={review.background_img}
                                   alt="Card Photo"
+                                  onClick={() =>
+                                      handleReviewClick(
+                                          review.id,
+                                          review.game_id
+                                      )
+                                  }
+                                  style={{ cursor: 'pointer' }}
                               />
                           </div>
                           <div
