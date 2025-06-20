@@ -26,14 +26,7 @@ function UserLikeCard({ likedReviews, likedReviewGames }) {
                 <p style={{ color: 'white' }}>No liked reviews yet.</p>
             ) : (
                 likedReviews.map((review) => (
-                    <div
-                        key={review.id}
-                        className="urcard"
-                        onClick={() =>
-                            handleLikedReviewClick(review.id, review.game_id)
-                        }
-                        style={{ cursor: 'pointer' }}
-                    >
+                    <div key={review.id} className="urcard">
                         <div className="urcard-content">
                             <div className="urcard-title">{review.title}</div>
                         </div>
@@ -55,6 +48,13 @@ function UserLikeCard({ likedReviews, likedReviewGames }) {
                                 <img
                                     src={review.background_img}
                                     alt="Card Photo"
+                                    onClick={() =>
+                                        handleLikedReviewClick(
+                                            review.id,
+                                            review.game_id
+                                        )
+                                    }
+                                    style={{ cursor: 'pointer' }}
                                 />
                             </div>
                             <div
