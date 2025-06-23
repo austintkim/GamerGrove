@@ -27,6 +27,9 @@ class AccountInUpdate(BaseModel):
     email: str
     icon_id: int
 
+class AccountInDelete(BaseModel):
+    password: str
+
 
 class AccountOut(BaseModel):
     id: int
