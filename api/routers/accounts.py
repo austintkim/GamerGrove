@@ -6,6 +6,7 @@ from typing import Union
 from queries.accounts import (
     AccountIn,
     AccountInUpdate,
+    AccountInDelete,
     AccountOut,
     AccountQueries,
     AccountToken,
