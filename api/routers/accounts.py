@@ -166,8 +166,7 @@ async def delete_account(
     account_data: dict = Depends(authenticator.get_current_account_data)
 ):
     username = account_data["username"]
-    password = data.password
-    return queries.delete(id, username, password)
+    return queries.delete(id, username, data)
 
 
 @router.put("/api/accounts/{id}/{username}", response_model=Union[AccountToken, HttpError])

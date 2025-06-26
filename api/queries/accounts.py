@@ -195,7 +195,8 @@ class AccountQueries:
                     )
 
 
-    def delete(self, id: int, username: str) -> bool:
+    def delete(self, id: int, username: str, data: AccountInDelete, ) -> bool:
+        from authenticator import authenticator
         with pool.connection() as conn:
             with conn.cursor() as db:
                 id_check = db.execute(
@@ -213,6 +214,28 @@ class AccountQueries:
                         detail="An account with that id does not exist in the database"
                     )
 
+                db.execute (
+                    """
+                    SELECT hashed_password
+                    FROM accounts_password_history
+                    WHERE account_id = %s AND is_current = True
+                    """,
+                    [id]
+                )
+                current_pw_row = db.fetchone()
+                if current_pw_row is None:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Something went wrong with checking the inputted password - check FastAPI container logs"
+                    )
+
+                password_check = authenticator.verify_password(data.password, current_pw_row[0])
+                if not password_check:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Incorrect password - account could not be deleted"
+                    )
+
                 username_check = db.execute(
                     """
                     DELETE FROM accounts
@@ -228,6 +251,7 @@ class AccountQueries:
                         status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="You are attempting to delete an account that you did not create"
                     )
+
                 return True
 
     def passwords_check(self, id: int, username: str, current_password: str, new_password: str = None) -> bool:
