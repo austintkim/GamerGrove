@@ -161,11 +161,13 @@ async def get_account_by_id(
 @router.delete("/api/accounts/{id}/{username}", response_model=Union[bool, HttpError])
 async def delete_account(
     id: int,
+    data: AccountInDelete,
     queries: AccountQueries = Depends(),
     account_data: dict = Depends(authenticator.get_current_account_data)
 ):
     username = account_data["username"]
-    return queries.delete(id, username)
+    password = data.password
+    return queries.delete(id, username, password)
 
 
 @router.put("/api/accounts/{id}/{username}", response_model=Union[AccountToken, HttpError])
