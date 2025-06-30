@@ -27,14 +27,6 @@ const redButton = {
     color: 'white',
 }
 
-const inputStyle = {
-    marginTop: '10px',
-    padding: '8px',
-    borderRadius: '5px',
-    width: '100%',
-    border: '1px solid #ccc',
-}
-
 const DeleteAccountForm = () => {
     const navigate = useNavigate()
     const { id, username } = useParams()
@@ -42,6 +34,7 @@ const DeleteAccountForm = () => {
     const [confirming, setConfirming] = useState(false)
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
 
     const deleteCookie = (name, path = '/', domain = 'localhost') => {
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`
@@ -106,6 +99,10 @@ const DeleteAccountForm = () => {
         }
     }
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword)
+    }
+
     return (
         <div style={containerStyle}>
             <div className="card text-bg-light mb-3">
@@ -133,15 +130,50 @@ const DeleteAccountForm = () => {
                             <div>
                                 Enter your current password to confirm deletion:
                             </div>
-                            <input
-                                type="password"
-                                style={inputStyle}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
+                                    required
+                                    type={
+                                        !showPassword || !password
+                                            ? 'password'
+                                            : 'text'
+                                    }
+                                    name="password"
+                                    id="password"
+                                    className="form-control"
+                                    value={password}
+                                    style={{
+                                        marginBottom: '15px',
+                                        paddingRight: '40px',
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    disabled={!password}
+                                    onClick={togglePasswordVisibility}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '10px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    {!showPassword || !password ? '👁️' : '👁️‍🗨️'}
+                                </button>
+                            </div>
                             {error && (
-                                <div style={{ color: 'red', marginTop: '8px' }}>
+                                <div
+                                    style={{
+                                        color: 'red',
+                                        marginTop: '8px',
+                                    }}
+                                >
                                     {error}
                                 </div>
                             )}
