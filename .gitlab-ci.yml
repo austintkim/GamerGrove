@@ -58,20 +58,16 @@ build-api-image:
 # # Build the React/JavaScript front-end
 build-front-end-job:
   stage: build
-  image: node:20  # Must use Node 18+ for ESLint 9
+  image: node:lts-bullseye
   variables:
     VITE_RAWG_API_KEY: 0c4556270545498782c9a942f38cb48a
-    NPM_CONFIG_LEGACY_PEER_DEPS: "true"  # Fixes React Native conflicts
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - node_modules/
-    policy: pull  # Prevents corrupted cache
+      - ghi/node_modules/
   before_script:
     - cd ghi
-    - rm -rf node_modules package-lock.json  # Fresh start
-    - npm install eslint@9.30.1 @eslint/js@9.30.1 --no-save  # Force correct version
-    - npm ci --legacy-peer-deps
+    - npm ci
   script:
     - npm run lint
     - VITE_API_HOST="https://gamergroveapi.com" npm run build -- --base=/gamer-grove/
