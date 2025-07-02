@@ -1,7 +1,24 @@
 {
     "editor.formatOnPaste": true,
+    "editor.formatOnType": true,
     "python.formatting.provider": "black",
     "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true,
+        "source.fixAll.eslint": true
+    },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "python.analysis.typeCheckingMode": "off"
+    "python.analysis.typeCheckingMode": "off",
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "vue",
+        "json",
+        "jsonc",
+        "yaml"
+    ],
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 500
 }

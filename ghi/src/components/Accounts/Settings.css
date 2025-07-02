@@ -1,17 +1,16 @@
 /* Existing styles */
 .settingscard {
-  width: 600px;
-  color: rgb(192, 166, 238);
+	width: 600px;
+	color: rgb(192, 166, 238);
 }
 
 .rowoffive {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
 }
 
 .card-header {
-  text-decoration: underline;
+	text-decoration: underline;
 }
-

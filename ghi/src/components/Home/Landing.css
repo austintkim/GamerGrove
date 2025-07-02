@@ -1,72 +1,69 @@
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
-
 .homeH3 {
-  font-family: K2D;
-  color: white;
-  text-align: left;
-  margin-left: 300px;
-  font-size: 40px;
+	font-family: K2D;
+	color: white;
+	text-align: left;
+	margin-left: 300px;
+	font-size: 40px;
 }
 .hero-carousel-container {
-  background-color: #1a1a1a;
-  position: relative;
-  margin: 0px auto;
-  margin-top: 10px;
-  margin-right: 225px;
-  width: 60%;
-  height: 60%;
-  max-width: 1200px;
-  border-radius: 50px;
-  z-index: 0;
-  box-shadow:
-    0px 30px 150px 30px rgb(255, 255, 255),
+	background-color: #1a1a1a;
+	position: relative;
+	margin: 0px auto;
+	margin-top: 10px;
+	margin-right: 225px;
+	width: 60%;
+	height: 60%;
+	max-width: 1200px;
+	border-radius: 50px;
+	z-index: 0;
+	box-shadow: 0px 30px 150px 30px rgb(255, 255, 255);
 }
 .carousel-inner {
-  display: flex;
-  transition: transform 450ms ease-in-out;
+	display: flex;
+	transition: transform 450ms ease-in-out;
 }
 .carousel-slide {
-  transition: transform 450ms ease-in-out;
+	transition: transform 450ms ease-in-out;
 }
 .carousel-item {
-  min-width: 80%;
-  border-radius: 20px;
+	min-width: 80%;
+	border-radius: 20px;
 }
 .carousel-item img {
-  width: 100%;
-  height: auto;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 20px;
+	width: 100%;
+	height: auto;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 20px;
 }
 .carousel-control-prev,
 .carousel-control-next {
-  width: 5%;
+	width: 5%;
 }
 header {
-  background-color: #000000;
-  margin-top: 50.5px;
+	background-color: #000000;
+	margin-top: 50.5px;
 }
 .homeline {
-    width: 77%;
-    margin-left: 275px;
-    height: 3px;
-    background: linear-gradient(to right, #ff10bf, #009dff);
-    box-shadow: 0px 2px 40px rgba(119, 0, 255, 0.1);
+	width: 77%;
+	margin-left: 275px;
+	height: 3px;
+	background: linear-gradient(to right, #ff10bf, #009dff);
+	box-shadow: 0px 2px 40px rgba(119, 0, 255, 0.1);
 }
 
 .caption-container {
-  position: relative;
-  bottom: 0;
-  text-align: right;
-  margin-right: 150px;
-  margin-top: 10px;
-  z-index: 2;
-
+	position: relative;
+	bottom: 0;
+	text-align: right;
+	margin-right: 150px;
+	margin-top: 10px;
+	z-index: 2;
 }
 
 .caption {
-  color: rgb(255, 255, 255);
-  font-family: K2D;
+	color: rgb(255, 255, 255);
+	font-family: K2D;
 }

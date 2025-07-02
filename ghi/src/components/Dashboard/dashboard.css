@@ -1,51 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
 body {
-  background: #000000;
-  color: #000000;
-  font-family: "K2D";
-  /* text-align: center; */
+	background: #000000;
+	color: #000000;
+	font-family: 'K2D';
+	/* text-align: center; */
 }
 
 main {
-  max-width: 1400px;
-  margin: 100px;
-  background: black;
-  padding: 30px;
-  position: relative;
-  right: 0;
-  margin-left: 200px;
-  margin-right: 0;
+	max-width: 1400px;
+	margin: 100px;
+	background: black;
+	padding: 30px;
+	position: relative;
+	right: 0;
+	margin-left: 200px;
+	margin-right: 0;
 }
 
-input[name=css-tabs] {
-  display: none;
+input[name='css-tabs'] {
+	display: none;
 }
 
 a {
-  color: #ffffff;
+	color: #ffffff;
 }
 
 h1 {
-  font-family: "K2D";
+	font-family: 'K2D';
 }
 
 h3 {
-  font-family: "K2D";
+	font-family: 'K2D';
 }
 
 p {
-  font-family: "K2D";
+	font-family: 'K2D';
 }
 
 #tabs {
-  padding: 0;
-  width: 1200px;
-  margin-left: -30px;
-  background: #333333;
-  height: 40px;
-  border-bottom: 5px solid #ffffff;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+	padding: 0;
+	width: 1200px;
+	margin-left: -30px;
+	background: #333333;
+	height: 40px;
+	border-bottom: 5px solid #ffffff;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* #tabs::before {
@@ -62,43 +62,45 @@ p {
 } */
 
 #tabs::after {
-  content: "";
-  display: block;
-  position: absolute;
-  height: 100%;
-  width: 200px;
-  background: #000000;
-  transition: transform 300ms ease;
+	content: '';
+	display: block;
+	position: absolute;
+	height: 100%;
+	width: 200px;
+	background: #000000;
+	transition: transform 300ms ease;
 }
 
-
 #tabs label {
-  position: relative;
-  z-index: 100;
-  display: block;
-  float: left;
-  font-size: 20px;
-  text-transform: uppercase;
-  text-align: center;
-  width: 200px;
-  height: 40px;
-  cursor: pointer;
-  font-family: "K2D";
+	position: relative;
+	z-index: 100;
+	display: block;
+	float: left;
+	font-size: 20px;
+	text-transform: uppercase;
+	text-align: center;
+	width: 200px;
+	height: 40px;
+	cursor: pointer;
+	font-family: 'K2D';
 }
 
 #tabs label::before {
-  content: "";
-  display: block;
-  height: 0px;
-  width: 30px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  filter: invert(40%);
-  margin: 5px auto;
+	content: '';
+	display: block;
+	height: 0px;
+	width: 30px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	filter: invert(40%);
+	margin: 5px auto;
 }
 
-#radio1:checked ~ #tabs #tab1::before, #radio2:checked ~ #tabs #tab2::before, #radio3:checked ~ #tabs #tab3::before, #radio4:checked ~ #tabs #tab4::before {
+#radio1:checked ~ #tabs #tab1::before,
+#radio2:checked ~ #tabs #tab2::before,
+#radio3:checked ~ #tabs #tab3::before,
+#radio4:checked ~ #tabs #tab4::before {
 	filter: invert(100%);
 }
 #radio1:checked ~ #tabs::after {
@@ -122,10 +124,10 @@ p {
 #content {
 	position: relative;
 	height: 1200px;
-  background-color: black;
+	background-color: black;
 }
 #content::before {
-	content: "";
+	content: '';
 	display: block;
 	position: absolute;
 	width: 0;
@@ -135,7 +137,7 @@ p {
 	border-bottom: 8px solid transparent;
 }
 #content::after {
-	content: "";
+	content: '';
 	display: block;
 	position: absolute;
 	width: 0;
@@ -145,11 +147,13 @@ p {
 	border-bottom: 8px solid transparent;
 }
 #content section {
-  position: absolute;
-  transform: translateY(10px);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 500ms, opacity 500ms;
+	position: absolute;
+	transform: translateY(10px);
+	opacity: 0;
+	pointer-events: none;
+	transition:
+		transform 500ms,
+		opacity 500ms;
 }
 
 #radio1:checked ~ #content #content1,
@@ -158,7 +162,7 @@ p {
 #radio4:checked ~ #content #content4,
 #radio5:checked ~ #content #content5,
 #radio6:checked ~ #content #content6 {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: auto;
+	transform: translateY(0);
+	opacity: 1;
+	pointer-events: auto;
 }

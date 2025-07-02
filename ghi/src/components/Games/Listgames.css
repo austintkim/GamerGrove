@@ -1,71 +1,60 @@
-
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
-
 .lgamesbody {
-    background-color: rgb(0, 0, 0);
-    font-family: "K2D";
-    margin-top: 0;
+	background-color: rgb(0, 0, 0);
+	font-family: 'K2D';
+	margin-top: 0;
 }
 
 .allgamesbody {
-    margin-left: 225px;
-    margin-top: 150px;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: rgb(0, 0, 0);
+	margin-left: 225px;
+	margin-top: 150px;
+	display: flex;
+	flex-wrap: wrap;
+	background-color: rgb(0, 0, 0);
 }
 
 .allgamesbody > * {
-    flex: 1 1 calc(20% - 25px);
+	flex: 1 1 calc(20% - 25px);
 }
 
-
-
 .titlegames {
-    color: rgb(255, 255, 255);
-    margin-left: 200px;
-    margin-top: 120px;
-    margin-bottom: -180px;
-    background-color: #0000003b;
-    padding-left: 10px;
-
-
+	color: rgb(255, 255, 255);
+	margin-left: 200px;
+	margin-top: 120px;
+	margin-bottom: -180px;
+	background-color: #0000003b;
+	padding-left: 10px;
 }
 
 .text-titlegames {
-    color: green;
-    margin-top: 100px;
-    margin-left: 200px;
-
+	color: green;
+	margin-top: 100px;
+	margin-left: 200px;
 }
 
 .lgamesh2 {
-
-    margin-top: -30px;
-    text-align: right;
-    position: relative;
+	margin-top: -30px;
+	text-align: right;
+	position: relative;
 }
 
 .grow {
-  background-color: #000000;
-  padding-bottom: 1000px;
-
-
+	background-color: #000000;
+	padding-bottom: 1000px;
 }
 
 .grow__posters {
-  display: flex;
+	display: flex;
 
-  padding: 0px;
-  margin-left: -75px;
-  margin-right: 10px;
-  gap: 50px;
-  margin-top: 1dvi;
-
+	padding: 0px;
+	margin-left: -75px;
+	margin-right: 10px;
+	gap: 50px;
+	margin-top: 1dvi;
 }
 
 html {
-    background-image: none !important;
-    background: #000000 !important;
+	background-image: none !important;
+	background: #000000 !important;
 }

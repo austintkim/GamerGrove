@@ -1,145 +1,129 @@
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
-
 .largercard {
-    background-color: #643665;
-    width: 800px;
-    height: auto;
-    border: 1px solid black;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    margin-top: 25px;
+	background-color: #643665;
+	width: 800px;
+	height: auto;
+	border: 1px solid black;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	margin: 10px;
+	margin-top: 25px;
 }
 
 .lurcard-content {
-    display: flex;
-    justify-content: flex-end;
+	display: flex;
+	justify-content: flex-end;
 }
 
-
-
 .lurcard-photo img {
-    background-color: transparent;
-    width: 125px;
-    height: 125px;
-    border-radius: 50%;
-    position: fixed;
-    margin: 10px;
-    margin-bottom: 20px;
-    margin-left: 25px;
-    flex: 1;
-    overflow: hidden;
-
-
+	background-color: transparent;
+	width: 125px;
+	height: 125px;
+	border-radius: 50%;
+	position: fixed;
+	margin: 10px;
+	margin-bottom: 20px;
+	margin-left: 25px;
+	flex: 1;
+	overflow: hidden;
 }
 
 .fixed-element {
-    position: fixed;
-    top: 50px;
-    left: 20px;
+	position: fixed;
+	top: 50px;
+	left: 20px;
 }
 
 .lurcard-details {
-    flex: 2;
-    padding: 0px;
-    color: rgb(255, 255, 255);
-    font-family: 'K2D';
-    font-size: 18px;
-    text-align: center;
-    margin-top: 10px;
-    margin-left: 100px;
-    margin-right: -50px;
-    position: relative;
-
-
+	flex: 2;
+	padding: 0px;
+	color: rgb(255, 255, 255);
+	font-family: 'K2D';
+	font-size: 18px;
+	text-align: center;
+	margin-top: 10px;
+	margin-left: 100px;
+	margin-right: -50px;
+	position: relative;
 }
 
 .lurcard-title {
-    font-size: 30px;
-    margin: 0;
-    color: rgb(255, 255, 255);
-    text-align: center;
-    margin-top: 10px;
-    font-family: 'K2D';
-
+	font-size: 30px;
+	margin: 0;
+	color: rgb(255, 255, 255);
+	text-align: center;
+	margin-top: 10px;
+	font-family: 'K2D';
 }
 
 .lurcard-date {
-    font-size: 18px;
-    margin: 0;
-    color: rgb(0, 0, 0);
-    text-align: right;
-    margin-top: -25px;
-    margin-right: 45px;
-    font-family: 'K2D';
-    color: black;
-
+	font-size: 18px;
+	margin: 0;
+	color: rgb(0, 0, 0);
+	text-align: right;
+	margin-top: -25px;
+	margin-right: 45px;
+	font-family: 'K2D';
+	color: black;
 }
 .lurcard-edit-delete {
-    font-size: 18px;
-    margin: 0;
-    color: rgb(0, 0, 0);
-    text-align: left;
-    margin-top: -25px;
-    margin-left: 40px;
-    font-family: 'K2D';
-    color: black;
-
-
+	font-size: 18px;
+	margin: 0;
+	color: rgb(0, 0, 0);
+	text-align: left;
+	margin-top: -25px;
+	margin-left: 40px;
+	font-family: 'K2D';
+	color: black;
 }
 
 .divthumbs {
-    margin-left: 10px;
-    position: relative;
+	margin-left: 10px;
+	position: relative;
 }
 
 .lurline {
-    width: 90%;
-    height: 3px;
-    margin-left: 40px;
+	width: 90%;
+	height: 3px;
+	margin-left: 40px;
 
-    background: rgb(138, 138, 138);
-
+	background: rgb(138, 138, 138);
 }
 
 .thumb-up {
-  width: 25px;
-  height: 25px;
-  margin: auto;
-  padding: 3px;
-
-
-
+	width: 25px;
+	height: 25px;
+	margin: auto;
+	padding: 3px;
 }
 
 .thumbs-down {
-  width: 25px;
-  height: 25px;
-  margin: auto;
-  padding: 3px;
+	width: 25px;
+	height: 25px;
+	margin: auto;
+	padding: 3px;
 }
 
 .down-btn {
-    margin-left: 5px;
+	margin-left: 5px;
 }
 
 .lurp2 {
-    text-align: right;
-    margin-right: 88px;
-    margin-bottom: 20px;
-    margin-top: -90;
+	text-align: right;
+	margin-right: 88px;
+	margin-bottom: 20px;
+	margin-top: -90;
 }
 
 .lurp {
-    text-align: right;
-    margin-right: 88px;
-    position: relative;
+	text-align: right;
+	margin-right: 88px;
+	position: relative;
 }
 
 .divthumbsnouser {
-    margin-left: 10px;
-    position: relative;
-
+	margin-left: 10px;
+	position: relative;
 }

@@ -1,96 +1,95 @@
 .side-menu {
-  height: 100%;
-  position: fixed;
-  top: 100px;
-  left: 0;
-  background-color: #000000;
-  color: white;
-  padding: 7px;
-  width: 190px;
-  z-index: 1;
-  overflow-y: auto;
-  transition: width 0.5s ease-in-out;
-  border-right: #bbb 2px;
+	height: 100%;
+	position: fixed;
+	top: 100px;
+	left: 0;
+	background-color: #000000;
+	color: white;
+	padding: 7px;
+	width: 190px;
+	z-index: 1;
+	overflow-y: auto;
+	transition: width 0.5s ease-in-out;
+	border-right: #bbb 2px;
 
-  @media (max-width: 68px) {
-    width: 100%;
-    padding: 10px;
-  }
+	@media (max-width: 68px) {
+		width: 100%;
+		padding: 10px;
+	}
 }
 
 .side-menu ul {
-  list-style: none;
-  padding: 0;
-  font-family: K2D;
+	list-style: none;
+	padding: 0;
+	font-family: K2D;
 }
 
 .side-menu p {
-  font-size: 17px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: blueviolet
+	font-size: 17px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: blueviolet;
 }
 
 .side-menu li {
-  margin: 5px 0;
-  padding: 0px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 14px;
-  color: white;
-  font-family: K2D;
+	margin: 5px 0;
+	padding: 0px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	font-size: 14px;
+	color: white;
+	font-family: K2D;
 }
 
 .linkside {
-  margin: 5px 0;
-  padding: 0px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 14px;
-  color: white;
-  font-family: K2D;
-
+	margin: 5px 0;
+	padding: 0px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	font-size: 14px;
+	color: white;
+	font-family: K2D;
 }
 
 .side-menu li:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+	background-color: rgba(255, 255, 255, 0.1);
 }
 
 hr.solid {
-    border-top: 2px solid #bbb;
-    border-radius: 7px 7px 7px 7px;
-    width: 125px;
-  }
+	border-top: 2px solid #bbb;
+	border-radius: 7px 7px 7px 7px;
+	width: 125px;
+}
 
 hr.dotted {
-    border-top: 2px dotted #bbb;
-    border-radius: 7px 7px 7px 7px;
-    width: 125px;
-  }
+	border-top: 2px dotted #bbb;
+	border-radius: 7px 7px 7px 7px;
+	width: 125px;
+}
 
-
-.all-games {margin: 5px 0;
-  padding: 3px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.all-games {
+	margin: 5px 0;
+	padding: 3px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
 }
 
 .all-games p:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+	background-color: rgba(255, 255, 255, 0.1);
 }
 
 .space {
-  margin-top: 2px;
+	margin-top: 2px;
 }
 
 .home {
-    background-clip: text;
-    color: blueviolet;
-    background-color: black;
-    background-size: 60% 100%;
-    z-index: 1;
+	background-clip: text;
+	color: blueviolet;
+	background-color: black;
+	background-size: 60% 100%;
+	z-index: 1;
 }
 
 .small-space {
-            margin-bottom: 10px;
-        }
+	margin-bottom: 10px;
+}

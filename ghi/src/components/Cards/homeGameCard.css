@@ -1,123 +1,114 @@
-
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
+.hgcard-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	gap: 15px;
+}
 
-        .hgcard-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            gap: 15px;
+.hgcard {
+	background-color: #353536;
+	margin: 0px;
+	padding: 15px;
+	width: 225px;
+	min-width: 200px;
+	height: 320px;
+	transition-duration: 2s;
+	border-radius: 20px;
+	margin-top: 50px;
+}
 
-            }
+.hgcard:hover {
+	transition-duration: 1s;
 
-        .hgcard {
-            background-color: #353536;
-            margin: 0px;
-            padding: 15px;
-            width: 225px;
-            min-width: 200px;
-            height: 320px;
-            transition-duration: 2s;
-            border-radius: 20px;
-            margin-top: 50px;
+	box-shadow:
+		rgba(245, 20, 20, 0.425) 0px 50px 100px -20px,
+		rgba(255, 255, 255, 0.671) 0px 30px 60px -30px,
+		rgba(214, 214, 214, 0.54) 0px -2px 6px 0px inset;
+}
 
-        }
+.hgcard-img {
+	background-color: black;
+	width: 100%;
+	height: 120px;
+	border-radius: 20px 20px 0px 0px;
+	box-shadow: 0px 25px 35px black;
+	margin-bottom: -50px;
+}
 
-        .hgcard:hover {
-            transition-duration: 1s;
+.hgcontent-capsules {
+	margin-top: -7px;
+	display: flex;
+	gap: 5px;
+}
 
-            box-shadow: rgba(245, 20, 20, 0.425) 0px 50px 100px -20px, rgba(255, 255, 255, 0.671) 0px 30px 60px -30px, rgba(214, 214, 214, 0.54) 0px -2px 6px 0px inset;
+.gcontent-capsules img {
+	margin-right: 2px;
+}
 
+.hgcontent-capsules span:hover {
+	color: black;
+	border: px solid gray;
+	box-shadow:
+		rgba(28, 28, 28, 0.3) 0px 5px 10px,
+		rgba(59, 59, 59, 0.22) 0px 6px 3px;
+	transition-duration: 0.7s;
+}
 
-        }
+.hgcontent-head h2 {
+	margin: 20px 0px;
+	font-size: 16px;
+	font-family: 'K2D', sans-serif;
+	color: rgb(255, 255, 255);
+	font-weight: bold;
+	top: 0px;
+	left: 12px;
+	position: relative;
+	background-color: rgba(0, 0, 0, 0.566);
+	border-radius: 10px;
+	padding: 2px;
+}
 
-        .hgcard-img {
-            background-color: black;
-            width: 100%;
-            height: 120px;
-            border-radius: 20px 20px 0px 0px;
-            box-shadow: 0px 25px 35px black;
-            margin-bottom: -50px;
+.hgcontent-body p {
+	font-family: sans-serif;
+	font-size: 10px;
+	color: white;
+	text-align: center;
+	margin-top: 10px;
+}
 
-        }
+.hgbutton {
+	text-align: right;
+	color: black;
+	margin-top: auto;
+}
 
-        .hgcontent-capsules {
-            margin-top: -7px;
-            display: flex;
-            gap: 5px;
-            }
+.hgbutton button {
+	padding: 5px 0px;
+	font-family: 'K2D';
+	font-size: 12px;
+	border: none;
+	border-radius: 10px;
+	width: 50%;
+	color: white;
+	background-color: black;
+	text-align: right;
+	padding-right: 10px;
+	box-shadow: 0px 8px 10px black;
+}
 
-            .gcontent-capsules img {
-            margin-right: 2px;
-            }
+.hgbutton button:hover {
+	background-color: grey;
+	transition: 0.5s;
+}
 
-
-        .hgcontent-capsules span:hover {
-            color: black;
-            border: px solid gray;
-            box-shadow: rgba(28, 28, 28, 0.3) 0px 5px 10px, rgba(59, 59, 59, 0.22) 0px 6px 3px;
-            transition-duration: 0.7s;
-
-
-        }
-
-        .hgcontent-head h2 {
-            margin: 20px 0px;
-            font-size: 16px;
-            font-family: 'K2D', sans-serif;
-            color: rgb(255, 255, 255);
-            font-weight: bold;
-            top: 0px;
-            left: 12px;
-            position: relative;
-            background-color: rgba(0, 0, 0, 0.566);
-            border-radius: 10px;
-            padding: 2px;
-        }
-
-        .hgcontent-body p {
-
-            font-family: sans-serif;
-            font-size: 10px;
-            color: white;
-            text-align: center;
-            margin-top: 10px;
-
-        }
-
-        .hgbutton {
-            text-align: right;
-            color: black;
-            margin-top: auto;
-
-        }
-
-        .hgbutton button {
-            padding: 5px 0px;
-            font-family: 'K2D';
-            font-size: 12px;
-            border: none;
-            border-radius: 10px;
-            width: 50%;
-            color: white;
-            background-color: black;
-            text-align: right;
-            padding-right: 10px;
-            box-shadow: 0px 8px 10px black;
-        }
-
-        .hgbutton button:hover {
-            background-color: grey;
-            transition: 0.5s;
-        }
-
-        .menu-wrapper {
-            --__reactRadialMenu__menu-bgColor: hsla(272, 62%, 61%, 0.852);
-            --__reactRadialMenu__separator-color: hsl(0, 0%, 100%);
-            --__reactRadialMenu__item-color: rgb(0, 0, 0);
-            --__reactRadialMenu__activeItem-color: rgb(0, 0, 0);
-            --__reactRadialMenu__activeItem-bgColor: rgba(90, 47, 111, 0.603);
-            --__reactRadialMenu__arrow-color: hsla(0,0%,100%,1);
-            --__reactRadialMenu__activeArrow-color: hsla(0,0%,75%,1);
-
-        }
+.menu-wrapper {
+	--__reactRadialMenu__menu-bgColor: hsla(272, 62%, 61%, 0.852);
+	--__reactRadialMenu__separator-color: hsl(0, 0%, 100%);
+	--__reactRadialMenu__item-color: rgb(0, 0, 0);
+	--__reactRadialMenu__activeItem-color: rgb(0, 0, 0);
+	--__reactRadialMenu__activeItem-bgColor: rgba(90, 47, 111, 0.603);
+	--__reactRadialMenu__arrow-color: hsla(0, 0%, 100%, 1);
+	--__reactRadialMenu__activeArrow-color: hsla(0, 0%, 75%, 1);
+}

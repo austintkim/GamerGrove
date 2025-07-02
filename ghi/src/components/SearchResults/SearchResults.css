@@ -1,139 +1,131 @@
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
-        .sallgamesbody {
-            margin-left: 225px;
-            margin-top: 150px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            gap: 15px;
+.sallgamesbody {
+	margin-left: 225px;
+	margin-top: 150px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	gap: 15px;
+}
 
+.shgcard {
+	background-color: #353536;
+	margin: 10px;
+	padding: 15px;
+	width: 230px;
+	height: 320px;
+	transition-duration: 2s;
+	border-radius: 20px;
+	box-sizing: border-box;
+}
 
-        }
+.shgcard:hover {
+	transition-duration: 1s;
+	box-shadow:
+		rgba(245, 20, 20, 0.425) 0px 50px 100px -20px,
+		rgba(255, 255, 255, 0.671) 0px 30px 60px -30px,
+		rgba(214, 214, 214, 0.54) 0px -2px 6px 0px inset;
+}
 
-        .shgcard {
-            background-color: #353536;
-            margin: 10px;
-            padding: 15px;
-            width: 230px;
-            height: 320px;
-            transition-duration: 2s;
-            border-radius: 20px;
-            box-sizing: border-box;
-        }
+.shgcard:hover {
+	transition-duration: 1s;
 
-        .shgcard:hover {
-            transition-duration: 1s;
-            box-shadow: rgba(245, 20, 20, 0.425) 0px 50px 100px -20px, rgba(255, 255, 255, 0.671) 0px 30px 60px -30px, rgba(214, 214, 214, 0.54) 0px -2px 6px 0px inset;
-        }
+	box-shadow:
+		rgba(245, 20, 20, 0.425) 0px 50px 100px -20px,
+		rgba(255, 255, 255, 0.671) 0px 30px 60px -30px,
+		rgba(214, 214, 214, 0.54) 0px -2px 6px 0px inset;
+}
 
+.shgcard-img {
+	background-color: black;
+	width: 200px;
+	height: 120px;
+	border-radius: 20px 20px 0px 0px;
+	box-shadow: 0px 25px 35px black;
+	margin-bottom: -50px;
+}
 
+.shgcontent-capsules {
+	margin-top: -7px;
+	gap: 5px;
+}
 
-        .shgcard:hover {
-            transition-duration: 1s;
+.gcontent-capsules img {
+	margin-right: 2px;
+}
 
-            box-shadow: rgba(245, 20, 20, 0.425) 0px 50px 100px -20px, rgba(255, 255, 255, 0.671) 0px 30px 60px -30px, rgba(214, 214, 214, 0.54) 0px -2px 6px 0px inset;
+.shgcontent-capsules span:hover {
+	color: black;
+	border: px solid gray;
+	box-shadow:
+		rgba(28, 28, 28, 0.3) 0px 5px 10px,
+		rgba(59, 59, 59, 0.22) 0px 6px 3px;
+	transition-duration: 0.7s;
+}
 
+.shgcontent-head h2 {
+	margin: 20px 0px;
+	font-size: 16px;
+	font-family: 'K2D', sans-serif;
+	color: rgb(255, 255, 255);
+	top: 0px;
+	left: 12px;
+	position: relative;
+	background-color: rgba(0, 0, 0, 0.566);
+	border-radius: 10px;
+	padding: 2px;
+}
 
-        }
+.shghead {
+	margin: 20px 0px;
+	margin-bottom: 40px;
+	font-size: 45px;
+	font-family: 'K2D';
+	color: rgb(255, 255, 255);
+	top: 0px;
+	position: relative;
+	background-color: rgba(0, 0, 0, 0.566);
+	border-radius: 10px;
+	padding: 2px;
+}
 
-        .shgcard-img {
-            background-color: black;
-            width: 200px;
-            height: 120px;
-            border-radius: 20px 20px 0px 0px;
-            box-shadow: 0px 25px 35px black;
-            margin-bottom: -50px;
+.shgcontent-body p {
+	font-family: sans-serif;
+	font-size: 10px;
+	color: white;
+	text-align: center;
+	margin-top: 10px;
+	content: scroll;
+	height: 50px;
+	overflow-y: hidden;
+}
 
-        }
+.shgbutton {
+	margin: 10px 0px;
+	text-align: right;
+	color: black;
+}
 
-        .shgcontent-capsules {
-            margin-top: -7px;
-            gap: 5px;
-            }
+.shgbutton button {
+	padding: 5px 0px;
+	font-family: 'K2D';
+	font-size: 12px;
+	border: none;
+	border-radius: 10px;
+	width: 50%;
+	color: white;
+	background-color: black;
+	text-align: right;
+	padding-right: 10px;
+	box-shadow: 0px 8px 10px black;
+}
 
-            .gcontent-capsules img {
-            margin-right: 2px;
-            }
-
-
-
-        .shgcontent-capsules span:hover {
-            color: black;
-            border: px solid gray;
-            box-shadow: rgba(28, 28, 28, 0.3) 0px 5px 10px, rgba(59, 59, 59, 0.22) 0px 6px 3px;
-            transition-duration: 0.7s;
-
-
-        }
-
-        .shgcontent-head h2 {
-            margin: 20px 0px;
-            font-size: 16px;
-            font-family: 'K2D', sans-serif;
-            color: rgb(255, 255, 255);
-            top: 0px;
-            left: 12px;
-            position: relative;
-            background-color: rgba(0, 0, 0, 0.566);
-            border-radius: 10px;
-            padding: 2px;
-        }
-
-        .shghead {
-            margin: 20px 0px;
-            margin-bottom: 40px;
-            font-size: 45px;
-            font-family: 'K2D';
-            color: rgb(255, 255, 255);
-            top: 0px;
-            position: relative;
-            background-color: rgba(0, 0, 0, 0.566);
-            border-radius: 10px;
-            padding: 2px;
-
-        }
-
-        .shgcontent-body p {
-
-            font-family: sans-serif;
-            font-size: 10px;
-            color: white;
-            text-align: center;
-            margin-top: 10px;
-            content: scroll;
-            height: 50px;
-            overflow-y: hidden;
-
-        }
-
-        .shgbutton {
-            margin: 10px 0px;
-            text-align: right;
-            color: black;
-
-        }
-
-        .shgbutton button {
-            padding: 5px 0px;
-            font-family: 'K2D';
-            font-size: 12px;
-            border: none;
-            border-radius: 10px;
-            width: 50%;
-            color: white;
-            background-color: black;
-            text-align: right;
-            padding-right: 10px;
-            box-shadow: 0px 8px 10px black;
-        }
-
-
-        .shgcard-img {
-            background-color: black;
-            width: 200px;
-            height: 120px;
-            border-radius: 20px 20px 0px 0px;
-            box-shadow: 0px 25px 35px black;
-            margin-bottom: -50px;
-        }
+.shgcard-img {
+	background-color: black;
+	width: 200px;
+	height: 120px;
+	border-radius: 20px 20px 0px 0px;
+	box-shadow: 0px 25px 35px black;
+	margin-bottom: -50px;
+}

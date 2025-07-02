@@ -6,8 +6,8 @@
 }
 :root {
 	--hue: 223;
-	--bg: hsl(var(--hue),90%,95%);
-	--fg: hsl(var(--hue),90%,5%);
+	--bg: hsl(var(--hue), 90%, 95%);
+	--fg: hsl(var(--hue), 90%, 5%);
 	font-size: calc(16px + (24 - 16) * (100vw - 320px) / (1280 - 320));
 }
 body {
@@ -28,7 +28,7 @@ main {
 	height: 8em;
 }
 .sp__ring {
-	stroke: hsla(var(--hue),90%,5%,0.1);
+	stroke: hsla(var(--hue), 90%, 5%, 0.1);
 	transition: stroke 0.3s;
 }
 .sp__worm1,
@@ -52,29 +52,27 @@ main {
 	stroke-dashoffset: 175.92;
 }
 
-
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: hsl(var(--hue),90%,5%);
-		--fg: hsl(var(--hue),90%,95%);
+		--bg: hsl(var(--hue), 90%, 5%);
+		--fg: hsl(var(--hue), 90%, 95%);
 	}
 	.sp__ring {
-		stroke: hsla(var(--hue),90%,95%,0.1);
+		stroke: hsla(var(--hue), 90%, 95%, 0.1);
 	}
 }
-
 
 @keyframes worm1 {
 	from,
 	to {
-		stroke-dashoffset: 0
+		stroke-dashoffset: 0;
 	}
 	12.5% {
 		animation-timing-function: ease-out;
 		stroke-dashoffset: -175.91;
 	}
 	25% {
-		animation-timing-function: cubic-bezier(0,0,0.43,1);
+		animation-timing-function: cubic-bezier(0, 0, 0.43, 1);
 		stroke-dashoffset: -307.88;
 	}
 	50% {
@@ -86,7 +84,7 @@ main {
 		stroke-dashoffset: -307.88;
 	}
 	75% {
-		animation-timing-function: cubic-bezier(0,0,0.43,1);
+		animation-timing-function: cubic-bezier(0, 0, 0.43, 1);
 		stroke-dashoffset: -175.91;
 	}
 }
@@ -95,11 +93,11 @@ main {
 	12.5%,
 	75%,
 	to {
-		transform: rotate(0) translate(-42px,0);
+		transform: rotate(0) translate(-42px, 0);
 	}
 	25%,
 	62.5% {
-		transform: rotate(0.5turn) translate(-42px,0);
+		transform: rotate(0.5turn) translate(-42px, 0);
 	}
 }
 @keyframes worm2-1 {
@@ -108,7 +106,7 @@ main {
 		transform: rotate(0);
 	}
 	12.5% {
-		animation-timing-function: cubic-bezier(0,0,0.42,1);
+		animation-timing-function: cubic-bezier(0, 0, 0.42, 1);
 		stroke-dashoffset: 0;
 		transform: rotate(0);
 	}
@@ -123,7 +121,7 @@ main {
 		transform: rotate(1.5turn);
 	}
 	62.5% {
-		animation-timing-function: cubic-bezier(0,0,0.42,1);
+		animation-timing-function: cubic-bezier(0, 0, 0.42, 1);
 		stroke-dashoffset: 0;
 		transform: rotate(1.5turn);
 	}

@@ -1,101 +1,94 @@
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
 body {
-    background: black;
+	background: black;
 }
 
 .side-by-side {
-            display: flex;
-            justify-content: flex-end;
-            position: relative;
-            top: 0px;
-            padding-right: 40px;
-        }
+	display: flex;
+	justify-content: flex-end;
+	position: relative;
+	top: 0px;
+	padding-right: 40px;
+}
 .link-container {
-            margin-right: 10px;
-            margin-left: 10px;
-
-        }
+	margin-right: 10px;
+	margin-left: 10px;
+}
 .side-by-side a {
-            color: white !important;
-        }
+	color: white !important;
+}
 
 .screenshotscard {
-    background-color: rgba(0, 0, 0, 0.576);
-    width: 665px;
-    height: 380px;
-    border: 1px solid black;
-    border-radius: 25px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-
+	background-color: rgba(0, 0, 0, 0.576);
+	width: 665px;
+	height: 380px;
+	border: 1px solid black;
+	border-radius: 25px;
+	overflow: hidden;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	margin: 10px;
 }
 
 .scard-content {
-    display: flex;
+	display: flex;
 }
 
 .scard-photo {
-    flex: 1;
-    overflow: hidden;
+	flex: 1;
+	overflow: hidden;
 }
 
 .scard-Herophoto img {
-    background-color: black;
-    width: 400px;
-    height: 270px;
-    border-radius: 25px 25px 25px 25px;
-    position: relative;
-    margin-top: 30px;
-    margin-bottom: 0px;
-    margin-left: 23px;
-    object-fit: cover;
-    border: 1px solid black;
+	background-color: black;
+	width: 400px;
+	height: 270px;
+	border-radius: 25px 25px 25px 25px;
+	position: relative;
+	margin-top: 30px;
+	margin-bottom: 0px;
+	margin-left: 23px;
+	object-fit: cover;
+	border: 1px solid black;
 }
-
 
 .scard-SmallphotoTop img {
-    background-color: black;
-    width: 200px;
-    height: 125px;
-    border-radius: 25px 25px 25px 25px;
-    position: relative;
-    margin-top: 30px;
-    margin-bottom: 10px;
-    margin-left: 21px;
-    object-fit: cover;
-    border: 1px solid black;
-
+	background-color: black;
+	width: 200px;
+	height: 125px;
+	border-radius: 25px 25px 25px 25px;
+	position: relative;
+	margin-top: 30px;
+	margin-bottom: 10px;
+	margin-left: 21px;
+	object-fit: cover;
+	border: 1px solid black;
 }
 .scard-SmallphotoBottom img {
-    background-color: black;
-    width: 200px;
-    height: 125px;
-    border-radius: 25px 25px 25px 25px;
-    position: relative;
-    margin-top: 170px;
-    margin-bottom: 0px;
-    margin-left: -200px;
-    object-fit: cover;
-    border: 1px solid black;
+	background-color: black;
+	width: 200px;
+	height: 125px;
+	border-radius: 25px 25px 25px 25px;
+	position: relative;
+	margin-top: 170px;
+	margin-bottom: 0px;
+	margin-left: -200px;
+	object-fit: cover;
+	border: 1px solid black;
 }
 
-
 .scard-title {
-    font-size: 20px;
-    margin: 0;
-    padding-left: 10px;
-    color: white;
-    margin-top: 20px;
-
-
+	font-size: 20px;
+	margin: 0;
+	padding-left: 10px;
+	color: white;
+	margin-top: 20px;
 }
 
 hr.ssolid {
-    border-top: 2px solid #bbb;
-    border-radius: 7px 7px 7px 7px;
-    width: 500px;
-    margin-left: -10px;
-    margin-top: 3px;
-  }
+	border-top: 2px solid #bbb;
+	border-radius: 7px 7px 7px 7px;
+	width: 500px;
+	margin-left: -10px;
+	margin-top: 3px;
+}

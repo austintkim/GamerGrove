@@ -1,111 +1,111 @@
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
 .urcard {
-    background-color: #2e2e2e;
-    width: 600px;
-    height: auto;
-    border: 1px solid black;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    margin-top: 25px;
-    display: flex;
-    flex-direction: column;
+	background-color: #2e2e2e;
+	width: 600px;
+	height: auto;
+	border: 1px solid black;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	margin: 10px;
+	margin-top: 25px;
+	display: flex;
+	flex-direction: column;
 }
 
 .urcard-content {
-    display: flex;
-    flex-direction: column;
-    padding-left: 10px;
-    padding-right: 10px;
+	display: flex;
+	flex-direction: column;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 .urcard-details {
-    flex: 2;
-    color: white;
-    text-align: right;
+	flex: 2;
+	color: white;
+	text-align: right;
 }
 
 .urcard-title {
-    flex: 2;
-    font-size: 20px;
-    margin: 0;
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: -30px;
-    font-family: 'K2D';
-    color: white;
+	flex: 2;
+	font-size: 20px;
+	margin: 0;
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: -30px;
+	font-family: 'K2D';
+	color: white;
 }
 
 .urcard-date {
-    flex: 3;
-    font-size: 18px;
-    text-align: right;
-    font-family: 'K2D';
-    color: white;
+	flex: 3;
+	font-size: 18px;
+	text-align: right;
+	font-family: 'K2D';
+	color: white;
 }
 
 .urcard-edit-delete {
-    flex: 1;
-    font-size: 18px;
-    font-family: 'K2D';
-    color: white;
-    margin-left: 6px;
+	flex: 1;
+	font-size: 18px;
+	font-family: 'K2D';
+	color: white;
+	margin-left: 6px;
 }
 
 .urline {
-    width: 90%;
-    margin-left: 30px;
-    height: 1px;
-    margin-bottom: 15px;
-    background: rgb(138, 138, 138);
+	width: 90%;
+	margin-left: 30px;
+	height: 1px;
+	margin-bottom: 15px;
+	background: rgb(138, 138, 138);
 }
 
 .urcard-content p {
-    margin: 0;
-    margin-bottom: 10px;
-    display: flex;
-    color: white;
+	margin: 0;
+	margin-bottom: 10px;
+	display: flex;
+	color: white;
 }
 
 .urcard-content .urcard-title {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .urcard-content .urcard-details {
-    margin-top: 10px;
+	margin-top: 10px;
 }
 
 .thumbs-up {
-    width: 25px;
-    height: 25px;
-    margin-right: 0px;
+	width: 25px;
+	height: 25px;
+	margin-right: 0px;
 }
 
 .thumbs-down {
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
+	width: 25px;
+	height: 25px;
+	margin-right: 10px;
 }
 
 .urp2 {
-    text-align: right;
-    margin-bottom: 10px;
+	text-align: right;
+	margin-bottom: 10px;
 }
 
 .urp {
-    text-align: right;
+	text-align: right;
 }
 
 .edit-form-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	z-index: 1000;
 }

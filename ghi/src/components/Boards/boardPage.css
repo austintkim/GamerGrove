@@ -1,104 +1,104 @@
 .boardbody {
-  width: 1000px;
+	width: 1000px;
 }
 
 .board-page-container {
-  position: center;
+	position: center;
 }
 
 .cover-photo-container {
-  position: relative;
-  overflow: hidden;
+	position: relative;
+	overflow: hidden;
 }
 
 .cover-photo {
-  width: 100%;
-  height: auto;
-  position: fixed;
-  margin-top: 100px;
+	width: 100%;
+	height: auto;
+	position: fixed;
+	margin-top: 100px;
 }
 
 .content-container {
-  position: absolute;
-  width: 85%;
-  top: 200px;
-  left: 200px;
+	position: absolute;
+	width: 85%;
+	top: 200px;
+	left: 200px;
 }
 
 .BoardPageTitle {
-  color: white;
-  font-size: 36px;
-  margin-bottom: 10px;
-  position: relative;
+	color: white;
+	font-size: 36px;
+	margin-bottom: 10px;
+	position: relative;
 }
 
 .BoardPageDescription {
-  color: white;
-  font-size: 20px;
-  margin-bottom: 10px;
-  margin-right: 20px;
-  text-align: right;
+	color: white;
+	font-size: 20px;
+	margin-bottom: 10px;
+	margin-right: 20px;
+	text-align: right;
 }
 
 .BoardPageDescription span {
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  padding: 5px;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 10px;
+	padding: 5px;
 }
 
 .BoardPageTitle span {
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  padding: 5px;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 10px;
+	padding: 5px;
 }
 
 .boardpagehr {
-  height: 3px;
-  background-color: black;
-  border: none;
-  margin: 10px 0;
-  width: 98%;
+	height: 3px;
+	background-color: black;
+	border: none;
+	margin: 10px 0;
+	width: 98%;
 }
 
 .deleteboard {
-  text-align: right;
-  font-family: K2D;
-  font-size: 18px;
-  color: white;
-  margin-right: 20px;
-  display: inline-block;
-  border: 2px solid #444;
-  padding: 6px;
-  border-radius: 0;
-  background-color: red;
-  text-decoration: none;
+	text-align: right;
+	font-family: K2D;
+	font-size: 18px;
+	color: white;
+	margin-right: 20px;
+	display: inline-block;
+	border: 2px solid #444;
+	padding: 6px;
+	border-radius: 0;
+	background-color: red;
+	text-decoration: none;
 }
 
 .deleteboard span {
-  background-color: transparent;
-  padding: 0;
+	background-color: transparent;
+	padding: 0;
 }
 
 .deleteboard:hover {
-  text-decoration: none;
-  color: white;
+	text-decoration: none;
+	color: white;
 }
 
 .updateboard {
-  text-align: right;
-  font-family: K2D;
-  font-size: 18px;
-  color: white;
-  margin-right: 20px;
-  display: inline-block;
-  border: 2px solid #444;
-  padding: 6px;
-  border-radius: 0;
-  background-color: green;
-  text-decoration: none;
+	text-align: right;
+	font-family: K2D;
+	font-size: 18px;
+	color: white;
+	margin-right: 20px;
+	display: inline-block;
+	border: 2px solid #444;
+	padding: 6px;
+	border-radius: 0;
+	background-color: green;
+	text-decoration: none;
 }
 
 .updateboard:hover {
-  text-decoration: none;
-  color: white;
+	text-decoration: none;
+	color: white;
 }

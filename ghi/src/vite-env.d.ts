@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
 
 interface ImportMeta {
-  env: Record<string, unknown>;
+	env: Record<string, unknown>;
 }

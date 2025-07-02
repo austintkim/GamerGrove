@@ -1,108 +1,99 @@
-
 @import url('https://fonts.googleapis.com/css2?family=K2D:wght@100&display=swap');
 
+.gcard-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	gap: 15px;
+}
 
-        .gcard-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            gap: 15px;
+.gcard {
+	background-color: #353536;
+	margin: 0px auto;
+	padding: 15px;
+	width: 330px;
+	height: auto;
+	transition-duration: 2s;
+	border-radius: 20px;
+	margin-top: 50px;
+}
 
-            }
+.gcard:hover {
+	transition-duration: 1s;
 
-        .gcard {
-            background-color: #353536;
-            margin: 0px auto;
-            padding: 15px;
-            width: 330px;
-            height: auto;
-            transition-duration: 2s;
-            border-radius: 20px;
-            margin-top: 50px;
+	box-shadow:
+		rgba(245, 20, 20, 0.425) 0px 50px 100px -20px,
+		rgba(255, 255, 255, 0.671) 0px 30px 60px -30px,
+		rgba(214, 214, 214, 0.54) 0px -2px 6px 0px inset;
+}
 
+.gcard-img {
+	background-color: black;
+	width: 300px;
+	height: 170px;
+	border-radius: 20px 20px 0px 0px;
+	box-shadow: 0px 25px 35px black;
+	margin-bottom: -50px;
+}
 
+.gcontent-capsules {
+	margin-top: 12px;
+	display: flex;
+	gap: 5px;
+}
 
-        }
+.gcontent-capsules img {
+	margin-right: 2px;
+}
 
-        .gcard:hover {
-            transition-duration: 1s;
+.gcontent-capsules span:hover {
+	color: black;
+	border: px solid gray;
+	box-shadow:
+		rgba(28, 28, 28, 0.3) 0px 5px 10px,
+		rgba(59, 59, 59, 0.22) 0px 6px 3px;
+	transition-duration: 0.7s;
+}
 
-            box-shadow: rgba(245, 20, 20, 0.425) 0px 50px 100px -20px, rgba(255, 255, 255, 0.671) 0px 30px 60px -30px, rgba(214, 214, 214, 0.54) 0px -2px 6px 0px inset;
+.gcontent-head h2 {
+	margin: 10px 0px;
+	font-size: 30px;
+	font-family: 'K2D', sans-serif;
+	color: white;
+	top: 0px;
+	left: 12px;
+	position: relative;
+}
 
+.gcontent-body p {
+	font-family: sans-serif;
+	font-size: 16px;
+	color: white;
+	text-align: center;
+	margin-top: 10px;
+}
 
-        }
+.gbutton {
+	margin: 10px 0px;
+	text-align: right;
+	color: black;
+}
 
-        .gcard-img {
-            background-color: black;
-            width: 300px;
-            height: 170px;
-            border-radius: 20px 20px 0px 0px;
-            box-shadow: 0px 25px 35px black;
-            margin-bottom: -50px;
+.gbutton button {
+	padding: 5px 0px;
+	font-family: 'K2D';
+	font-size: 20px;
+	border: none;
+	border-radius: 10px;
+	width: 60%;
+	color: white;
+	background-color: black;
+	text-align: right;
+	padding-right: 10px;
+	box-shadow: 0px 8px 10px black;
+}
 
-        }
-
-        .gcontent-capsules {
-            margin-top: 12px;
-            display: flex;
-            gap: 5px;
-            }
-
-            .gcontent-capsules img {
-            margin-right: 2px;
-            }
-
-        .gcontent-capsules span:hover {
-            color: black;
-            border: px solid gray;
-            box-shadow: rgba(28, 28, 28, 0.3) 0px 5px 10px, rgba(59, 59, 59, 0.22) 0px 6px 3px;
-            transition-duration: 0.7s;
-
-
-        }
-
-        .gcontent-head h2 {
-            margin: 10px 0px;
-            font-size: 30px;
-            font-family: 'K2D', sans-serif;
-            color: white;
-            top: 0px;
-            left: 12px;
-            position: relative;
-        }
-
-        .gcontent-body p {
-
-            font-family: sans-serif;
-            font-size: 16px;
-            color: white;
-            text-align: center;
-            margin-top: 10px;
-
-        }
-
-        .gbutton {
-            margin: 10px 0px;
-            text-align: right;
-            color: black;
-
-        }
-
-        .gbutton button {
-            padding: 5px 0px;
-            font-family: 'K2D';
-            font-size: 20px;
-            border: none;
-            border-radius: 10px;
-            width: 60%;
-            color: white;
-            background-color: black;
-            text-align: right;
-            padding-right: 10px;
-            box-shadow: 0px 8px 10px black;
-        }
-
-        .button button:hover {
-            background-color: grey;
-            transition: 0.5s;
-        }
+.button button:hover {
+	background-color: grey;
+	transition: 0.5s;
+}
