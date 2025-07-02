@@ -6,8 +6,10 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
-		"lint": "eslint ./ --report-unused-disable-directives --max-warnings 0",
-		"preview": "vite preview"
+		"lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+		"preview": "vite preview",
+		"verify:eslint": "echo 'ESLint version:' && eslint --version && node -e \"console.log('Config type:', require('eslint/package.json').type)\"",
+		"format": "prettier --write ."
 	},
 	"dependencies": {
 		"@galvanize-inc/jwtdown-for-react": "^0.2.2",
@@ -26,18 +28,22 @@
 		"slick-carousel": "^1.8.1"
 	},
 	"devDependencies": {
-		"@eslint/js": "^8.57.1",
 		"@types/node": "^20.10.7",
 		"@types/react": "^18.2.47",
 		"@types/react-dom": "^18.2.7",
 		"@vitejs/plugin-react-swc": "^3.3.2",
 		"esbuild": "^0.20.0",
-		"eslint": "^8.45.0",
-		"eslint-plugin-prettier": "^5.5.1",
-		"eslint-plugin-react": "^7.32.2",
-		"eslint-plugin-react-hooks": "^4.6.0",
-		"eslint-plugin-react-refresh": "^0.4.3",
-		"prettier": "^3.6.2",
+		"eslint": "^8.57.1",
+		"eslint-config-prettier": "^10.1.5",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-react": "^7.37.5",
+		"eslint-plugin-react-hooks": "^4.6.2",
+		"eslint-plugin-react-refresh": "^0.4.20",
+		"prettier": "^2.8.8",
 		"vite": "^5.1.1"
+	},
+	"resolutions": {
+		"react": "18.2.0",
+		"react-native": "0.72.7"
 	}
 }
