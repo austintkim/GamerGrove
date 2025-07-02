@@ -1,7 +1,7 @@
 import js from '@eslint/js';
-import globals from 'globals';
 import pluginReact from 'eslint-plugin-react';
 import pluginPrettier from 'eslint-plugin-prettier';
+import globals from 'globals';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
@@ -25,7 +25,6 @@ export default defineConfig([
 			...js.configs.recommended.rules,
 			...pluginReact.configs.flat.recommended.rules,
 			'prettier/prettier': 'error',
-			// add any rule overrides here
 		},
 	},
 ]);
