@@ -5,10 +5,6 @@ import pluginPrettier from 'eslint-plugin-prettier';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
-	js.configs.recommended, // base JS rules
-
-	pluginReact.configs.flat.recommended, // base React rules
-
 	{
 		files: ['**/*.{js,mjs,cjs,jsx}'],
 		languageOptions: {
@@ -22,11 +18,14 @@ export default defineConfig([
 			},
 		},
 		plugins: {
+			react: pluginReact,
 			prettier: pluginPrettier,
 		},
 		rules: {
+			...js.configs.recommended.rules,
+			...pluginReact.configs.flat.recommended.rules,
 			'prettier/prettier': 'error',
-			// any overrides go here
+			// add any rule overrides here
 		},
 	},
 ]);
