@@ -64,7 +64,6 @@ build-front-end-job:
   variables:
     VITE_RAWG_API_KEY: 0c4556270545498782c9a942f38cb48a
   script:
-    - cd ghi
     - npm install
     - npm run lint
     - VITE_API_HOST="https://gamergroveapi.com"  npm run build -- --base=/gamer-grove/
