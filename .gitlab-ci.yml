@@ -64,12 +64,12 @@ build-front-end-job:
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - ghi/node_modules/
+      - node_modules/
   before_script:
-    - cd ghi
     - npm ci
   script:
     - npm run lint
+    - cd ghi
     - VITE_API_HOST="https://gamergroveapi.com" npm run build -- --base=/gamer-grove/
   artifacts:
     paths:
