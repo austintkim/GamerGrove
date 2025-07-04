@@ -1,7 +1,9 @@
 {
     "type": "module",
     "scripts": {
-        "prepare": "git config core.hooksPath .husky"
+        "prepare": "git config core.hooksPath .husky",
+        "lint": "eslint ghi --report-unused-disable-directives --max-warnings 0",
+        "format": "prettier --write ghi"
     },
     "lint-staged": {
         "ghi/**/*.{js,jsx,ts,tsx}": [

@@ -5,11 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build",
-		"lint": "eslint . --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview",
-		"verify:eslint": "echo 'ESLint version:' && eslint --version && node -e \"console.log('Config type:', require('eslint/package.json').type)\"",
-		"format": "prettier --write ."
+		"verify:eslint": "echo 'ESLint version:' && eslint --version && node -e \"console.log('Config type:', require('eslint/package.json').type)\""
 	},
 	"dependencies": {
 		"@galvanize-inc/jwtdown-for-react": "^0.2.2",

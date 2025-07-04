@@ -1,14 +1,15 @@
 {
     "editor.formatOnPaste": true,
     "editor.formatOnType": true,
-    "python.formatting.provider": "black",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit",
-        "source.fixAll.eslint": "explicit"
+        "source.fixAll": true,
+        "source.fixAll.eslint": true
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "python.analysis.typeCheckingMode": "off",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 500,
+
     "eslint.validate": [
         "javascript",
         "javascriptreact",
@@ -18,9 +19,11 @@
         "jsonc",
         "yaml"
     ],
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 500,
 
+    // These are now pointing to root-level node_modules
+    "eslint.nodePath": "./node_modules",
     "prettier.prettierPath": "./node_modules/prettier",
-    "eslint.nodePath": "./node_modules"
+
+    // This ensures ESLint only runs for ghi files (and avoids backend if you have one)
+    "eslint.workingDirectories": ["./ghi"]
 }
