@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"preview": "vite preview",
-		"verify:eslint": "echo 'ESLint version:' && eslint --version && node -e \"console.log('Config type:', require('eslint/package.json').type)\""
+		"build": "vite build",
+		"preview": "vite preview"
 	},
 	"dependencies": {
 		"@galvanize-inc/jwtdown-for-react": "^0.2.2",
