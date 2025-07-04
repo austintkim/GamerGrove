@@ -15,8 +15,8 @@ const LoginForm = () => {
 	const [password, setPassword] = useState('');
 	const [incorrectLogin, setIncorrectLogin] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
-	const { login } = useToken();
-	const navigate = useNavigate()
+	const { login } = useToken()
+	const navigate = useNavigate();
 
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);

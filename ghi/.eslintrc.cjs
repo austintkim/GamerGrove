@@ -19,11 +19,14 @@ module.exports = {
 	  "plugin:prettier/recommended",
 	],
 	rules: {
-	  // your custom rules here
+	  "react/react-in-jsx-scope": "off"
 	},
 	settings: {
-	  react: {
-		version: "detect",
+		react: {
+		  version: "detect",
+		  pragma: "React",
+		  // Add this line to enable the new JSX transform
+		  jsxRuntime: "automatic",
+		},
 	  },
-	},
   };
