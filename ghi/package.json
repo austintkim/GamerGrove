@@ -4,22 +4,12 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"prepare": "git config core.hooksPath .husky",
 		"dev": "vite",
 		"build": "vite build",
 		"lint": "eslint . --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview",
 		"verify:eslint": "echo 'ESLint version:' && eslint --version && node -e \"console.log('Config type:', require('eslint/package.json').type)\"",
 		"format": "prettier --write ."
-	},
-	"lint-staged": {
-		"*.{js,jsx,ts,tsx}": [
-			"prettier --write",
-			"eslint --fix"
-		],
-		"*.{json,css,md}": [
-			"prettier --write"
-		]
 	},
 	"dependencies": {
 		"@galvanize-inc/jwtdown-for-react": "^0.2.2",
@@ -43,15 +33,6 @@
 		"@types/react-dom": "^18.2.7",
 		"@vitejs/plugin-react-swc": "^3.3.2",
 		"esbuild": "^0.20.0",
-		"eslint": "^8.57.1",
-		"eslint-config-prettier": "^10.1.5",
-		"eslint-plugin-prettier": "^4.2.1",
-		"eslint-plugin-react": "^7.37.5",
-		"eslint-plugin-react-hooks": "^4.6.2",
-		"eslint-plugin-react-refresh": "^0.4.20",
-		"husky": "^9.1.7",
-		"lint-staged": "^16.1.2",
-		"prettier": "^2.8.8",
 		"vite": "^5.1.1"
 	},
 	"resolutions": {

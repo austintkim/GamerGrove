@@ -4,8 +4,8 @@
     "python.formatting.provider": "black",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.fixAll": true,
-        "source.fixAll.eslint": true
+        "source.fixAll": "explicit",
+        "source.fixAll.eslint": "explicit"
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "python.analysis.typeCheckingMode": "off",
@@ -15,10 +15,12 @@
         "typescript",
         "typescriptreact",
         "vue",
-        "json",
         "jsonc",
         "yaml"
     ],
     "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 500
+    "files.autoSaveDelay": 500,
+
+    "prettier.prettierPath": "./node_modules/prettier",
+    "eslint.nodePath": "./node_modules"
 }
