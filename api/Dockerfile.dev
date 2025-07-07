@@ -1,14 +1,25 @@
 FROM python:3.10-bullseye
+
 RUN python -m pip install --upgrade pip
+
+# Install Poetry
+RUN pip install poetry
+
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
-WORKDIR /deps
-COPY requirements.txt requirements.txt
-RUN python -m pip install -r requirements.txt
-WORKDIR /app
-# CMD /wait && uvicorn main:app --reload --host 0.0.0.0
 
-# If you're using a relational database and want migrations
-# to be run automatically, delete the previous CMD line and
-# uncomment this CMD line
-CMD /wait && python -m migrations up && uvicorn main:app --reload --host 0.0.0.0
+WORKDIR /deps
+
+# Copy only poetry files for dependency install
+COPY pyproject.toml poetry.lock* /deps/
+
+# Install dependencies (without installing the package itself)
+RUN poetry install --no-root
+
+WORKDIR /app
+
+# Copy app source code
+COPY . /app
+
+# Start app with reload and migrations
+CMD /wait && python -m migrations up && poetry run uvicorn main:app --reload --host 0.0.0.0

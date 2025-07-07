@@ -1,2 +1,28 @@
+[tool.poetry]
+name = "gamer-grove"
+version = "0.1.0"
+description = ""
+authors = ["Austin Kim <mambafinisher@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "api" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+fastapi = { version = "==0.92.0", extras = ["all"] }
+uvicorn = { version = "==0.17.6", extras = ["standard"] }
+psycopg = { version = ">=3.1.2", extras = ["binary", "pool"] }
+requests = "==2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
+black = "^25.1.0"
+isort = "^6.0.1"
+flake8 = "^7.3.0"
+mypy = "^1.16.1"
+
 [tool.black]
-line-length=79
+line-length = 79
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
