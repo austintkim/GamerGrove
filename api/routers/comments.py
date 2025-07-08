@@ -1,16 +1,15 @@
-from fastapi import (APIRouter, Depends)
-from typing import Union, List
+from typing import List, Union
+
+from authenticator import authenticator
+from fastapi import APIRouter, Depends
 from queries.comments import (
     CommentInBase,
     CommentInUpdate,
     CommentOut,
     CommentQueries,
-    HttpError
-    )
-from queries.reviews import (
-    ReviewQueries
+    HttpError,
 )
-from authenticator import authenticator
+from queries.reviews import ReviewQueries
 
 router = APIRouter()
 
@@ -20,7 +19,7 @@ async def create_comment(
     comment: CommentInBase,
     queries: CommentQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     account_id = account_data["id"]
     comment_dict = comment.dict()
@@ -36,16 +35,22 @@ async def create_comment(
     return created_comment
 
 
-@router.get("/api/comments/users/{account_id}", response_model=Union[List[CommentOut], HttpError])
+@router.get(
+    "/api/comments/users/{account_id}",
+    response_model=Union[List[CommentOut], HttpError],
+)
 async def get_user_comments(
     queries: CommentQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     account_id = account_data["id"]
     return queries.get_user_comments(account_id)
 
 
-@router.get("/api/comments/reviews/{review_id}", response_model=Union[List[CommentOut], HttpError])
+@router.get(
+    "/api/comments/reviews/{review_id}",
+    response_model=Union[List[CommentOut], HttpError],
+)
 async def get_review_comments(
     review_id: int,
     queries: CommentQueries = Depends(),
@@ -66,7 +71,7 @@ async def delete_comment(
     id: int,
     queries: CommentQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     comment_details = queries.get_comment(id).dict()
     review_id = comment_details["review_id"]
@@ -79,12 +84,14 @@ async def delete_comment(
     return queries.delete_comment(id, account_id)
 
 
-@router.put("/api/comments/{id}/{account_id}", response_model=Union[CommentOut, HttpError])
+@router.put(
+    "/api/comments/{id}/{account_id}", response_model=Union[CommentOut, HttpError]
+)
 async def update_comment(
     id: int,
     comment: CommentInUpdate,
     queries: CommentQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     comment_details = queries.get_comment(id).dict()
 

@@ -19,6 +19,6 @@ steps = [
         """,
         """
         DROP TABLE reviews;
-        """
+        """,
     ],
 ]

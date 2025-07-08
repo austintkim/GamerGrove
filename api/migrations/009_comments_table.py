@@ -30,7 +30,6 @@ steps = [
         """
         DROP TABLE comments;
         DROP FUNCTION update_last_update_column;
-        """
-
+        """,
     ],
 ]

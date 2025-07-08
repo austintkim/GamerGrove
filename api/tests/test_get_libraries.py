@@ -1,7 +1,6 @@
 from fastapi.testclient import TestClient
 from main import app
-from queries.libraries import LibraryQueries, LibraryOut
-
+from queries.libraries import LibraryOut, LibraryQueries
 
 client = TestClient(app)
 
@@ -10,16 +9,9 @@ class MockLibraryQueries:
     """
     Mock version of LibraryQueries
     """
-    def get_library_entry(self, id:int):
-        return LibraryOut(
-            id=1,
-            wishlist=False,
-            game_id=15,
-            board_id=2,
-            account_id=3
-        )
 
-
+    def get_library_entry(self, id: int):
+        return LibraryOut(id=1, wishlist=False, game_id=15, board_id=2, account_id=3)
 
 
 def test_get_library_entry():
@@ -27,18 +19,14 @@ def test_get_library_entry():
     Test to get a library entry
     """
 
-    #Arrange
+    # Arrange
     app.dependency_overrides[LibraryQueries] = MockLibraryQueries
     id = 1
 
-
-
-    #Act
+    # Act
     resposne = client.get(f"/api/libraries/{id}")
 
-
-
-    #Assert
+    # Assert
     assert resposne.status_code == 200
     data = resposne.json()
-    assert data['board_id'] == 2
+    assert data["board_id"] == 2

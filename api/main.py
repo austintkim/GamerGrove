@@ -1,10 +1,12 @@
-from fastapi import FastAPI
-from authenticator import authenticator
-from fastapi.middleware.cors import CORSMiddleware
-from routers import (accounts, boards, icons, screenshots, games, comments, votes, libraries, stores, reviews)
-from seederfile import seed_data
 import os
+
+from authenticator import authenticator
 from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routers import (accounts, boards, comments, games, icons, libraries,
+                     reviews, screenshots, stores, votes)
+from seederfile import seed_data
 
 load_dotenv()
 
@@ -32,7 +34,7 @@ origins = [
     "http://localhost:5173",
     "https://gamergrove.gitlab.io",
     # os.environ.get('CORS_HOST', ''),
-    f"http://{os.getenv('EC2_IP_ADDRESS', '')}"
+    f"http://{os.getenv('EC2_IP_ADDRESS', '')}",
 ]
 
 app.add_middleware(

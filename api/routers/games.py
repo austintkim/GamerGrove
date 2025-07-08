@@ -1,13 +1,7 @@
-from fastapi import (APIRouter, Depends, Request, Response)
-from typing import Union, List
-from queries.games import (
-    GameIn,
-    GameOut,
-    GameQueries,
-    HttpError,
-    GamesList
-)
+from typing import Union
 
+from fastapi import APIRouter, Depends, Request, Response
+from queries.games import GameIn, GameOut, GameQueries, GamesList, HttpError
 
 router = APIRouter()
 
@@ -18,7 +12,6 @@ async def create_game(
     request: Request,
     response: Response,
     queries: GameQueries = Depends(),
-
 ):
     print(game)
     game_dict = game.dict()
@@ -27,10 +20,8 @@ async def create_game(
 
 
 @router.get("/api/games", response_model=Union[GamesList, HttpError])
-async def get_all_games(
-    queries: GameQueries = Depends()
-):
-    return {'games': queries.get_all_games()}
+async def get_all_games(queries: GameQueries = Depends()):
+    return {"games": queries.get_all_games()}
 
 
 @router.get("/api/games/{id}", response_model=GameOut)

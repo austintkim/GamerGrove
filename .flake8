@@ -1,3 +1,0 @@
-[flake8]
-exclude = ghi,docs,journals,api/migrations,seederfile.py,api/tests,api/queries,api/routers
-max-line-length=250

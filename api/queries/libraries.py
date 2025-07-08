@@ -1,8 +1,9 @@
 import os
+from typing import List, Optional
+
+from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
-from typing import List, Optional
-from fastapi import (HTTPException, status)
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -57,7 +58,7 @@ class LibraryQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could not find the library associated with this account"
+                    detail="Could not find the library associated with this account",
                 )
 
     def get_library_entry(self, id: int) -> LibraryOut:
@@ -69,7 +70,7 @@ class LibraryQueries:
                     FROM libraries
                     WHERE id = %s;
                     """,
-                    [id]
+                    [id],
                 )
                 row = result.fetchone()
                 if row is not None:
@@ -80,7 +81,7 @@ class LibraryQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could not find a library entry with that id"
+                    detail="Could not find a library entry with that id",
                 )
 
     def create_library_entry(self, library_dict: LibraryIn) -> LibraryOut:
@@ -92,14 +93,14 @@ class LibraryQueries:
                         SELECT * FROM gamesdb
                         WHERE id = %s
                         """,
-                        [library_dict["game_id"]]
+                        [library_dict["game_id"]],
                     )
 
                     game_id_row = game_id_check.fetchone()
                     if game_id_row is None:
                         raise HTTPException(
                             status_code=status.HTTP_404_NOT_FOUND,
-                            detail="A game with the id you inputted does not exist in the database"
+                            detail="A game with the id you inputted does not exist in the database",
                         )
 
                     wishlist_check = db.execute(
@@ -114,15 +115,15 @@ class LibraryQueries:
                         [
                             library_dict["wishlist"],
                             library_dict["game_id"],
-                            library_dict["account_id"]
-                        ]
+                            library_dict["account_id"],
+                        ],
                     )
 
                     wishlist_entry_row = wishlist_check.fetchone()
                     if wishlist_entry_row is not None:
                         raise HTTPException(
-                            status_code = status.HTTP_400_BAD_REQUEST,
-                            detail="This game was already added to the user's wishlist"
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="This game was already added to the user's wishlist",
                         )
 
                     board_check = db.execute(
@@ -131,17 +132,14 @@ class LibraryQueries:
                         WHERE game_id = %s
                             AND board_id = %s
                         """,
-                        [
-                            library_dict["game_id"],
-                            library_dict["board_id"]
-                        ]
+                        [library_dict["game_id"], library_dict["board_id"]],
                     )
 
                     board_entry_row = board_check.fetchone()
                     if board_entry_row is not None:
                         raise HTTPException(
-                            status_code = status.HTTP_400_BAD_REQUEST,
-                            detail="This game was already added by the user to this board"
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="This game was already added by the user to this board",
                         )
 
                     result = db.execute(
@@ -163,7 +161,7 @@ class LibraryQueries:
                             library_dict["wishlist"],
                             library_dict["game_id"],
                             library_dict["board_id"],
-                            library_dict["account_id"]
+                            library_dict["account_id"],
                         ],
                     )
 
@@ -176,7 +174,7 @@ class LibraryQueries:
                 except ValueError:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error creating library entry"
+                        detail="Error creating library entry",
                     )
 
     def delete_library_entry(self, id: int, account_id: int) -> bool:
@@ -187,14 +185,14 @@ class LibraryQueries:
                     SELECT * FROM libraries
                     WHERE id = %s
                     """,
-                    [id]
+                    [id],
                 )
 
                 id_row = id_check.fetchone()
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A library with that id does not exist in the database"
+                        detail="A library with that id does not exist in the database",
                     )
 
                 account_id_check = db.execute(
@@ -202,14 +200,11 @@ class LibraryQueries:
                     DELETE FROM libraries
                     WHERE id = %s AND account_id = %s
                     """,
-                    [
-                        id,
-                        account_id
-                    ]
+                    [id, account_id],
                 )
                 if account_id_check.rowcount == 0:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to delete a library that you did not create"
+                        detail="You are attempting to delete a library that you did not create",
                     )
                 return True

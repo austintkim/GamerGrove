@@ -1,15 +1,10 @@
-from fastapi import (APIRouter, Depends, Request, Response)
-from typing import Union, List
+from typing import List, Union
+
 from authenticator import authenticator
-from queries.libraries import (
-    LibraryInBase,
-    LibraryOut,
-    LibraryQueries,
-    HttpError
-)
-from queries.boards import (
-    BoardQueries
-)
+from fastapi import APIRouter, Depends, Request, Response
+from queries.boards import BoardQueries
+from queries.libraries import (HttpError, LibraryInBase, LibraryOut,
+                               LibraryQueries)
 
 router = APIRouter()
 
@@ -39,12 +34,15 @@ async def create_library_entry(
     return created_entry
 
 
-@router.get("/api/users/libraries/{account_id}", response_model=Union[List[LibraryOut], HttpError])
+@router.get(
+    "/api/users/libraries/{account_id}",
+    response_model=Union[List[LibraryOut], HttpError],
+)
 async def get_library(
     queries: LibraryQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    account_id = account_data['id']
+    account_id = account_data["id"]
     return queries.get_library(account_id)
 
 
@@ -56,12 +54,14 @@ async def get_library_entry(
     return queries.get_library_entry(id)
 
 
-@router.delete("/api/libraries/{id}/{account_id}", response_model=Union[bool, HttpError])
+@router.delete(
+    "/api/libraries/{id}/{account_id}", response_model=Union[bool, HttpError]
+)
 async def delete_library_entry(
     id: int,
     queries: LibraryQueries = Depends(),
     board_queries: BoardQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     library_details = queries.get_library_entry(id).dict()
     board_id = library_details["board_id"]

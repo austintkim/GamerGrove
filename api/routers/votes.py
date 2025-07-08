@@ -1,16 +1,9 @@
-from fastapi import (APIRouter, Depends, status, HTTPException)
-from typing import Union, List
-from queries.votes import (
-    VoteInBase,
-    VoteInUpdate,
-    VoteOut,
-    VoteQueries,
-    HttpError
-)
-from queries.reviews import (
-    ReviewQueries
-)
+from typing import List, Union
+
 from authenticator import authenticator
+from fastapi import APIRouter, Depends
+from queries.reviews import ReviewQueries
+from queries.votes import HttpError, VoteInBase, VoteInUpdate, VoteOut, VoteQueries
 
 router = APIRouter()
 
@@ -20,7 +13,7 @@ async def create_vote(
     vote: VoteInBase,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     account_id = account_data["id"]
     vote_dict = vote.dict()
@@ -41,21 +34,26 @@ async def create_vote(
     return created_vote
 
 
-@router.get("/api/votes/users/{account_id}", response_model=Union[List[VoteOut], HttpError])
+@router.get(
+    "/api/votes/users/{account_id}", response_model=Union[List[VoteOut], HttpError]
+)
 async def get_user_votes(
     queries: VoteQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     account_id = account_data["id"]
     return queries.get_user_votes(account_id)
 
 
-@router.get("/api/votes/reviews/{review_id}", response_model=Union[List[VoteOut], HttpError])
+@router.get(
+    "/api/votes/reviews/{review_id}", response_model=Union[List[VoteOut], HttpError]
+)
 async def get_review_votes(
     review_id: int,
     queries: VoteQueries = Depends(),
 ):
     return queries.get_review_votes(review_id)
+
 
 @router.get("/api/votes/{id}", response_model=Union[VoteOut, HttpError])
 async def get_vote(
@@ -64,12 +62,13 @@ async def get_vote(
 ):
     return queries.get_vote(id)
 
+
 @router.delete("/api/votes/{id}/{account_id}", response_model=Union[bool, HttpError])
 async def delete_vote(
     id: int,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     vote_details = queries.get_vote(id).dict()
     review_id = vote_details["review_id"]
@@ -85,13 +84,14 @@ async def delete_vote(
     account_id = account_data["id"]
     return queries.delete_vote(id, account_id)
 
+
 @router.put("/api/votes/{id}/{account_id}", response_model=Union[VoteOut, HttpError])
 async def update_vote(
     id: int,
     vote: VoteInUpdate,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     vote_details = queries.get_vote(id).dict()
 

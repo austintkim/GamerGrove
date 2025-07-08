@@ -1,6 +1,5 @@
 steps = [
     [
-
         """
         CREATE TABLE libraries(
         id SERIAL PRIMARY KEY,
@@ -16,7 +15,6 @@ steps = [
         """,
         """
         DROP TABLE libraries;
-        """
+        """,
     ],
-
 ]

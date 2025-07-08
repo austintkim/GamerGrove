@@ -1,12 +1,8 @@
-from fastapi import (APIRouter, Depends, Response)
-from typing import Union, List
+from typing import List, Union
+
 from authenticator import authenticator
-from queries.boards import (
-    BoardInBase,
-    BoardOut,
-    BoardQueries,
-    HttpError
-)
+from fastapi import APIRouter, Depends, Response
+from queries.boards import BoardInBase, BoardOut, BoardQueries, HttpError
 
 router = APIRouter()
 
@@ -15,7 +11,7 @@ router = APIRouter()
 async def create_board(
     board: BoardInBase,
     queries: BoardQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     account_id = account_data["id"]
     board_dict = board.dict()
@@ -34,10 +30,12 @@ async def get_board(
     return queries.get_board(id)
 
 
-@router.get("/api/boards/users/{account_id}", response_model=Union[List[BoardOut], HttpError])
+@router.get(
+    "/api/boards/users/{account_id}", response_model=Union[List[BoardOut], HttpError]
+)
 async def get_all_boards(
     queries: BoardQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data)
+    account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     account_id = account_data["id"]
     return queries.get_all_boards(account_id)

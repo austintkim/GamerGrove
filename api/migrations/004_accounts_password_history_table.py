@@ -1,6 +1,5 @@
 steps = [
     [
-
         """
         CREATE TABLE accounts_password_history(
         id SERIAL PRIMARY KEY,
@@ -14,7 +13,6 @@ steps = [
         """,
         """
         DROP TABLE accounts_password_history;
-        """
+        """,
     ],
-
 ]

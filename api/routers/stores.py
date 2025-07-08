@@ -1,11 +1,7 @@
-from fastapi import (APIRouter, Depends)
-from typing import Union
-from queries.stores import (
-    StoresOut,
-    StoresQueries,
-    HttpError
-)
-from typing import List
+from typing import List, Union
+
+from fastapi import APIRouter, Depends
+from queries.stores import HttpError, StoresOut, StoresQueries
 
 router = APIRouter()
 

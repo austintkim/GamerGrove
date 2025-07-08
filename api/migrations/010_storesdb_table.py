@@ -1,6 +1,5 @@
 steps = [
     [
-
         """
         CREATE TABLE storesdb(
         id SERIAL PRIMARY KEY,
@@ -13,7 +12,6 @@ steps = [
         """,
         """
         DROP TABLE storesdb;
-        """
+        """,
     ],
-
 ]

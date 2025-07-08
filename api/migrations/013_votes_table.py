@@ -1,6 +1,5 @@
 steps = [
     [
-
         """
         CREATE TABLE votes(
         id SERIAL PRIMARY KEY,
@@ -29,7 +28,6 @@ steps = [
         """
         DROP TABLE votes;
         DROP FUNCTION update_last_update_column;
-        """
+        """,
     ],
-
 ]

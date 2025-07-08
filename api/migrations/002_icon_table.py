@@ -1,6 +1,5 @@
 steps = [
     [
-
         """
         CREATE TABLE icons (
         id SERIAL PRIMARY KEY,
@@ -11,7 +10,6 @@ steps = [
         """,
         """
         DROP TABLE icons;
-        """
+        """,
     ],
-
 ]

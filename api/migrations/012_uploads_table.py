@@ -1,6 +1,5 @@
 steps = [
     [
-
         """
         CREATE TABLE uploads (
         id SERIAL PRIMARY KEY,
@@ -16,7 +15,6 @@ steps = [
         """,
         """
         DROP TABLE uploads;
-        """
+        """,
     ],
-
 ]

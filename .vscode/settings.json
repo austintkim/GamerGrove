@@ -1,28 +1,50 @@
 {
-    "editor.formatOnPaste": true,
-    "editor.formatOnType": true,
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll": true,
-        "source.fixAll.eslint": true
-    },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 500,
+  // Global settings
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1500,
 
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact",
-        "vue",
-        "yaml"
-    ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.fixAll.eslint": "always",
+    "source.fixAll.ruff": "always",
+    "source.organizeImports": "always"
+  },
 
-    // These are now pointing to root-level node_modules
-    "eslint.nodePath": "./node_modules",
-    "prettier.prettierPath": "./node_modules/prettier",
+  // Language-specific formatter overrides
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
 
-    // This ensures ESLint only runs for ghi files (and avoids backend if you have one)
-    "eslint.workingDirectories": ["./ghi"]
+  // ESLint
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "yaml"
+  ],
+  "eslint.nodePath": "${workspaceFolder}/node_modules",
+  "prettier.prettierPath": "${workspaceFolder}/node_modules/prettier",
+  "eslint.workingDirectories": ["${workspaceFolder}/ghi"],
+
+  // Python
+  "python.defaultInterpreterPath": "/Users/austinkim/hack-reactor/projects/gamer-grove/.venv/bin/python",
+  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.diagnosticMode": "openFilesOnly",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingTypeStubs": "none"
+  },
+
+  // Ruff
+  "ruff.enable": true
 }

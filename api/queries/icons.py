@@ -1,8 +1,9 @@
 import os
-from psycopg_pool import ConnectionPool
 from typing import List
+
+from fastapi import HTTPException, status
+from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
-from fastapi import (HTTPException, status)
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -39,7 +40,7 @@ class IconQueries:
                     return icons
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could not find the icons in the database"
+                    detail="Could not find the icons in the database",
                 )
 
     def get_icon(self, id: int) -> IconOut:

@@ -1,6 +1,5 @@
 steps = [
     [
-
         """
         CREATE TABLE gamesdb(
         id SERIAL PRIMARY KEY,
@@ -23,6 +22,6 @@ steps = [
         """,
         """
         DROP TABLE gamesdb;
-        """
+        """,
     ],
 ]

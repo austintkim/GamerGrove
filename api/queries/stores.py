@@ -1,11 +1,11 @@
+import logging
 import os
+from typing import List
+
+import requests
+from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
-from typing import List
-from fastapi import (HTTPException, status)
-import requests
-import logging
-
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -53,7 +53,9 @@ class StoresQueries:
 
                     if rows:
                         for row in rows:
-                            record = dict(zip([column.name for column in cur.description], row))
+                            record = dict(
+                                zip([column.name for column in cur.description], row)
+                            )
                             stores_list.append(StoresOut(**record))
                         logging.debug("stores from Database: %s", stores_list)
 
@@ -79,7 +81,7 @@ class StoresQueries:
                                     print("these are good stores:", store)
                                     store_url = store.get("url")
                                     store_id = store.get("store_id")
-                                    platform = ''
+                                    platform = ""
                                     if store_id == 1:
                                         platform = "PC"
                                     elif store_id == 2:
@@ -95,27 +97,37 @@ class StoresQueries:
                                         VALUES (%s, %s, %s)
                                         RETURNING id, platform, url, rawg_pk;
                                         """,
-                                        [platform, store_url, rawg_pk]
+                                        [platform, store_url, rawg_pk],
                                     )
                                     conn.commit()
                                     row = cur.fetchone()
                                     print("THIS IS THE ROW", row)
                                     if row is not None:
-                                        record = dict(zip([column.name for column in cur.description], row))
+                                        record = dict(
+                                            zip(
+                                                [
+                                                    column.name
+                                                    for column in cur.description
+                                                ],
+                                                row,
+                                            )
+                                        )
                                         stores_list.append(StoresOut(**record))
 
                     except Exception as db_error:
-                        logging.error("Error inserting stores into the database: %s", db_error)
+                        logging.error(
+                            "Error inserting stores into the database: %s", db_error
+                        )
                         raise HTTPException(
                             status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Error adding stores into the database"
+                            detail="Error adding stores into the database",
                         )
 
         if not stores_list:
             logging.debug("No stores found in both database and API.")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="No screenshots found in both database and API"
+                detail="No screenshots found in both database and API",
             )
 
         logging.debug("Returning stores: %s", stores_list)

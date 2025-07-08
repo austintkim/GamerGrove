@@ -1,9 +1,10 @@
 import os
-from psycopg_pool import ConnectionPool
-from typing import List
-from pydantic import BaseModel
-from fastapi import (HTTPException, status)
 from datetime import datetime
+from typing import List
+
+from fastapi import HTTPException, status
+from psycopg_pool import ConnectionPool
+from pydantic import BaseModel
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -44,7 +45,7 @@ class VoteQueries:
                     FROM votes
                     WHERE account_id = %s;
                     """,
-                    [account_id]
+                    [account_id],
                 )
                 rows = result.fetchall()
                 votes = []
@@ -58,7 +59,7 @@ class VoteQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="No votes by this user"
+                    detail="No votes by this user",
                 )
 
     def get_review_votes(self, review_id: int) -> List[VoteOut]:
@@ -70,7 +71,7 @@ class VoteQueries:
                     FROM votes
                     WHERE review_id = %s;
                     """,
-                    [review_id]
+                    [review_id],
                 )
                 rows = result.fetchall()
                 votes = []
@@ -84,7 +85,7 @@ class VoteQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="This review doesn't have any votes yet"
+                    detail="This review doesn't have any votes yet",
                 )
 
     def get_vote(self, id: int) -> VoteOut:
@@ -96,7 +97,7 @@ class VoteQueries:
                     FROM votes
                     WHERE id = %s;
                     """,
-                    [id]
+                    [id],
                 )
                 row = result.fetchone()
                 if row is not None:
@@ -107,7 +108,7 @@ class VoteQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could not find a vote with that id"
+                    detail="Could not find a vote with that id",
                 )
 
     def create_vote(self, vote_dict: VoteIn) -> VoteOut:
@@ -131,8 +132,8 @@ class VoteQueries:
                         [
                             vote_dict["account_id"],
                             vote_dict["review_id"],
-                            vote_dict["upvote"]
-                        ]
+                            vote_dict["upvote"],
+                        ],
                     )
                     row = result.fetchone()
                     if row is not None:
@@ -143,7 +144,7 @@ class VoteQueries:
                 except ValueError:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error creating vote"
+                        detail="Error creating vote",
                     )
 
     def delete_vote(self, id: int, account_id: int) -> bool:
@@ -154,14 +155,14 @@ class VoteQueries:
                     SELECT * FROM votes
                     WHERE id = %s
                     """,
-                    [id]
+                    [id],
                 )
 
                 id_row = id_check.fetchone()
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A vote with that id does not exist in the database"
+                        detail="A vote with that id does not exist in the database",
                     )
 
                 account_id_check = db.execute(
@@ -169,15 +170,12 @@ class VoteQueries:
                     DELETE FROM votes
                     WHERE id = %s AND account_id = %s
                     """,
-                    [
-                        id,
-                        account_id
-                    ]
+                    [id, account_id],
                 )
                 if account_id_check.rowcount == 0:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to delete a vote that you did not create"
+                        detail="You are attempting to delete a vote that you did not create",
                     )
                 return True
 
@@ -189,14 +187,14 @@ class VoteQueries:
                     SELECT * FROM votes
                     WHERE id = %s
                     """,
-                    [id]
+                    [id],
                 )
 
                 id_row = id_check.fetchone()
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A vote with that id does not exist in the database"
+                        detail="A vote with that id does not exist in the database",
                     )
 
                 result = db.execute(
@@ -217,7 +215,7 @@ class VoteQueries:
                         id,
                         vote_dict["review_id"],
                         vote_dict["account_id"],
-                    ]
+                    ],
                 )
                 row = result.fetchone()
                 if row is not None:
@@ -228,5 +226,5 @@ class VoteQueries:
                 else:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to update a comment that you did not create"
+                        detail="You are attempting to update a comment that you did not create",
                     )

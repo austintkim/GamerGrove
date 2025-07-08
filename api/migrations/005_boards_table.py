@@ -1,6 +1,5 @@
 steps = [
     [
-
         """
         CREATE TABLE boards(
         id SERIAL PRIMARY KEY,
@@ -15,7 +14,6 @@ steps = [
         """,
         """
         DROP TABLE boards;
-        """
+        """,
     ],
-
 ]

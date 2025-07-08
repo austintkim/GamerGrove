@@ -1,10 +1,11 @@
+import logging
 import os
+from typing import List
+
+import requests
+from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
-from typing import List
-from fastapi import HTTPException, status
-import requests
-import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -41,16 +42,17 @@ class ScreenshotsQueries:
         try:
             screenshots_list.extend(self.retrieve_screenshots_from_database(rawg_pk))
         except Exception as db_error:
-            logging.error("Error retrieving screenshots from the database: %s", db_error)
+            logging.error(
+                "Error retrieving screenshots from the database: %s", db_error
+            )
 
         if not screenshots_list:
             screenshots_list.extend(self.retrieve_screenshots_from_api(rawg_pk))
 
         if not screenshots_list:
-
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="No screenshots found in both database and API"
+                detail="No screenshots found in both database and API",
             )
 
         return screenshots_list
@@ -73,12 +75,16 @@ class ScreenshotsQueries:
 
                     if rows:
                         for row in rows:
-                            record = dict(zip([column.name for column in db.description], row))
+                            record = dict(
+                                zip([column.name for column in db.description], row)
+                            )
                             screenshots_list.append(ScreenshotsOut(**record))
                         logging.debug("Screenshots from Database: %s", screenshots_list)
 
         except Exception as db_error:
-            logging.error("Error retrieving screenshots from the database: %s", db_error)
+            logging.error(
+                "Error retrieving screenshots from the database: %s", db_error
+            )
 
         return screenshots_list
 
@@ -105,7 +111,7 @@ class ScreenshotsQueries:
                                     FROM screenshots
                                     WHERE image_url = %s::text;
                                     """,
-                                    [image_url]
+                                    [image_url],
                                 )
                                 existing_image = db.fetchone()
 
@@ -123,9 +129,16 @@ class ScreenshotsQueries:
 
                                 row = db.fetchone()
                                 if row is not None:
-                                    record = dict(zip([column.name for column in db.description], row))
+                                    record = dict(
+                                        zip(
+                                            [column.name for column in db.description],
+                                            row,
+                                        )
+                                    )
                                     screenshots_list.append(ScreenshotsOut(**record))
                 except Exception as db_error:
-                    logging.error("Error inserting screenshots into the database: %s", db_error)
+                    logging.error(
+                        "Error inserting screenshots into the database: %s", db_error
+                    )
 
         return screenshots_list

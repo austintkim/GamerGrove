@@ -12,16 +12,24 @@ fastapi = { version = "==0.92.0", extras = ["all"] }
 uvicorn = { version = "==0.17.6", extras = ["standard"] }
 psycopg = { version = ">=3.1.2", extras = ["binary", "pool"] }
 requests = "==2.31.0"
+pydantic = "<2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
 black = "^25.1.0"
-isort = "^6.0.1"
-flake8 = "^7.3.0"
 mypy = "^1.16.1"
+ruff = "^0.12.2"
+isort = "^6.0.1"
 
 [tool.black]
-line-length = 79
+line-length = 200
+
+[tool.ruff]
+line-length = 200
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

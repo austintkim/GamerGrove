@@ -1,8 +1,9 @@
 import os
+from typing import List
+
+from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
-from typing import List
-from fastapi import (HTTPException, status)
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -52,7 +53,7 @@ class BoardQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could not find a board with that id"
+                    detail="Could not find a board with that id",
                 )
 
     def get_all_boards(self, account_id: int) -> List[BoardOut]:
@@ -70,13 +71,15 @@ class BoardQueries:
                 boards = []
                 if rows:
                     for row in rows:
-                        record = dict(zip([column.name for column in db.description], row))
+                        record = dict(
+                            zip([column.name for column in db.description], row)
+                        )
                         boards.append(BoardOut(**record))
                     return boards
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="No boards associated with this user"
+                    detail="No boards associated with this user",
                 )
 
     def create_board(self, board_dict: BoardIn) -> BoardOut:
@@ -105,7 +108,7 @@ class BoardQueries:
                             board_dict["description"],
                             board_dict["cover_photo"],
                             board_dict["game_count"],
-                            board_dict["account_id"]
+                            board_dict["account_id"],
                         ],
                     )
                     row = result.fetchone()
@@ -117,7 +120,7 @@ class BoardQueries:
                 except ValueError:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error creating board"
+                        detail="Error creating board",
                     )
 
     def delete_board(self, id: int, account_id: int) -> bool:
@@ -128,14 +131,14 @@ class BoardQueries:
                     SELECT * FROM boards
                     WHERE id = %s
                     """,
-                    [id]
+                    [id],
                 )
 
                 id_row = id_check.fetchone()
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A board with that id does not exist in the database"
+                        detail="A board with that id does not exist in the database",
                     )
 
                 account_id_check = db.execute(
@@ -143,15 +146,12 @@ class BoardQueries:
                     DELETE FROM boards
                     WHERE id = %s AND account_id = %s
                     """,
-                    [
-                        id,
-                        account_id
-                    ]
+                    [id, account_id],
                 )
                 if account_id_check.rowcount == 0:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to delete a board that you did not create"
+                        detail="You are attempting to delete a board that you did not create",
                     )
                 return True
 
@@ -163,14 +163,14 @@ class BoardQueries:
                     SELECT * FROM boards
                     WHERE id = %s
                     """,
-                    [id]
+                    [id],
                 )
 
                 id_row = id_check.fetchone()
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A board with that id does not exist in the database"
+                        detail="A board with that id does not exist in the database",
                     )
 
                 account_id_check = db.execute(
@@ -188,12 +188,12 @@ class BoardQueries:
                         board_dict["cover_photo"],
                         board_dict["game_count"],
                         id,
-                        board_dict["account_id"]
-                    ]
+                        board_dict["account_id"],
+                    ],
                 )
                 if account_id_check.rowcount == 0:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to update a board that you did not create"
+                        detail="You are attempting to update a board that you did not create",
                     )
                 return BoardOut(id=id, **board_dict)

@@ -1,6 +1,6 @@
 import os
-from psycopg_pool import ConnectionPool
 
+from psycopg_pool import ConnectionPool
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -283,5 +283,5 @@ def seed_data():
                     ('https://www.microsoft.com/en-us/p/battlefield-2042/9PK077NP44X2?rtc=1&source=lp&activetab=pivot:overviewtab', '614954', 'Xbox'),
                     ('https://store.steampowered.com/app/1272080/PAYDAY_3/', '502116', 'PC');
                     """
-                    )
+                )
                 return result

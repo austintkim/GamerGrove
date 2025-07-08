@@ -1,7 +1,8 @@
 async def migrate():
-    from . import down, up, LATEST, ZERO
     import os
     import sys
+
+    from . import LATEST, ZERO, down, up
 
     db_url = os.environ["DATABASE_URL"]
 

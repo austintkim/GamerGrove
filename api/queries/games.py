@@ -1,10 +1,11 @@
 import os
-from psycopg_pool import ConnectionPool
-from psycopg import errors
-from pydantic import BaseModel
 from datetime import date
 from typing import List
-from fastapi import (HTTPException, status)
+
+from fastapi import HTTPException, status
+from psycopg import errors
+from psycopg_pool import ConnectionPool
+from pydantic import BaseModel
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -31,7 +32,6 @@ class GameIn(BaseModel):
     reviews_count: int
 
 
-
 class GameOut(BaseModel):
     id: int
     name: str
@@ -49,6 +49,7 @@ class GameOut(BaseModel):
     developers: str
     rawg_pk: int
     reviews_count: int
+
 
 class GamesList(BaseModel):
     games: list[GameOut]
@@ -70,14 +71,13 @@ class GameQueries:
                     record = {}
                     for row in rows:
                         for i, column in enumerate(db.description):
-
                             record[column.name] = row[i]
                         games.append(GameOut(**record))
 
                     return games
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could not find the games in the database"
+                    detail="Could not find the games in the database",
                 )
 
     def get_game(self, id: int) -> GameOut:
@@ -100,7 +100,7 @@ class GameQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could find a game with that id"
+                    detail="Could find a game with that id",
                 )
 
     def create_game(self, game_dict: GameIn) -> GameOut:
@@ -148,7 +148,7 @@ class GameQueries:
                             game_dict["genre"],
                             game_dict["developers"],
                             game_dict["rawg_pk"],
-                            game_dict["reviews_count"]
+                            game_dict["reviews_count"],
                         ],
                     )
 
@@ -161,12 +161,12 @@ class GameQueries:
                     if ValueError:
                         raise HTTPException(
                             status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Error creating game"
+                            detail="Error creating game",
                         )
                 except errors.UniqueViolation:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="That game already exists in the database"
+                        detail="That game already exists in the database",
                     )
 
     def update_game(self, id: int, games_dict: GameIn) -> GameOut:
@@ -209,12 +209,12 @@ class GameQueries:
                             games_dict["developers"],
                             games_dict["rawg_pk"],
                             games_dict["reviews_count"],
-                            id
+                            id,
                         ],
                     )
                     return GameOut(id=id, **games_dict)
                 except ValueError:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error updating game"
+                        detail="Error updating game",
                     )

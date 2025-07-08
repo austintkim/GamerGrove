@@ -1,9 +1,10 @@
 import os
-from psycopg_pool import ConnectionPool
-from typing import List, Optional
-from pydantic import BaseModel
-from fastapi import (HTTPException, status)
 from datetime import datetime
+from typing import List, Optional
+
+from fastapi import HTTPException, status
+from psycopg_pool import ConnectionPool
+from pydantic import BaseModel
 
 pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
 
@@ -46,7 +47,7 @@ class CommentQueries:
                     FROM comments
                     WHERE account_id = %s;
                     """,
-                    [account_id]
+                    [account_id],
                 )
                 rows = result.fetchall()
                 comments = []
@@ -60,7 +61,7 @@ class CommentQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="No comments written by this user"
+                    detail="No comments written by this user",
                 )
 
     def get_review_comments(self, review_id: int) -> List[CommentOut]:
@@ -72,7 +73,7 @@ class CommentQueries:
                     FROM comments
                     WHERE review_id = %s;
                     """,
-                    [review_id]
+                    [review_id],
                 )
                 rows = result.fetchall()
                 comments = []
@@ -86,7 +87,7 @@ class CommentQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="This review doesn't have any comments yet"
+                    detail="This review doesn't have any comments yet",
                 )
 
     def get_comment(self, id: int) -> CommentOut:
@@ -98,7 +99,7 @@ class CommentQueries:
                     FROM comments
                     WHERE id = %s;
                     """,
-                    [id]
+                    [id],
                 )
                 row = result.fetchone()
                 if row:
@@ -109,7 +110,7 @@ class CommentQueries:
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Could not find a comment with that id"
+                    detail="Could not find a comment with that id",
                 )
 
     def create_comment(self, comment_dict: CommentIn) -> CommentOut:
@@ -136,8 +137,8 @@ class CommentQueries:
                             comment_dict["account_id"],
                             comment_dict["review_id"],
                             comment_dict["comment_id"],
-                            comment_dict["body"]
-                        ]
+                            comment_dict["body"],
+                        ],
                     )
                     row = result.fetchone()
                     if row is not None:
@@ -148,7 +149,7 @@ class CommentQueries:
                 except ValueError:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error creating comment"
+                        detail="Error creating comment",
                     )
 
     def delete_comment(self, id: int, account_id: int) -> bool:
@@ -159,14 +160,14 @@ class CommentQueries:
                     SELECT * FROM comments
                     WHERE id = %s
                     """,
-                    [id]
+                    [id],
                 )
 
                 id_row = id_check.fetchone()
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A comment with that id does not exist in the database"
+                        detail="A comment with that id does not exist in the database",
                     )
 
                 account_id_check = db.execute(
@@ -174,15 +175,12 @@ class CommentQueries:
                     DELETE FROM comments
                     WHERE id = %s AND account_id = %s
                     """,
-                    [
-                        id,
-                        account_id
-                    ]
+                    [id, account_id],
                 )
                 if account_id_check.rowcount == 0:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to delete a comment that you did not create"
+                        detail="You are attempting to delete a comment that you did not create",
                     )
                 return True
 
@@ -194,14 +192,14 @@ class CommentQueries:
                     SELECT * FROM comments
                     WHERE id = %s
                     """,
-                    [id]
+                    [id],
                 )
 
                 id_row = id_check.fetchone()
                 if id_row is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail="A comment with that id does not exist in the database"
+                        detail="A comment with that id does not exist in the database",
                     )
                 result = db.execute(
                     """
@@ -222,8 +220,8 @@ class CommentQueries:
                         id,
                         comment_dict["review_id"],
                         comment_dict["comment_id"],
-                        comment_dict["account_id"]
-                    ]
+                        comment_dict["account_id"],
+                    ],
                 )
                 row = result.fetchone()
                 if row is not None:
@@ -234,5 +232,5 @@ class CommentQueries:
                 else:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to update a comment that you did not create"
+                        detail="You are attempting to update a comment that you did not create",
                     )
