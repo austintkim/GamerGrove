@@ -9,7 +9,11 @@ from pydantic import BaseModel
 
 logging.basicConfig(level=logging.DEBUG)
 
-pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+pool = ConnectionPool(conninfo=database_url)
 api_key = os.environ.get("API_KEY")
 
 
@@ -37,7 +41,7 @@ class ScreenshotsNotFoundError(Exception):
 
 class ScreenshotsQueries:
     def get_screenshots(self, rawg_pk: int) -> List[ScreenshotsOut]:
-        screenshots_list = []
+        screenshots_list: List[ScreenshotsOut] = []
 
         try:
             screenshots_list.extend(self.retrieve_screenshots_from_database(rawg_pk))
@@ -58,7 +62,7 @@ class ScreenshotsQueries:
         return screenshots_list
 
     def retrieve_screenshots_from_database(self, rawg_pk: int) -> List[ScreenshotsOut]:
-        screenshots_list = []
+        screenshots_list: List[ScreenshotsOut] = []
 
         try:
             with pool.connection() as conn:
@@ -73,7 +77,7 @@ class ScreenshotsQueries:
                     )
                     rows = db.fetchall()
 
-                    if rows:
+                    if rows and db.description is not None:
                         for row in rows:
                             record = dict(
                                 zip([column.name for column in db.description], row)
@@ -89,7 +93,7 @@ class ScreenshotsQueries:
         return screenshots_list
 
     def retrieve_screenshots_from_api(self, rawg_pk: int) -> List[ScreenshotsOut]:
-        screenshots_list = []
+        screenshots_list: List[ScreenshotsOut] = []
 
         api_url = f"https://api.rawg.io/api/games/{rawg_pk}/screenshots?key={api_key}"
         response = requests.get(api_url)
@@ -128,7 +132,7 @@ class ScreenshotsQueries:
                                 )
 
                                 row = db.fetchone()
-                                if row is not None:
+                                if row and db.description is not None:
                                     record = dict(
                                         zip(
                                             [column.name for column in db.description],

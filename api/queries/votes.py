@@ -6,7 +6,11 @@ from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
-pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+pool = ConnectionPool(conninfo=database_url)
 
 
 class HttpError(BaseModel):
@@ -48,13 +52,11 @@ class VoteQueries:
                     [account_id],
                 )
                 rows = result.fetchall()
-                votes = []
-                if rows:
-                    records = {}
+                votes: List[VoteOut] = []
+                if rows and db.description is not None:
                     for row in rows:
-                        for i, column in enumerate(db.description):
-                            records[column.name] = row[i]
-                        votes.append(VoteOut(**records))
+                        record = dict(zip([column.name for column in db.description], row))
+                        votes.append(VoteOut(**record))
                     return votes
 
                 raise HTTPException(
@@ -74,13 +76,11 @@ class VoteQueries:
                     [review_id],
                 )
                 rows = result.fetchall()
-                votes = []
-                if rows:
-                    records = {}
+                votes: List[VoteOut] = []
+                if rows and db.description is not None:
                     for row in rows:
-                        for i, column in enumerate(db.description):
-                            records[column.name] = row[i]
-                        votes.append(VoteOut(**records))
+                        record = dict(zip([column.name for column in db.description], row))
+                        votes.append(VoteOut(**record))
                     return votes
 
                 raise HTTPException(
@@ -100,11 +100,15 @@ class VoteQueries:
                     [id],
                 )
                 row = result.fetchone()
-                if row is not None:
-                    records = {}
-                    for i, column in enumerate(db.description):
-                        records[column.name] = row[i]
-                    return VoteOut(**records)
+                if row and db.description is not None:
+                    return VoteOut(
+                        id=row[0],
+                        account_id=row[1],
+                        review_id=row[2],
+                        upvote=row[3],
+                        date_created=row[4],
+                        last_update=row[5],
+                    )
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -130,21 +134,30 @@ class VoteQueries:
                         last_update
                         """,
                         [
-                            vote_dict["account_id"],
-                            vote_dict["review_id"],
-                            vote_dict["upvote"],
+                            vote_dict.account_id,
+                            vote_dict.review_id,
+                            vote_dict.upvote,
                         ],
                     )
                     row = result.fetchone()
-                    if row is not None:
-                        record = {}
-                        for i, column in enumerate(db.description):
-                            record[column.name] = row[i]
-                        return VoteOut(**record)
-                except ValueError:
+                    if row and db.description is not None:
+                        return VoteOut(
+                            id=row[0],
+                            account_id=row[1],
+                            review_id=row[2],
+                            upvote=row[3],
+                            date_created=row[4],
+                            last_update=row[5],
+                        )
+                    else:
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Failed to insert vote. No data returned.",
+                        )
+                except Exception as e:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error creating vote",
+                        detail=f"Error creating vote - {str(e)}",
                     )
 
     def delete_vote(self, id: int, account_id: int) -> bool:
@@ -211,20 +224,18 @@ class VoteQueries:
                         last_update
                     """,
                     [
-                        vote_dict["upvote"],
+                        vote_dict.upvote,
                         id,
-                        vote_dict["review_id"],
-                        vote_dict["account_id"],
+                        vote_dict.review_id,
+                        vote_dict.account_id,
                     ],
                 )
                 row = result.fetchone()
-                if row is not None:
-                    record = {}
-                    for i, column in enumerate(db.description):
-                        record[column.name] = row[i]
+                if row and db.description is not None:
+                    record = dict(zip([col.name for col in db.description], row))
                     return VoteOut(**record)
-                else:
-                    raise HTTPException(
-                        status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to update a comment that you did not create",
-                    )
+
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="You are attempting to update a comment that you did not create",
+                )

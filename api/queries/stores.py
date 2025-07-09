@@ -9,7 +9,11 @@ from pydantic import BaseModel
 
 logging.basicConfig(level=logging.DEBUG)
 
-pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+pool = ConnectionPool(conninfo=database_url)
 api_key = os.environ.get("API_KEY")
 
 
@@ -36,99 +40,64 @@ class StoresNotFoundError(Exception):
 
 class StoresQueries:
     def get_stores(self, rawg_pk: int) -> List[StoresOut]:
-        stores_list = []
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                result = db.execute(
+                    """
+                    SELECT *
+                    FROM storesdb
+                    WHERE rawg_pk = %s;
+                    """,
+                    [str(rawg_pk)],
+                )
+                rows = result.fetchall()
+                stores: List[StoresOut] = []
+                if rows and db.description is not None:
+                    for row in rows:
+                        record = dict(zip([column.name for column in db.description], row))
+                        stores.append(StoresOut(**record))
+                    return stores
 
-        try:
-            with pool.connection() as conn:
-                with conn.cursor() as cur:
-                    cur.execute(
-                        """
-                        SELECT *
-                        FROM storesdb
-                        WHERE rawg_pk = %s;
-                        """,
-                        [rawg_pk],
-                    )
-                    rows = cur.fetchall()
+        # If not in DB, fetch from API and store
+        api_url = f"https://api.rawg.io/api/games/{rawg_pk}/stores?key={api_key}"
+        response = requests.get(api_url)
 
-                    if rows:
-                        for row in rows:
-                            record = dict(
-                                zip([column.name for column in cur.description], row)
-                            )
-                            stores_list.append(StoresOut(**record))
-                        logging.debug("stores from Database: %s", stores_list)
+        if response.status_code == 200:
+            external_data = response.json()
+            external_stores = external_data.get("results", [])
 
-        except Exception as db_error:
-            logging.error(db_error)
+            if external_stores:
+                stores_list: List[StoresOut] = []
 
-            api_url = f"https://api.rawg.io/api/games/{rawg_pk}/stores?key={api_key}"
-            response = requests.get(api_url)
+                with pool.connection() as conn:
+                    with conn.cursor() as cur:
+                        for store in external_stores:
+                            if store.get("store_id") in [1, 2, 3, 6]:
+                                platform = {
+                                    1: "PC",
+                                    2: "Xbox",
+                                    3: "PlayStation",
+                                    6: "Nintendo",
+                                }.get(store["store_id"], "")
 
-            if response.status_code == 200:
-                external_data = response.json()
-                stores = external_data.get("results", [])
+                                cur.execute(
+                                    """
+                                    INSERT INTO storesdb (platform, url, rawg_pk)
+                                    VALUES (%s, %s, %s)
+                                    RETURNING id, platform, url, rawg_pk;
+                                    """,
+                                    [platform, store["url"], rawg_pk],
+                                )
+                                conn.commit()
+                                row = cur.fetchone()
+                                if row and cur.description is not None:
+                                    record = dict(zip([col.name for col in cur.description], row))
+                                    stores_list.append(StoresOut(**record))
 
-                if stores:
-                    try:
-                        with pool.connection() as conn:
-                            with conn.cursor() as cur:
-                                good_stores = []
-                                for store in stores:
-                                    if store.get("store_id") in [1, 2, 3, 6]:
-                                        good_stores.append(store)
-                                for store in good_stores:
-                                    print("these are good stores:", store)
-                                    store_url = store.get("url")
-                                    store_id = store.get("store_id")
-                                    platform = ""
-                                    if store_id == 1:
-                                        platform = "PC"
-                                    elif store_id == 2:
-                                        platform = "Xbox"
-                                    elif store_id == 3:
-                                        platform = "PlayStation"
-                                    elif store_id == 6:
-                                        platform = "Nintendo"
+                if stores_list:
+                    return stores_list
 
-                                    cur.execute(
-                                        """
-                                        INSERT INTO storesdb (platform, url, rawg_pk)
-                                        VALUES (%s, %s, %s)
-                                        RETURNING id, platform, url, rawg_pk;
-                                        """,
-                                        [platform, store_url, rawg_pk],
-                                    )
-                                    conn.commit()
-                                    row = cur.fetchone()
-                                    print("THIS IS THE ROW", row)
-                                    if row is not None:
-                                        record = dict(
-                                            zip(
-                                                [
-                                                    column.name
-                                                    for column in cur.description
-                                                ],
-                                                row,
-                                            )
-                                        )
-                                        stores_list.append(StoresOut(**record))
-
-                    except Exception as db_error:
-                        logging.error(
-                            "Error inserting stores into the database: %s", db_error
-                        )
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Error adding stores into the database",
-                        )
-
-        if not stores_list:
-            logging.debug("No stores found in both database and API.")
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="No screenshots found in both database and API",
-            )
-
-        logging.debug("Returning stores: %s", stores_list)
-        return stores_list
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No stores found in both database and API",
+        )

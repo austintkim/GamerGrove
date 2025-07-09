@@ -5,8 +5,11 @@ from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
-pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
 
+pool = ConnectionPool(conninfo=database_url)
 
 class IconIn(BaseModel):
     name: str
@@ -30,14 +33,13 @@ class IconQueries:
                     """
                 )
                 rows = db.fetchall()
-                icons = []
-                if rows:
-                    record = {}
+                icons: List[IconOut] = []
+                if rows and db.description is not None:
                     for row in rows:
-                        for i, column in enumerate(db.description):
-                            record[column.name] = row[i]
+                        record = dict(zip([column.name for column in db.description], row))
                         icons.append(IconOut(**record))
                     return icons
+
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Could not find the icons in the database",
@@ -45,8 +47,8 @@ class IconQueries:
 
     def get_icon(self, id: int) -> IconOut:
         with pool.connection() as conn:
-            with conn.cursor() as cur:
-                result = cur.execute(
+            with conn.cursor() as db:
+                result = db.execute(
                     """
                     SELECT *
                     FROM icons
@@ -55,9 +57,10 @@ class IconQueries:
                     [id],
                 )
                 row = result.fetchone()
-                if row is not None:
-                    record = {}
-                    for i, column in enumerate(cur.description):
-                        record[column.name] = row[i]
-                    return IconOut(**record)
+                if row is not None and db.description is not None:
+                    return IconOut(
+                        id=row[0],
+                        name=row[1],
+                        icon_url=row[2]
+                    )
                 raise ValueError("Could not get icon")

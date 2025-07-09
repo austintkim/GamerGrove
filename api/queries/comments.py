@@ -6,7 +6,11 @@ from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
-pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+pool = ConnectionPool(conninfo=database_url)
 
 
 class HttpError(BaseModel):
@@ -50,13 +54,11 @@ class CommentQueries:
                     [account_id],
                 )
                 rows = result.fetchall()
-                comments = []
-                if rows:
+                comments: List[CommentOut] = []
+                if rows and db.description is not None:
                     for row in rows:
-                        data = {}
-                        for i, column in enumerate(db.description):
-                            data[column.name] = row[i]
-                        comments.append(CommentOut(**data))
+                        record = dict(zip([column.name for column in db.description], row))
+                        comments.append(CommentOut(**record))
                     return comments
 
                 raise HTTPException(
@@ -76,13 +78,11 @@ class CommentQueries:
                     [review_id],
                 )
                 rows = result.fetchall()
-                comments = []
-                if rows:
-                    records = {}
+                comments: List[CommentOut] = []
+                if rows and db.description is not None:
                     for row in rows:
-                        for i, column in enumerate(db.description):
-                            records[column.name] = row[i]
-                        comments.append(CommentOut(**records))
+                        record = dict(zip([column.name for column in db.description], row))
+                        comments.append(CommentOut(**record))
                     return comments
 
                 raise HTTPException(
@@ -102,11 +102,16 @@ class CommentQueries:
                     [id],
                 )
                 row = result.fetchone()
-                if row:
-                    records = {}
-                    for i, column in enumerate(db.description):
-                        records[column.name] = row[i]
-                    return CommentOut(**records)
+                if row and db.description is not None:
+                    return CommentOut(
+                        id=row[0],
+                        body=row[1],
+                        account_id=row[2],
+                        review_id=row[3],
+                        comment_id=row[4],
+                        date_created=row[5],
+                        last_update=row[6]
+                    )
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -134,22 +139,32 @@ class CommentQueries:
                         last_update
                         """,
                         [
-                            comment_dict["account_id"],
-                            comment_dict["review_id"],
-                            comment_dict["comment_id"],
-                            comment_dict["body"],
+                            comment_dict.account_id,
+                            comment_dict.review_id,
+                            comment_dict.comment_id,
+                            comment_dict.body
                         ],
                     )
                     row = result.fetchone()
-                    if row is not None:
-                        record = {}
-                        for i, column in enumerate(db.description):
-                            record[column.name] = row[i]
-                        return CommentOut(**record)
-                except ValueError:
+                    if row and db.description is not None:
+                        return CommentOut(
+                            id=row[0],
+                            body=row[1],
+                            account_id=row[2],
+                            review_id=row[3],
+                            comment_id=row[4],
+                            date_created=row[5],
+                            last_update=row[6],
+                        )
+                    else:
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Failed to insert comment. No data returned.",
+                        )
+                except Exception as e:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error creating comment",
+                        detail=f"Error creating comment - {str(e)}",
                     )
 
     def delete_comment(self, id: int, account_id: int) -> bool:
@@ -216,21 +231,19 @@ class CommentQueries:
                         last_update
                     """,
                     [
-                        comment_dict["body"],
+                        comment_dict.body,
                         id,
-                        comment_dict["review_id"],
-                        comment_dict["comment_id"],
-                        comment_dict["account_id"],
+                        comment_dict.review_id,
+                        comment_dict.comment_id,
+                        comment_dict.account_id,
                     ],
                 )
                 row = result.fetchone()
-                if row is not None:
-                    record = {}
-                    for i, column in enumerate(db.description):
-                        record[column.name] = row[i]
+                if row and db.description is not None:
+                    record = dict(zip([col.name for col in db.description], row))
                     return CommentOut(**record)
-                else:
-                    raise HTTPException(
-                        status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="You are attempting to update a comment that you did not create",
-                    )
+
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="You are attempting to update a comment that you did not create",
+                )

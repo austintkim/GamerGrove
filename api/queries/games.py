@@ -7,8 +7,11 @@ from psycopg import errors
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
-pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
 
+pool = ConnectionPool(conninfo=database_url)
 
 class HttpError(BaseModel):
     detail: str
@@ -66,14 +69,13 @@ class GameQueries:
                     """
                 )
                 rows = db.fetchall()
-                games = []
-                if rows:
-                    record = {}
+                games: List[GameOut] = []
+                if rows and db.description is not None:
                     for row in rows:
-                        for i, column in enumerate(db.description):
-                            record[column.name] = row[i]
+                        record = dict(
+                            zip([column.name for column in db.description], row)
+                            )
                         games.append(GameOut(**record))
-
                     return games
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -92,11 +94,25 @@ class GameQueries:
                     [id],
                 )
                 row = result.fetchone()
-                if row is not None:
-                    record = {}
-                    for i, column in enumerate(db.description):
-                        record[column.name] = row[i]
-                    return GameOut(**record)
+                if row is not None and db.description is not None:
+                    return GameOut(
+                        id=row[0],
+                        name=row[1],
+                        description=row[2],
+                        rating=row[3],
+                        dates=row[4],
+                        background_img=row[5],
+                        xbox=row[6],
+                        playstation=row[7],
+                        nintendo=row[8],
+                        pc=row[9],
+                        rating_count=row[10],
+                        rating_total=row[11],
+                        genre=row[12],
+                        developers=row[13],
+                        rawg_pk=row[14],
+                        reviews_count=row[15]
+                    )
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -104,15 +120,15 @@ class GameQueries:
                 )
 
     def create_game(self, game_dict: GameIn) -> GameOut:
-        description = game_dict["description"]
+        description = game_dict.description
         if "<p>" not in description[:3]:
             description = "<p>" + description + "</p>"
-            game_dict["description"] = description
+            game_dict.description = description
 
         with pool.connection() as conn:
-            with conn.cursor() as cur:
+            with conn.cursor() as db:
                 try:
-                    result = cur.execute(
+                    result = db.execute(
                         """
                         INSERT INTO gamesdb (
                         name,
@@ -134,87 +150,103 @@ class GameQueries:
                         RETURNING *;
                         """,
                         [
-                            game_dict["name"],
-                            game_dict["description"],
-                            game_dict["rating"],
-                            game_dict["dates"],
-                            game_dict["background_img"],
-                            game_dict["Xbox"],
-                            game_dict["PlayStation"],
-                            game_dict["Nintendo"],
-                            game_dict["PC"],
-                            game_dict["rating_count"],
-                            game_dict["rating_total"],
-                            game_dict["genre"],
-                            game_dict["developers"],
-                            game_dict["rawg_pk"],
-                            game_dict["reviews_count"],
+                            game_dict.name,
+                            game_dict.description,
+                            game_dict.rating,
+                            game_dict.dates,
+                            game_dict.background_img,
+                            game_dict.Xbox,
+                            game_dict.PlayStation,
+                            game_dict.Nintendo,
+                            game_dict.PC,
+                            game_dict.rating_count,
+                            game_dict.rating_total,
+                            game_dict.genre,
+                            game_dict.developers,
+                            game_dict.rawg_pk,
+                            game_dict.reviews_count,
                         ],
                     )
 
                     row = result.fetchone()
-                    if row is not None:
-                        record = {}
-                        for i, column in enumerate(cur.description):
-                            record[column.name] = row[i]
-                        return GameOut(**record)
-                    if ValueError:
+                    if row is not None and db.description is not None:
+                        return GameOut(
+                            id=row[0],
+                            name=row[1],
+                            description=row[2],
+                            rating=row[3],
+                            dates=row[4],
+                            background_img=row[5],
+                            xbox=row[6],
+                            playstation=row[7],
+                            nintendo=row[8],
+                            pc=row[9],
+                            rating_count=row[10],
+                            rating_total=row[11],
+                            genre=row[12],
+                            developers=row[13],
+                            rawg_pk=row[14],
+                            reviews_count=row[15]
+                        )
+                    else:
                         raise HTTPException(
                             status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Error creating game",
+                            detail="Failed to insert game. No data returned.",
                         )
-                except errors.UniqueViolation:
+                except Exception as e:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="That game already exists in the database",
+                        detail=f"Error creating game - {str(e)}",
                     )
 
-    def update_game(self, id: int, games_dict: GameIn) -> GameOut:
+    def update_game(self, id: int, game_dict: GameIn) -> GameOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
-                try:
-                    db.execute(
-                        """
-                        UPDATE gamesdb
-                        SET name = %s,
-                            description = %s,
-                            rating = %s,
-                            dates = %s,
-                            background_img = %s,
-                            Xbox = %s,
-                            PlayStation = %s,
-                            Nintendo = %s,
-                            PC = %s,
-                            rating_count = %s,
-                            rating_total = %s,
-                            genre = %s,
-                            developers = %s,
-                            rawg_pk = %s,
-                            reviews_count = %s
-                        WHERE id = %s
-                        """,
-                        [
-                            games_dict["name"],
-                            games_dict["description"],
-                            games_dict["rating"],
-                            games_dict["dates"],
-                            games_dict["background_img"],
-                            games_dict["xbox"],
-                            games_dict["playstation"],
-                            games_dict["nintendo"],
-                            games_dict["pc"],
-                            games_dict["rating_count"],
-                            games_dict["rating_total"],
-                            games_dict["genre"],
-                            games_dict["developers"],
-                            games_dict["rawg_pk"],
-                            games_dict["reviews_count"],
-                            id,
-                        ],
-                    )
-                    return GameOut(id=id, **games_dict)
-                except ValueError:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error updating game",
-                    )
+                result = db.execute(
+                    """
+                    UPDATE gamesdb
+                    SET name = %s,
+                        description = %s,
+                        rating = %s,
+                        dates = %s,
+                        background_img = %s,
+                        Xbox = %s,
+                        PlayStation = %s,
+                        Nintendo = %s,
+                        PC = %s,
+                        rating_count = %s,
+                        rating_total = %s,
+                        genre = %s,
+                        developers = %s,
+                        rawg_pk = %s,
+                        reviews_count = %s
+                    WHERE id = %s
+                    """,
+                    [
+                        game_dict.name,
+                        game_dict.description,
+                        game_dict.rating,
+                        game_dict.dates,
+                        game_dict.background_img,
+                        game_dict.Xbox,
+                        game_dict.PlayStation,
+                        game_dict.Nintendo,
+                        game_dict.PC,
+                        game_dict.rating_count,
+                        game_dict.rating_total,
+                        game_dict.genre,
+                        game_dict.developers,
+                        game_dict.rawg_pk,
+                        game_dict.reviews_count,
+                        id,
+                    ],
+                )
+                row = result.fetchone()
+                if row and db.description is not None:
+                    record = dict(zip([col.name for col in db.description], row))
+                    return GameOut(id=id, **record)
+
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="A game with that id does not exist in the database",
+                )

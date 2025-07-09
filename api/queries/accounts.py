@@ -145,12 +145,8 @@ class AccountQueries:
                     db.execute(query, [value])
                 return db.fetchone() is None
 
-    def create(
-        self, data: AccountIn, hashed_password: str
-    ) -> AccountOutWithPassword:
-        if not self.is_unique(
-            "username", data.username
-        ) and not self.is_unique("email", data.email):
+    def create(self, data: AccountIn, hashed_password: str) -> AccountOutWithPassword:
+        if not self.is_unique("username", data.username) and not self.is_unique("email", data.email):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Both the username and email are taken",
@@ -187,38 +183,42 @@ class AccountQueries:
                         ],
                     )
                     row = result.fetchone()
-                    if row is not None:
-                        password_store = db.execute(
-                            """
-                            INSERT INTO accounts_password_history (account_id, hashed_password, is_current)
-                            VALUES (%s, %s, %s)
-                            RETURNING id, account_id, hashed_password, is_current, created_at;
-                            """,
-                            [row[0], row[2], True],
+                    if row is None:
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="Account insertion failed unexpectedly",
                         )
-                        password_row = password_store.fetchone()
 
-                        if password_row is not None:
-                            record = {
-                                "id": row[0],
-                                "username": row[1],
-                                "hashed_password": row[2],
-                                "first_name": row[3],
-                                "last_name": row[4],
-                                "email": row[5],
-                                "icon_id": row[6],
-                            }
-                            return AccountOutWithPassword(**record)
+                    password_store = db.execute(
+                        """
+                        INSERT INTO accounts_password_history (account_id, hashed_password, is_current)
+                        VALUES (%s, %s, %s)
+                        RETURNING id, account_id, hashed_password, is_current, created_at;
+                        """,
+                        [row[0], row[2], True],
+                    )
+                    password_row = password_store.fetchone()
+                    if password_row is None:
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="Failed to store password history for the account.",
+                        )
+
+                    return AccountOutWithPassword(
+                        id=row[0],
+                        username=row[1],
+                        hashed_password=row[2],
+                        first_name=row[3],
+                        last_name=row[4],
+                        email=row[5],
+                        icon_id=row[6],
+                    )
 
                 except Exception as e:
                     raise HTTPException(
-                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        status_code=status.HTTP_400_BAD_REQUEST,
                         detail=f"Something went wrong during account creation: {e}",
                     )
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to create account due to unexpected database response",
-            )
 
     def delete(
         self,

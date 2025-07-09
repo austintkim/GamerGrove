@@ -5,7 +5,11 @@ from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
-pool = ConnectionPool(conninfo=os.environ.get("DATABASE_URL"))
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+pool = ConnectionPool(conninfo=database_url)
 
 
 class HttpError(BaseModel):
@@ -47,15 +51,12 @@ class LibraryQueries:
                     [account_id],
                 )
                 library = result.fetchall()
-                library_records = []
-                if library:
+                library_records: List[LibraryOut] = []
+                if library and db.description is not None:
                     for entry in library:
-                        data = {}
-                        for i, column in enumerate(db.description):
-                            data[column.name] = entry[i]
-                        library_records.append(LibraryOut(**data))
+                        record = dict(zip([column.name for column in db.description], entry))
+                        library_records.append(LibraryOut(**record))
                     return library_records
-
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Could not find the library associated with this account",
@@ -73,11 +74,14 @@ class LibraryQueries:
                     [id],
                 )
                 row = result.fetchone()
-                if row is not None:
-                    record = {}
-                    for i, column in enumerate(db.description):
-                        record[column.name] = row[i]
-                    return LibraryOut(**record)
+                if row is not None and db.description is not None:
+                    return LibraryOut(
+                        id=row[0],
+                        wishlist=row[1],
+                        account_id=row[2],
+                        game_id=row[3],
+                        board_id=row[4]
+                    )
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -93,7 +97,7 @@ class LibraryQueries:
                         SELECT * FROM gamesdb
                         WHERE id = %s
                         """,
-                        [library_dict["game_id"]],
+                        [library_dict.game_id],
                     )
 
                     game_id_row = game_id_check.fetchone()
@@ -104,7 +108,7 @@ class LibraryQueries:
                         )
 
                     wishlist_check = db.execute(
-                        f"""
+                        """
                         SELECT 1
                         FROM libraries
                         WHERE wishlist = %s
@@ -113,9 +117,9 @@ class LibraryQueries:
                             AND account_id = %s
                         """,
                         [
-                            library_dict["wishlist"],
-                            library_dict["game_id"],
-                            library_dict["account_id"],
+                            library_dict.wishlist,
+                            library_dict.game_id,
+                            library_dict.account_id,
                         ],
                     )
 
@@ -127,12 +131,15 @@ class LibraryQueries:
                         )
 
                     board_check = db.execute(
-                        f"""
+                        """
                         SELECT 1 FROM libraries
                         WHERE game_id = %s
                             AND board_id = %s
                         """,
-                        [library_dict["game_id"], library_dict["board_id"]],
+                        [
+                            library_dict.game_id,
+                            library_dict.board_id
+                        ]
                     )
 
                     board_entry_row = board_check.fetchone()
@@ -158,23 +165,31 @@ class LibraryQueries:
                         account_id;
                         """,
                         [
-                            library_dict["wishlist"],
-                            library_dict["game_id"],
-                            library_dict["board_id"],
-                            library_dict["account_id"],
+                            library_dict.wishlist,
+                            library_dict.game_id,
+                            library_dict.board_id,
+                            library_dict.account_id,
                         ],
                     )
 
                     row = result.fetchone()
-                    if row is not None:
-                        record = {}
-                        for i, column in enumerate(db.description):
-                            record[column.name] = row[i]
-                        return LibraryOut(**record)
-                except ValueError:
+                    if row and db.description is not None:
+                        return LibraryOut(
+                            id=row[0],
+                            wishlist=row[1],
+                            account_id=row[2],
+                            game_id=row[3],
+                            board_id=row[4]
+                        )
+                    else:
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Failed to insert library entry. No data returned.",
+                        )
+                except Exception as e:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Error creating library entry",
+                        detail=f"Error creating library entry- {str(e)}",
                     )
 
     def delete_library_entry(self, id: int, account_id: int) -> bool:
