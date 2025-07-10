@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
@@ -42,7 +42,7 @@ class CommentOut(BaseModel):
 
 
 class CommentQueries:
-    def get_user_comments(self, account_id: int) -> List[CommentOut]:
+    def get_user_comments(self, account_id: int) -> list[CommentOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
@@ -54,7 +54,7 @@ class CommentQueries:
                     [account_id],
                 )
                 rows = result.fetchall()
-                comments: List[CommentOut] = []
+                comments: list[CommentOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(zip([column.name for column in db.description], row))
@@ -66,7 +66,7 @@ class CommentQueries:
                     detail="No comments written by this user",
                 )
 
-    def get_review_comments(self, review_id: int) -> List[CommentOut]:
+    def get_review_comments(self, review_id: int) -> list[CommentOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
@@ -78,7 +78,7 @@ class CommentQueries:
                     [review_id],
                 )
                 rows = result.fetchall()
-                comments: List[CommentOut] = []
+                comments: list[CommentOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(zip([column.name for column in db.description], row))

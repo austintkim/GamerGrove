@@ -1,4 +1,6 @@
 # Import necessary modules
+from datetime import datetime
+
 from fastapi.testclient import TestClient
 from main import app
 from queries.reviews import ReviewOut, ReviewQueries
@@ -18,11 +20,14 @@ class MockReviewQueries:
             id=id,
             game_id=1,
             account_id=1,
+            username="test_user",
             title="title 1",
             body="body 1",
-            replies_count="1",
-            upvote_count="1",
-            rating="1",
+            comment_count=0,
+            upvote_count=1,
+            rating=1,
+            date_created=datetime.now(),
+            last_update=datetime.now(),
         )
 
 

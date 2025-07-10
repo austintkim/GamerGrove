@@ -1,10 +1,14 @@
-from typing import List, Union
+from typing import Any, Union
 
 from authenticator import authenticator
-from fastapi import APIRouter, Depends, HTTPException, status
-from queries.games import GameQueries
+from fastapi import APIRouter, Depends
+from queries.games import (
+    GameIn,
+    GameQueries,
+)
 from queries.reviews import (
     HttpError,
+    ReviewIn,
     ReviewInBase,
     ReviewInUpdate,
     ReviewOut,
@@ -14,17 +18,8 @@ from queries.reviews import (
 router = APIRouter()
 
 
-def authenticate_user(review_data: dict):
-    account_id = review_data["id"]
-    if account_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized access"
-        )
-    return account_id
-
-
 @router.get(
-    "/api/reviews/games/{game_id}", response_model=Union[List[ReviewOut], HttpError]
+    "/api/reviews/games/{game_id}", response_model=Union[list[ReviewOut], HttpError]
 )
 async def get_game_reviews(
     game_id: int,
@@ -34,11 +29,11 @@ async def get_game_reviews(
 
 
 @router.get(
-    "/api/reviews/users/{account_id}", response_model=Union[List[ReviewOut], HttpError]
+    "/api/reviews/users/{account_id}", response_model=Union[list[ReviewOut], HttpError]
 )
 async def get_user_reviews(
     queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type:ignore
 ):
     account_id = account_data["id"]
     return queries.get_user_reviews(account_id)
@@ -57,7 +52,7 @@ async def create_review(
     review: ReviewInBase,
     queries: ReviewQueries = Depends(),
     games_queries: GameQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type:ignore
 ):
     account_id = account_data["id"]
 
@@ -73,14 +68,18 @@ async def create_review(
     game_dict["rating_total"] += rating
     game_dict["rating"] = game_dict["rating_total"] / game_dict["rating_count"]
 
-    games_queries.update_game(game_id, game_dict)
+    game_in = GameIn(**game_dict)
+
+    games_queries.update_game(game_id, game_in)
 
     review_dict["account_id"] = account_id
     username = account_data["username"]
     review_dict["comment_count"] = 0
     review_dict["upvote_count"] = 0
 
-    created_review = queries.create_review(username, review_dict)
+    review_in = ReviewIn(**review_dict)
+
+    created_review = queries.create_review(username, review_in)
     return created_review
 
 
@@ -89,7 +88,7 @@ async def delete_review(
     id: int,
     queries: ReviewQueries = Depends(),
     games_queries: GameQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type:ignore
 ):
     review_details = queries.get_review(id).dict()
     game_id = review_details["game_id"]
@@ -102,7 +101,9 @@ async def delete_review(
     game_dict["rating_total"] -= rating
     game_dict["rating"] = game_dict["rating_total"] / game_dict["rating_count"]
 
-    games_queries.update_game(game_id, game_dict)
+    game_in = GameIn(**game_dict)
+
+    games_queries.update_game(game_id, game_in)
 
     account_id = account_data["id"]
     return queries.delete_review(id, account_id)
@@ -116,7 +117,7 @@ async def update_review(
     review: ReviewInUpdate,
     queries: ReviewQueries = Depends(),
     games_queries: GameQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
 ):
     review_dict = review.dict()
 
@@ -132,7 +133,10 @@ async def update_review(
     game_dict["rating_total"] -= previous_rating
     game_dict["rating_total"] += rating
     game_dict["rating"] = game_dict["rating_total"] / game_dict["rating_count"]
-    games_queries.update_game(game_id, game_dict)
+
+    game_in = GameIn(**game_dict)
+
+    games_queries.update_game(game_id, game_in)
 
     comment_count = review_details["comment_count"]
     upvote_count = review_details["upvote_count"]
@@ -143,5 +147,7 @@ async def update_review(
     review_dict["comment_count"] = comment_count
     review_dict["upvote_count"] = upvote_count
 
-    updated_review = queries.update_review(id, username, review_dict)
+    review_in = ReviewIn(**review_dict)
+
+    updated_review = queries.update_review(id, username, review_in)
     return updated_review

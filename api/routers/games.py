@@ -1,6 +1,6 @@
 from typing import Union
 
-from fastapi import APIRouter, Depends, Request, Response
+from fastapi import APIRouter, Depends
 from queries.games import GameIn, GameOut, GameQueries, GamesList, HttpError
 
 router = APIRouter()
@@ -9,13 +9,13 @@ router = APIRouter()
 @router.post("/api/games", response_model=Union[GameOut, HttpError])
 async def create_game(
     game: GameIn,
-    request: Request,
-    response: Response,
     queries: GameQueries = Depends(),
 ):
-    print(game)
     game_dict = game.dict()
-    created_game = queries.create_game(game_dict)
+
+    game_in = GameIn(**game_dict)
+
+    created_game = queries.create_game(game_in)
     return created_game
 
 
@@ -39,5 +39,8 @@ async def update_game(
     queries: GameQueries = Depends(),
 ):
     game_dict = game.dict()
-    updated_game = queries.update_game(id, game_dict)
+
+    game_in = GameIn(**game_dict)
+
+    updated_game = queries.update_game(id, game_in)
     return updated_game

@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
@@ -64,7 +63,7 @@ class BoardQueries:
                     detail="Could not find a board with that id",
                 )
 
-    def get_all_boards(self, account_id: int) -> List[BoardOut]:
+    def get_all_boards(self, account_id: int) -> list[BoardOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
@@ -76,7 +75,7 @@ class BoardQueries:
                     [account_id],
                 )
                 rows = result.fetchall()
-                boards: List[BoardOut] = []
+                boards: list[BoardOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(

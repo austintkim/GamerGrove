@@ -1,5 +1,5 @@
 import string
-from typing import Union
+from typing import Any, Union
 
 from authenticator import authenticator
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
@@ -22,55 +22,23 @@ class HttpError(BaseModel):
 router = APIRouter()
 
 
+def password_strength(password: str) -> tuple[int, dict[str, int]]:
+    upper_score = 1 if any(c.isupper() for c in password) else 0
+    lower_score = 1 if any(c.islower() for c in password) else 0
+    number_score = 1 if any(c.isdigit() for c in password) else 0
+    special_score = 1 if any(c in string.punctuation for c in password) else 0
 
-def password_strength(password: str) -> tuple:
+    requirements: dict[str, int] = {
+        "upper_score": upper_score,
+        "lower_score": lower_score,
+        "number_score": number_score,
+        "special_score": special_score,
+    }
+
     if len(password) < 8:
-        upper_score = 0
-        lower_score = 0
-        number_score = 0
-        special_score = 0
-
-        if any(c.isupper() for c in password):
-            upper_score += 1
-        if any(c.islower() for c in password):
-            lower_score += 1
-        if any(c.isdigit() for c in password):
-            number_score += 1
-        if any(c in string.punctuation for c in password):
-            special_score += 1
-
-        score = 0
-
-        requirements = {}
-        requirements["upper_score"] = upper_score
-        requirements["lower_score"] = lower_score
-        requirements["number_score"] = number_score
-        requirements["special_score"] = special_score
-
-        return (score, requirements)
-
-    upper_score = 0
-    lower_score = 0
-    number_score = 0
-    special_score = 0
-
-    if any(c.isupper() for c in password):
-        upper_score += 1
-    if any(c.islower() for c in password):
-        lower_score += 1
-    if any(c.isdigit() for c in password):
-        number_score += 1
-    if any(c in string.punctuation for c in password):
-        special_score += 1
+        return (0, requirements)
 
     score = upper_score + lower_score + number_score + special_score
-
-    requirements = {}
-    requirements["upper_score"] = upper_score
-    requirements["lower_score"] = lower_score
-    requirements["number_score"] = number_score
-    requirements["special_score"] = special_score
-
     return (score, requirements)
 
 
@@ -84,7 +52,7 @@ async def create_account(
     password_score, conditions = password_strength(data.password)
 
     if not password_score:
-        missing_parts = []
+        missing_parts: list[str] = []
         if not conditions["upper_score"]:
             missing_parts.append("at least one uppercase letter")
         if not conditions["lower_score"]:
@@ -104,7 +72,7 @@ async def create_account(
             detail=f"Your password strength is invalid - it must be at least 8 characters. It must also be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.",
         )
     elif password_score < 3:
-        missing_parts = []
+        missing_parts: list[str] = []
         if not conditions["upper_score"]:
             missing_parts.append("at least one uppercase letter")
         if not conditions["lower_score"]:
@@ -130,12 +98,12 @@ async def create_account(
                 detail=f"Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least one of the following missing requirements: {missing}.",
             )
 
-    hashed_password = authenticator.hash_password(data.password)
+    hashed_password = authenticator.hash_password(data.password) #type: ignore
 
     account = queries.create(data, hashed_password)
 
     form = AccountForm(username=data.username, password=data.password)
-    token = await authenticator.login(response, request, form, queries)
+    token = await authenticator.login(response, request, form, queries) #type: ignore
     return AccountToken(account=account, **token.dict())
 
 
@@ -154,8 +122,8 @@ async def delete_account(
     id: int,
     data: AccountInDelete,
     queries: AccountQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
-):
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+) -> bool:
     username = account_data["username"]
     return queries.delete(id, username, data)
 
@@ -169,7 +137,7 @@ async def update_account(
     request: Request,
     response: Response,
     queries: AccountQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
 ):
     username = account_data["username"]
 
@@ -181,7 +149,7 @@ async def update_account(
         password_score, conditions = password_strength(data.new_password)
 
         if not password_score:
-            missing_parts = []
+            missing_parts: list[str] = []
             if not conditions["upper_score"]:
                 missing_parts.append("at least one uppercase letter")
             if not conditions["lower_score"]:
@@ -201,7 +169,7 @@ async def update_account(
                 detail=f"Your password strength is invalid - it must be at least 8 characters. It must also be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.",
             )
         elif password_score < 3:
-            missing_parts = []
+            missing_parts: list[str] = []
             if not conditions["upper_score"]:
                 missing_parts.append("at least one uppercase letter")
             if not conditions["lower_score"]:
@@ -230,18 +198,20 @@ async def update_account(
     updated_account = queries.update(id, username, data)
 
     form = AccountForm(username=data.username, password=password_for_login)
-    token = await authenticator.login(response, request, form, queries)
+    token = await authenticator.login(response, request, form, queries) #type: ignore
     return AccountToken(account=updated_account, **token.dict())
 
 
 @router.get("/token", response_model=AccountToken | None)
 async def get_token(
     request: Request,
-    account: dict = Depends(authenticator.try_get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.try_get_current_account_data), #type:ignore
 ) -> AccountToken | None:
-    if account and authenticator.cookie_name in request.cookies:
-        return {
-            "access_token": request.cookies[authenticator.cookie_name],
-            "type": "Bearer",
-            "account": account,
-        }
+    if account_data and authenticator.cookie_name in request.cookies:
+        account = AccountOut(**account_data)
+        return AccountToken(
+            access_token=request.cookies[authenticator.cookie_name],
+            token_type="Bearer",
+            account=account,
+        )
+    return None

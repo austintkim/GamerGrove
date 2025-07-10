@@ -1,9 +1,7 @@
 import os
 from datetime import date
-from typing import List
 
 from fastapi import HTTPException, status
-from psycopg import errors
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
@@ -59,7 +57,7 @@ class GamesList(BaseModel):
 
 
 class GameQueries:
-    def get_all_games(self) -> List[GameOut]:
+    def get_all_games(self) -> list[GameOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -69,7 +67,7 @@ class GameQueries:
                     """
                 )
                 rows = db.fetchall()
-                games: List[GameOut] = []
+                games: list[GameOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(

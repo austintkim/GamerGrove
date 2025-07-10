@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
@@ -23,7 +22,7 @@ class IconOut(BaseModel):
 
 
 class IconQueries:
-    def get_all_icons(self) -> List[IconOut]:
+    def get_all_icons(self) -> list[IconOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -33,7 +32,7 @@ class IconQueries:
                     """
                 )
                 rows = db.fetchall()
-                icons: List[IconOut] = []
+                icons: list[IconOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(zip([column.name for column in db.description], row))

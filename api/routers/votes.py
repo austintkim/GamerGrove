@@ -1,9 +1,12 @@
-from typing import List, Union
+from typing import Any, Union
 
 from authenticator import authenticator
 from fastapi import APIRouter, Depends
-from queries.reviews import ReviewQueries
-from queries.votes import HttpError, VoteInBase, VoteInUpdate, VoteOut, VoteQueries
+from queries.reviews import (
+    ReviewIn,
+    ReviewQueries,
+)
+from queries.votes import HttpError, VoteIn, VoteInBase, VoteInUpdate, VoteOut, VoteQueries
 
 router = APIRouter()
 
@@ -13,9 +16,11 @@ async def create_vote(
     vote: VoteInBase,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
 ):
     account_id = account_data["id"]
+    username = account_data["username"]
+
     vote_dict = vote.dict()
     vote_dict["account_id"] = account_id
 
@@ -28,25 +33,29 @@ async def create_vote(
     else:
         review_dict["upvote_count"] -= 1
 
-    review_queries.update_review(review_id, review_dict)
+    review_in = ReviewIn(**review_dict)
 
-    created_vote = queries.create_vote(vote_dict)
+    review_queries.update_review(review_id, username, review_in)
+
+    vote_in = VoteIn(**vote_dict)
+
+    created_vote = queries.create_vote(vote_in)
     return created_vote
 
 
 @router.get(
-    "/api/votes/users/{account_id}", response_model=Union[List[VoteOut], HttpError]
+    "/api/votes/users/{account_id}", response_model=Union[list[VoteOut], HttpError]
 )
 async def get_user_votes(
     queries: VoteQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
 ):
     account_id = account_data["id"]
     return queries.get_user_votes(account_id)
 
 
 @router.get(
-    "/api/votes/reviews/{review_id}", response_model=Union[List[VoteOut], HttpError]
+    "/api/votes/reviews/{review_id}", response_model=Union[list[VoteOut], HttpError]
 )
 async def get_review_votes(
     review_id: int,
@@ -68,8 +77,11 @@ async def delete_vote(
     id: int,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
 ):
+    account_id = account_data["id"]
+    username = account_data["username"]
+
     vote_details = queries.get_vote(id).dict()
     review_id = vote_details["review_id"]
     review_dict = review_queries.get_review(review_id).dict()
@@ -79,9 +91,10 @@ async def delete_vote(
     else:
         review_dict["upvote_count"] += 1
 
-    review_queries.update_review(review_id, review_dict)
+    review_in = ReviewIn(**review_dict)
 
-    account_id = account_data["id"]
+    review_queries.update_review(review_id, username, review_in)
+
     return queries.delete_vote(id, account_id)
 
 
@@ -91,11 +104,13 @@ async def update_vote(
     vote: VoteInUpdate,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict = Depends(authenticator.get_current_account_data),
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
 ):
+    account_id = account_data["id"]
+    username = account_data["username"]
+
     vote_details = queries.get_vote(id).dict()
 
-    account_id = account_data["id"]
     review_id = vote_details["review_id"]
 
     vote_dict = vote.dict()
@@ -109,7 +124,11 @@ async def update_vote(
         review_dict["upvote_count"] += 2
     elif vote_dict["upvote"] is False and vote_details["upvote"] is True:
         review_dict["upvote_count"] -= 2
-    review_queries.update_review(review_id, review_dict)
 
-    updated_vote = queries.update_vote(id, vote_dict)
+    review_in = ReviewIn(**review_dict)
+    review_queries.update_review(review_id, username, review_in)
+
+    vote_in = VoteIn(**vote_dict)
+
+    updated_vote = queries.update_vote(id, vote_in)
     return updated_vote

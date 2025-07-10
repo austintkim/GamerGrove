@@ -4,8 +4,7 @@ from authenticator import authenticator
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import (accounts, boards, comments, games, icons, libraries,
-                     reviews, screenshots, stores, votes)
+from routers import accounts, boards, comments, games, icons, libraries, reviews, screenshots, stores, votes
 from seederfile import seed_data
 
 load_dotenv()

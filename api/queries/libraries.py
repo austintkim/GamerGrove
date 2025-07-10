@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
@@ -39,7 +39,7 @@ class LibraryOut(BaseModel):
 
 
 class LibraryQueries:
-    def get_library(self, account_id: int) -> List[LibraryOut]:
+    def get_library(self, account_id: int) -> list[LibraryOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
@@ -51,7 +51,7 @@ class LibraryQueries:
                     [account_id],
                 )
                 library = result.fetchall()
-                library_records: List[LibraryOut] = []
+                library_records: list[LibraryOut] = []
                 if library and db.description is not None:
                     for entry in library:
                         record = dict(zip([column.name for column in db.description], entry))

@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from typing import List
 
 from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
@@ -40,7 +39,7 @@ class VoteOut(BaseModel):
 
 
 class VoteQueries:
-    def get_user_votes(self, account_id: int) -> List[VoteOut]:
+    def get_user_votes(self, account_id: int) -> list[VoteOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
@@ -52,7 +51,7 @@ class VoteQueries:
                     [account_id],
                 )
                 rows = result.fetchall()
-                votes: List[VoteOut] = []
+                votes: list[VoteOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(zip([column.name for column in db.description], row))
@@ -64,7 +63,7 @@ class VoteQueries:
                     detail="No votes by this user",
                 )
 
-    def get_review_votes(self, review_id: int) -> List[VoteOut]:
+    def get_review_votes(self, review_id: int) -> list[VoteOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
@@ -76,7 +75,7 @@ class VoteQueries:
                     [review_id],
                 )
                 rows = result.fetchall()
-                votes: List[VoteOut] = []
+                votes: list[VoteOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(zip([column.name for column in db.description], row))

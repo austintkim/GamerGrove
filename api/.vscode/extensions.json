@@ -1,5 +1,12 @@
 {
     "recommendations": [
-        "ms-python.python"
+        "ms-python.python",          // Python support
+        "ms-python.pylint",          // Linting support (if you choose to add Pylint, optional)
+        "ms-python.black-formatter", // Black formatting
+        "charliermarsh.ruff",        // Ruff linter
+        "ms-python.mypy-type-checker", // Mypy static typing
+        "bungcip.better-toml",       // TOML syntax highlighting (for pyproject.toml)
+        "njpwerner.autodocstring",   // Auto-generate docstrings (optional)
+        "ms-azuretools.vscode-docker" // Docker support (optional, if you're containerized)
     ]
 }

@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Any, List
+from typing import Any
 
 from fastapi import HTTPException, status
 from psycopg_pool import ConnectionPool
@@ -51,7 +51,7 @@ class ReviewOut(BaseModel):
 
 
 class ReviewQueries:
-    def get_game_reviews(self, game_id: int) -> List[ReviewOut]:
+    def get_game_reviews(self, game_id: int) -> list[ReviewOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -63,7 +63,7 @@ class ReviewQueries:
                     [game_id],
                 )
                 rows = db.fetchall()
-                reviews: List[ReviewOut] = []
+                reviews: list[ReviewOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(zip([column.name for column in db.description], row))
@@ -107,7 +107,7 @@ class ReviewQueries:
                     detail="Could not find a review with that id",
                 )
 
-    def get_user_reviews(self, account_id: int) -> List[ReviewOut]:
+    def get_user_reviews(self, account_id: int) -> list[ReviewOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
@@ -119,7 +119,7 @@ class ReviewQueries:
                     [account_id],
                 )
                 rows = db.fetchall()
-                reviews: List[ReviewOut] = []
+                reviews: list[ReviewOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(zip([column.name for column in db.description], row))
@@ -251,8 +251,8 @@ class ReviewQueries:
                 columns = [desc[0] for desc in db.description]
                 existing_review = dict(zip(columns, id_row))
 
-                update_fields: List[Any] = []
-                update_values: List[Any] = []
+                update_fields: list[Any] = []
+                update_values: list[Any] = []
 
                 if review_dict.title != existing_review["title"]:
                     update_fields.append("title = %s")

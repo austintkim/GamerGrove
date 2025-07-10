@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import List
 
 import requests
 from fastapi import HTTPException, status
@@ -40,8 +39,8 @@ class ScreenshotsNotFoundError(Exception):
 
 
 class ScreenshotsQueries:
-    def get_screenshots(self, rawg_pk: int) -> List[ScreenshotsOut]:
-        screenshots_list: List[ScreenshotsOut] = []
+    def get_screenshots(self, rawg_pk: int) -> list[ScreenshotsOut]:
+        screenshots_list: list[ScreenshotsOut] = []
 
         try:
             screenshots_list.extend(self.retrieve_screenshots_from_database(rawg_pk))
@@ -61,8 +60,8 @@ class ScreenshotsQueries:
 
         return screenshots_list
 
-    def retrieve_screenshots_from_database(self, rawg_pk: int) -> List[ScreenshotsOut]:
-        screenshots_list: List[ScreenshotsOut] = []
+    def retrieve_screenshots_from_database(self, rawg_pk: int) -> list[ScreenshotsOut]:
+        screenshots_list: list[ScreenshotsOut] = []
 
         try:
             with pool.connection() as conn:
@@ -92,8 +91,8 @@ class ScreenshotsQueries:
 
         return screenshots_list
 
-    def retrieve_screenshots_from_api(self, rawg_pk: int) -> List[ScreenshotsOut]:
-        screenshots_list: List[ScreenshotsOut] = []
+    def retrieve_screenshots_from_api(self, rawg_pk: int) -> list[ScreenshotsOut]:
+        screenshots_list: list[ScreenshotsOut] = []
 
         api_url = f"https://api.rawg.io/api/games/{rawg_pk}/screenshots?key={api_key}"
         response = requests.get(api_url)

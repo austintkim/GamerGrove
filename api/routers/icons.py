@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Union
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -12,7 +12,7 @@ class HttpError(BaseModel):
 router = APIRouter()
 
 
-@router.get("/api/icons", response_model=Union[List[IconOut], HttpError])
+@router.get("/api/icons", response_model=Union[list[IconOut], HttpError])
 async def get_all_icons(queries: IconQueries = Depends()):
     return queries.get_all_icons()
 

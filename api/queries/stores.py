@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import List
 
 import requests
 from fastapi import HTTPException, status
@@ -39,7 +38,7 @@ class StoresNotFoundError(Exception):
 
 
 class StoresQueries:
-    def get_stores(self, rawg_pk: int) -> List[StoresOut]:
+    def get_stores(self, rawg_pk: int) -> list[StoresOut]:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
@@ -51,7 +50,7 @@ class StoresQueries:
                     [str(rawg_pk)],
                 )
                 rows = result.fetchall()
-                stores: List[StoresOut] = []
+                stores: list[StoresOut] = []
                 if rows and db.description is not None:
                     for row in rows:
                         record = dict(zip([column.name for column in db.description], row))
@@ -67,7 +66,7 @@ class StoresQueries:
             external_stores = external_data.get("results", [])
 
             if external_stores:
-                stores_list: List[StoresOut] = []
+                stores_list: list[StoresOut] = []
 
                 with pool.connection() as conn:
                     with conn.cursor() as cur:
