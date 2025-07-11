@@ -8,18 +8,21 @@ RUN pip install poetry
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
 
-WORKDIR /deps
-
-# Copy only poetry files for dependency install
-COPY pyproject.toml poetry.lock* /deps/
-
-# Install dependencies (without installing the package itself)
-RUN poetry install --no-root
-
 WORKDIR /app
 
-# Copy app source code
+# Keep poetry virtualenv inside project folder so it's accessible reliably
+ENV POETRY_VIRTUALENVS_IN_PROJECT=true
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Copy poetry files first and install dependencies
+COPY pyproject.toml poetry.lock* /app/
+
+RUN poetry install --no-root
+
+# Copy backend source code
 COPY . /app
 
-# Start app with reload and migrations
-CMD /wait && python -m migrations up && poetry run uvicorn main:app --reload --host 0.0.0.0
+ENV PYTHONPATH=/app
+
+# Run migrations and start server using poetry virtualenv
+CMD /wait && poetry run python -m api.migrations up && poetry run uvicorn api.main:app --reload --host 0.0.0.0

@@ -31,12 +31,12 @@ services:
             SIGNING_KEY: ${SIGNING_KEY_FROM_ENV_FILE}
             API_KEY: ${RAWG_API_KEY}
         build:
-            context: api
-            dockerfile: Dockerfile.dev
+            context: .
+            dockerfile: api/Dockerfile.dev
         ports:
             - 8000:8000
         volumes:
-            - ./api:/app
+            - ./api:/app/api 
         depends_on:
             - pg-admin
             - postgres
