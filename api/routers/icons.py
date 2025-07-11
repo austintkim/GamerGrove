@@ -2,7 +2,8 @@ from typing import Union
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from queries.icons import IconOut, IconQueries
+
+from ..queries.icons import IconOut, IconQueries
 
 
 class HttpError(BaseModel):

@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Any
 
 import requests
 from fastapi import HTTPException, status
@@ -52,8 +53,11 @@ class StoresQueries:
                 rows = result.fetchall()
                 stores: list[StoresOut] = []
                 if rows and db.description is not None:
-                    for row in rows:
-                        record = dict(zip([column.name for column in db.description], row))
+                    for db_row in rows:
+                        if db_row is None:
+                            continue
+                        col_names: list[str] = [str(column.name) for column in db.description]
+                        record: dict[str, Any] = dict(zip(col_names, list(db_row)))
                         stores.append(StoresOut(**record))
                     return stores
 
@@ -88,9 +92,9 @@ class StoresQueries:
                                     [platform, store["url"], rawg_pk],
                                 )
                                 conn.commit()
-                                row = cur.fetchone()
-                                if row and cur.description is not None:
-                                    record = dict(zip([col.name for col in cur.description], row))
+                                inserted_row: tuple[Any, ...] | None = cur.fetchone()
+                                if inserted_row and cur.description is not None:
+                                    record = dict(zip([col.name for col in cur.description], inserted_row))
                                     stores_list.append(StoresOut(**record))
 
                 if stores_list:

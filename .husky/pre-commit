@@ -2,4 +2,5 @@
 npx lint-staged
 
 # Backend Python formatting/linting
-poetry run pre-commit run --files $(git diff --cached --name-only | grep '\.py$' || true)
+poetry run pre-commit run --files $(git diff --cached --name-only | grep '^api/.*\.py$' || true)
+

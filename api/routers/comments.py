@@ -2,18 +2,9 @@ from typing import Any, Union
 
 from authenticator import authenticator
 from fastapi import APIRouter, Depends
-from queries.comments import (
-    CommentIn,
-    CommentInBase,
-    CommentInUpdate,
-    CommentOut,
-    CommentQueries,
-    HttpError,
-)
-from queries.reviews import (
-    ReviewIn,
-    ReviewQueries,
-)
+
+from ..queries.comments import CommentIn, CommentInBase, CommentInUpdate, CommentOut, CommentQueries, HttpError
+from ..queries.reviews import ReviewIn, ReviewQueries
 
 router = APIRouter()
 
@@ -23,7 +14,7 @@ async def create_comment(
     comment: CommentInBase,
     queries: CommentQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     username = account_data["username"]
@@ -52,7 +43,7 @@ async def create_comment(
 )
 async def get_user_comments(
     queries: CommentQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     return queries.get_user_comments(account_id)
@@ -82,7 +73,7 @@ async def delete_comment(
     id: int,
     queries: CommentQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     username = account_data["username"]
@@ -100,14 +91,12 @@ async def delete_comment(
     return queries.delete_comment(id, account_id)
 
 
-@router.put(
-    "/api/comments/{id}/{account_id}", response_model=Union[CommentOut, HttpError]
-)
+@router.put("/api/comments/{id}/{account_id}", response_model=Union[CommentOut, HttpError])
 async def update_comment(
     id: int,
     comment: CommentInUpdate,
     queries: CommentQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     comment_details = queries.get_comment(id).dict()
 

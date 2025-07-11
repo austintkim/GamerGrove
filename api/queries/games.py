@@ -11,6 +11,7 @@ if database_url is None:
 
 pool = ConnectionPool(conninfo=database_url)
 
+
 class HttpError(BaseModel):
     detail: str
 
@@ -70,9 +71,7 @@ class GameQueries:
                 games: list[GameOut] = []
                 if rows and db.description is not None:
                     for row in rows:
-                        record = dict(
-                            zip([column.name for column in db.description], row)
-                            )
+                        record = dict(zip([column.name for column in db.description], row))
                         games.append(GameOut(**record))
                     return games
                 raise HTTPException(
@@ -109,7 +108,7 @@ class GameQueries:
                         genre=row[12],
                         developers=row[13],
                         rawg_pk=row[14],
-                        reviews_count=row[15]
+                        reviews_count=row[15],
                     )
 
                 raise HTTPException(
@@ -184,7 +183,7 @@ class GameQueries:
                             genre=row[12],
                             developers=row[13],
                             rawg_pk=row[14],
-                            reviews_count=row[15]
+                            reviews_count=row[15],
                         )
                     else:
                         raise HTTPException(

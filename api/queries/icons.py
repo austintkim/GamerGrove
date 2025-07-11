@@ -10,6 +10,7 @@ if database_url is None:
 
 pool = ConnectionPool(conninfo=database_url)
 
+
 class IconIn(BaseModel):
     name: str
     icon_url: str
@@ -57,9 +58,5 @@ class IconQueries:
                 )
                 row = result.fetchone()
                 if row is not None and db.description is not None:
-                    return IconOut(
-                        id=row[0],
-                        name=row[1],
-                        icon_url=row[2]
-                    )
+                    return IconOut(id=row[0], name=row[1], icon_url=row[2])
                 raise ValueError("Could not get icon")

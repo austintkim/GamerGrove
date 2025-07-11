@@ -1,7 +1,8 @@
 from typing import Union
 
 from fastapi import APIRouter, Depends
-from queries.games import GameIn, GameOut, GameQueries, GamesList, HttpError
+
+from ..queries.games import GameIn, GameOut, GameQueries, GamesList, HttpError
 
 router = APIRouter()
 

@@ -103,15 +103,7 @@ class CommentQueries:
                 )
                 row = result.fetchone()
                 if row and db.description is not None:
-                    return CommentOut(
-                        id=row[0],
-                        body=row[1],
-                        account_id=row[2],
-                        review_id=row[3],
-                        comment_id=row[4],
-                        date_created=row[5],
-                        last_update=row[6]
-                    )
+                    return CommentOut(id=row[0], body=row[1], account_id=row[2], review_id=row[3], comment_id=row[4], date_created=row[5], last_update=row[6])
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -138,12 +130,7 @@ class CommentQueries:
                         date_created,
                         last_update
                         """,
-                        [
-                            comment_dict.account_id,
-                            comment_dict.review_id,
-                            comment_dict.comment_id,
-                            comment_dict.body
-                        ],
+                        [comment_dict.account_id, comment_dict.review_id, comment_dict.comment_id, comment_dict.body],
                     )
                     row = result.fetchone()
                     if row and db.description is not None:

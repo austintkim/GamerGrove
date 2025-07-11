@@ -24,16 +24,16 @@ class MyAuthenticator(Authenticator):
         # Return the accounts. That's it.
         return account_getter
 
-    def get_hashed_password(self, account_data: AccountOutWithPassword): #type: ignore
+    def get_hashed_password(self, account_data: AccountOutWithPassword):  # type: ignore
         # Return the encrypted password value from your
         # account object
         return account_data.hashed_password
 
-    def get_account_data_for_cookie(self, account_data: AccountOut): #type: ignore
+    def get_account_data_for_cookie(self, account_data: AccountOut):  # type: ignore
         # Return the username and the data for the cookie.
         # You must return TWO values from this method.
         if isinstance(account_data, dict):
-            account_data = AccountOutWithPassword(**account_data) #type: ignore
+            account_data = AccountOutWithPassword(**account_data)  # type: ignore
 
         return account_data.username, account_data.dict()
 

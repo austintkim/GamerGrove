@@ -2,25 +2,14 @@ from typing import Any, Union
 
 from authenticator import authenticator
 from fastapi import APIRouter, Depends
-from queries.games import (
-    GameIn,
-    GameQueries,
-)
-from queries.reviews import (
-    HttpError,
-    ReviewIn,
-    ReviewInBase,
-    ReviewInUpdate,
-    ReviewOut,
-    ReviewQueries,
-)
+
+from ..queries.games import GameIn, GameQueries
+from ..queries.reviews import HttpError, ReviewIn, ReviewInBase, ReviewInUpdate, ReviewOut, ReviewQueries
 
 router = APIRouter()
 
 
-@router.get(
-    "/api/reviews/games/{game_id}", response_model=Union[list[ReviewOut], HttpError]
-)
+@router.get("/api/reviews/games/{game_id}", response_model=Union[list[ReviewOut], HttpError])
 async def get_game_reviews(
     game_id: int,
     queries: ReviewQueries = Depends(),
@@ -28,12 +17,10 @@ async def get_game_reviews(
     return queries.get_game_reviews(game_id)
 
 
-@router.get(
-    "/api/reviews/users/{account_id}", response_model=Union[list[ReviewOut], HttpError]
-)
+@router.get("/api/reviews/users/{account_id}", response_model=Union[list[ReviewOut], HttpError])
 async def get_user_reviews(
     queries: ReviewQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type:ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type:ignore
 ):
     account_id = account_data["id"]
     return queries.get_user_reviews(account_id)
@@ -52,7 +39,7 @@ async def create_review(
     review: ReviewInBase,
     queries: ReviewQueries = Depends(),
     games_queries: GameQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type:ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type:ignore
 ):
     account_id = account_data["id"]
 
@@ -88,7 +75,7 @@ async def delete_review(
     id: int,
     queries: ReviewQueries = Depends(),
     games_queries: GameQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type:ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type:ignore
 ):
     review_details = queries.get_review(id).dict()
     game_id = review_details["game_id"]
@@ -109,15 +96,13 @@ async def delete_review(
     return queries.delete_review(id, account_id)
 
 
-@router.put(
-    "/api/reviews/{id}/{account_id}", response_model=Union[ReviewOut, HttpError]
-)
+@router.put("/api/reviews/{id}/{account_id}", response_model=Union[ReviewOut, HttpError])
 async def update_review(
     id: int,
     review: ReviewInUpdate,
     queries: ReviewQueries = Depends(),
     games_queries: GameQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     review_dict = review.dict()
 

@@ -21,12 +21,13 @@ mypy = "^1.16.1"
 ruff = "^0.12.2"
 isort = "^6.0.1"
 pre-commit = "^4.2.0"
+types-requests = "^2.32.4.20250611"
 
 [tool.black]
 line-length = 200
 
 [tool.ruff]
-line-length = 200
+line-length = 300
 target-version = "py311"
 
 [tool.ruff.lint]

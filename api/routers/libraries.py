@@ -2,17 +2,9 @@ from typing import Any, Union
 
 from authenticator import authenticator
 from fastapi import APIRouter, Depends
-from queries.boards import (
-    BoardIn,
-    BoardQueries,
-)
-from queries.libraries import (
-    HttpError,
-    LibraryIn,
-    LibraryInBase,
-    LibraryOut,
-    LibraryQueries,
-)
+
+from ..queries.boards import BoardIn, BoardQueries
+from ..queries.libraries import HttpError, LibraryIn, LibraryInBase, LibraryOut, LibraryQueries
 
 router = APIRouter()
 
@@ -22,7 +14,7 @@ async def create_library_entry(
     entry: LibraryInBase,
     queries: LibraryQueries = Depends(),
     board_queries: BoardQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     library_dict = entry.dict()
@@ -51,7 +43,7 @@ async def create_library_entry(
 )
 async def get_library(
     queries: LibraryQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     return queries.get_library(account_id)
@@ -65,14 +57,12 @@ async def get_library_entry(
     return queries.get_library_entry(id)
 
 
-@router.delete(
-    "/api/libraries/{id}/{account_id}", response_model=Union[bool, HttpError]
-)
+@router.delete("/api/libraries/{id}/{account_id}", response_model=Union[bool, HttpError])
 async def delete_library_entry(
     id: int,
     queries: LibraryQueries = Depends(),
     board_queries: BoardQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type:ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type:ignore
 ):
     library_details = queries.get_library_entry(id).dict()
     board_id = library_details["board_id"]

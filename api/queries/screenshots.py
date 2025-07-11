@@ -45,9 +45,7 @@ class ScreenshotsQueries:
         try:
             screenshots_list.extend(self.retrieve_screenshots_from_database(rawg_pk))
         except Exception as db_error:
-            logging.error(
-                "Error retrieving screenshots from the database: %s", db_error
-            )
+            logging.error("Error retrieving screenshots from the database: %s", db_error)
 
         if not screenshots_list:
             screenshots_list.extend(self.retrieve_screenshots_from_api(rawg_pk))
@@ -78,16 +76,12 @@ class ScreenshotsQueries:
 
                     if rows and db.description is not None:
                         for row in rows:
-                            record = dict(
-                                zip([column.name for column in db.description], row)
-                            )
+                            record = dict(zip([column.name for column in db.description], row))
                             screenshots_list.append(ScreenshotsOut(**record))
                         logging.debug("Screenshots from Database: %s", screenshots_list)
 
         except Exception as db_error:
-            logging.error(
-                "Error retrieving screenshots from the database: %s", db_error
-            )
+            logging.error("Error retrieving screenshots from the database: %s", db_error)
 
         return screenshots_list
 
@@ -140,8 +134,6 @@ class ScreenshotsQueries:
                                     )
                                     screenshots_list.append(ScreenshotsOut(**record))
                 except Exception as db_error:
-                    logging.error(
-                        "Error inserting screenshots into the database: %s", db_error
-                    )
+                    logging.error("Error inserting screenshots into the database: %s", db_error)
 
         return screenshots_list

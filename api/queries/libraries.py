@@ -75,13 +75,7 @@ class LibraryQueries:
                 )
                 row = result.fetchone()
                 if row is not None and db.description is not None:
-                    return LibraryOut(
-                        id=row[0],
-                        wishlist=row[1],
-                        account_id=row[2],
-                        game_id=row[3],
-                        board_id=row[4]
-                    )
+                    return LibraryOut(id=row[0], wishlist=row[1], account_id=row[2], game_id=row[3], board_id=row[4])
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -136,10 +130,7 @@ class LibraryQueries:
                         WHERE game_id = %s
                             AND board_id = %s
                         """,
-                        [
-                            library_dict.game_id,
-                            library_dict.board_id
-                        ]
+                        [library_dict.game_id, library_dict.board_id],
                     )
 
                     board_entry_row = board_check.fetchone()
@@ -174,13 +165,7 @@ class LibraryQueries:
 
                     row = result.fetchone()
                     if row and db.description is not None:
-                        return LibraryOut(
-                            id=row[0],
-                            wishlist=row[1],
-                            account_id=row[2],
-                            game_id=row[3],
-                            board_id=row[4]
-                        )
+                        return LibraryOut(id=row[0], wishlist=row[1], account_id=row[2], game_id=row[3], board_id=row[4])
                     else:
                         raise HTTPException(
                             status_code=status.HTTP_400_BAD_REQUEST,

@@ -2,11 +2,9 @@ from typing import Any, Union
 
 from authenticator import authenticator
 from fastapi import APIRouter, Depends
-from queries.reviews import (
-    ReviewIn,
-    ReviewQueries,
-)
-from queries.votes import HttpError, VoteIn, VoteInBase, VoteInUpdate, VoteOut, VoteQueries
+
+from ..queries.reviews import ReviewIn, ReviewQueries
+from ..queries.votes import HttpError, VoteIn, VoteInBase, VoteInUpdate, VoteOut, VoteQueries
 
 router = APIRouter()
 
@@ -16,7 +14,7 @@ async def create_vote(
     vote: VoteInBase,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     username = account_data["username"]
@@ -43,20 +41,16 @@ async def create_vote(
     return created_vote
 
 
-@router.get(
-    "/api/votes/users/{account_id}", response_model=Union[list[VoteOut], HttpError]
-)
+@router.get("/api/votes/users/{account_id}", response_model=Union[list[VoteOut], HttpError])
 async def get_user_votes(
     queries: VoteQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     return queries.get_user_votes(account_id)
 
 
-@router.get(
-    "/api/votes/reviews/{review_id}", response_model=Union[list[VoteOut], HttpError]
-)
+@router.get("/api/votes/reviews/{review_id}", response_model=Union[list[VoteOut], HttpError])
 async def get_review_votes(
     review_id: int,
     queries: VoteQueries = Depends(),
@@ -77,7 +71,7 @@ async def delete_vote(
     id: int,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     username = account_data["username"]
@@ -104,7 +98,7 @@ async def update_vote(
     vote: VoteInUpdate,
     queries: VoteQueries = Depends(),
     review_queries: ReviewQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     username = account_data["username"]

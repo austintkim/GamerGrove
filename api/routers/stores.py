@@ -1,7 +1,8 @@
 from typing import Union
 
 from fastapi import APIRouter, Depends
-from queries.stores import HttpError, StoresOut, StoresQueries
+
+from ..queries.stores import HttpError, StoresOut, StoresQueries
 
 router = APIRouter()
 

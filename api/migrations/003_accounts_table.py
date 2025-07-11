@@ -10,7 +10,6 @@ steps = [
         email VARCHAR(255) UNIQUE,
         icon_id INT NOT NULL,
         FOREIGN KEY (icon_id) REFERENCES icons(id)
-        
         );
         """,
         """

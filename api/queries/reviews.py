@@ -89,17 +89,17 @@ class ReviewQueries:
                 row = result.fetchone()
                 if row and db.description is not None:
                     return ReviewOut(
-                       id=row[0],
-                       body=row[1],
-                       title=row[2],
-                       account_id=row[3],
-                       username=row[4],
-                       game_id=row[5],
-                       comment_count=row[6],
-                       upvote_count=row[7],
-                       rating=row[8],
-                       date_created=row[9],
-                       last_update=row[10]
+                        id=row[0],
+                        body=row[1],
+                        title=row[2],
+                        account_id=row[3],
+                        username=row[4],
+                        game_id=row[5],
+                        comment_count=row[6],
+                        upvote_count=row[7],
+                        rating=row[8],
+                        date_created=row[9],
+                        last_update=row[10],
                     )
 
                 raise HTTPException(
@@ -272,11 +272,7 @@ class ReviewQueries:
                 update_fields.append("upvote_count = %s")
                 update_values.append(review_dict.upvote_count)
 
-                if (
-                    "title = %s" in update_fields
-                    or "body = %s" in update_fields
-                    or "rating = %s" in update_fields
-                ):
+                if "title = %s" in update_fields or "body = %s" in update_fields or "rating = %s" in update_fields:
                     update_fields.append("last_update = CURRENT_TIMESTAMP")
 
                 update_query = f"""

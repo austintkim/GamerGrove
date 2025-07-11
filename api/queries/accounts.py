@@ -119,9 +119,7 @@ class AccountQueries:
                     detail="Could not find an account with that id",
                 )
 
-    def is_unique(
-        self, field: str, value: str, current_id: Optional[int] = None
-    ) -> bool:
+    def is_unique(self, field: str, value: str, current_id: Optional[int] = None) -> bool:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 if current_id is not None:
@@ -260,9 +258,7 @@ class AccountQueries:
                         detail="Something went wrong with checking the inputted password - check FastAPI container logs",
                     )
 
-                password_check = authenticator.verify_password(
-                    data.password, current_pw_row[0]
-                )
+                password_check = authenticator.verify_password(data.password, current_pw_row[0])
                 if not password_check:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -334,9 +330,7 @@ class AccountQueries:
                 current_pw_row = db.fetchone()
                 current_pw_valid = False
                 if current_pw_row:
-                    current_pw_valid = authenticator.verify_password(
-                        current_password, current_pw_row[0]
-                    )
+                    current_pw_valid = authenticator.verify_password(current_password, current_pw_row[0])
 
                 new_pw_used = False
                 if new_password:
@@ -349,10 +343,7 @@ class AccountQueries:
                         [id],
                     )
                     all_pw_rows = db.fetchall()
-                    new_pw_used = any(
-                        authenticator.verify_password(new_password, row[0])
-                        for row in all_pw_rows
-                    )
+                    new_pw_used = any(authenticator.verify_password(new_password, row[0]) for row in all_pw_rows)
 
                 if current_password and new_password:
                     if current_pw_valid and not new_pw_used:
@@ -369,12 +360,8 @@ class AccountQueries:
                     else:
                         return 6
 
-    def update(
-        self, id: int, username: str, data: AccountInUpdate
-    ) -> AccountOutWithPassword:
-        if not self.is_unique(
-            "username", data.username, id
-        ) and not self.is_unique("email", data.email, id):
+    def update(self, id: int, username: str, data: AccountInUpdate) -> AccountOutWithPassword:
+        if not self.is_unique("username", data.username, id) and not self.is_unique("email", data.email, id):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Both the username and email are taken",
@@ -399,9 +386,7 @@ class AccountQueries:
             6: "Password not changed - current password entered incorrectly",
         }
 
-        result = self.passwords_check(
-            id, username, data.password, data.new_password
-        )
+        result = self.passwords_check(id, username, data.password, data.new_password)
 
         if result == 1:
             from authenticator import authenticator
@@ -417,9 +402,7 @@ class AccountQueries:
                             """,
                             [id],
                         )
-                        hashed_pw = authenticator.hash_password( # type: ignore
-                            data.new_password
-                        )
+                        hashed_pw = authenticator.hash_password(data.new_password)  # type: ignore
 
                         db.execute(
                             """
@@ -479,7 +462,7 @@ class AccountQueries:
                             raise HTTPException(
                                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail="Failed to update account — no row returned.",
-                        )
+                            )
                     except Exception as e:
                         raise HTTPException(
                             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

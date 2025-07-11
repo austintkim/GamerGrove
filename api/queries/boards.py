@@ -78,9 +78,7 @@ class BoardQueries:
                 boards: list[BoardOut] = []
                 if rows and db.description is not None:
                     for row in rows:
-                        record = dict(
-                            zip([column.name for column in db.description], row)
-                        )
+                        record = dict(zip([column.name for column in db.description], row))
                         boards.append(BoardOut(**record))
                     return boards
 
@@ -120,14 +118,7 @@ class BoardQueries:
                     )
                     row = result.fetchone()
                     if row is not None and db.description is not None:
-                        return BoardOut(
-                            id=row[0],
-                            board_name=row[1],
-                            description=row[2],
-                            cover_photo=row[3],
-                            game_count=row[4],
-                            account_id=row[5]
-                        )
+                        return BoardOut(id=row[0], board_name=row[1], description=row[2], cover_photo=row[3], game_count=row[4], account_id=row[5])
                     else:
                         raise HTTPException(
                             status_code=status.HTTP_400_BAD_REQUEST,

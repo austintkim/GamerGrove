@@ -1,8 +1,9 @@
 from typing import Any, Union
 
 from authenticator import authenticator
-from fastapi import APIRouter, Depends, Response
-from queries.boards import BoardIn, BoardInBase, BoardOut, BoardQueries, HttpError
+from fastapi import APIRouter, Depends
+
+from ..queries.boards import BoardIn, BoardInBase, BoardOut, BoardQueries, HttpError
 
 router = APIRouter()
 
@@ -11,7 +12,7 @@ router = APIRouter()
 async def create_board(
     board: BoardInBase,
     queries: BoardQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     board_dict = board.dict()
@@ -32,12 +33,10 @@ async def get_board(
     return queries.get_board(id)
 
 
-@router.get(
-    "/api/boards/users/{account_id}", response_model=Union[list[BoardOut], HttpError]
-)
+@router.get("/api/boards/users/{account_id}", response_model=Union[list[BoardOut], HttpError])
 async def get_all_boards(
     queries: BoardQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     return queries.get_all_boards(account_id)
@@ -47,7 +46,7 @@ async def get_all_boards(
 async def delete_board(
     id: int,
     queries: BoardQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     account_id = account_data["id"]
     return queries.delete_board(id, account_id)
@@ -58,7 +57,7 @@ async def update_board(
     id: int,
     board: BoardInBase,
     queries: BoardQueries = Depends(),
-    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data), #type: ignore
+    account_data: dict[str, Any] = Depends(authenticator.get_current_account_data),  # type: ignore
 ):
     board_details = queries.get_board(id).dict()
 

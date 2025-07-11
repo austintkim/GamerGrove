@@ -7,9 +7,7 @@ client = TestClient(app)
 
 class TestIconQueries:
     def get_icon(self, id: int):
-        return IconOut(
-            id=100, name="Icon Test", icon_url="https://fakeurl.cc/fakeicon.png"
-        )
+        return IconOut(id=100, name="Icon Test", icon_url="https://fakeurl.cc/fakeicon.png")
 
 
 def test_get_icon():

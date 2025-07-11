@@ -3,26 +3,23 @@ import os.path
 from importlib import import_module
 from itertools import zip_longest
 from pathlib import Path
+from typing import Any, Final, List, Optional, Tuple
 
 from psycopg import AsyncConnection
 from psycopg.rows import class_row
+from psycopg.sql import SQL
 from pydantic import BaseModel
 
-LATEST = {}
-ZERO = {}
+LATEST: Final[int] = 9999  # or float('inf') or len(migrations)
+ZERO: Final[int] = 0
 
 
 class MigrationRecord(BaseModel):
     name: str
     digest: bytes
 
-    def __eq__(self, other):
-        return (
-            other
-            and isinstance(other, MigrationRecord)
-            and self.name == other.name
-            and self.digest == other.digest
-        )
+    def __eq__(self, other: Any) -> bool:
+        return other and isinstance(other, MigrationRecord) and self.name == other.name and self.digest == other.digest
 
     def __str__(self):
         digest = self.digest.hex()
@@ -39,10 +36,8 @@ class MigrationFile(MigrationRecord):
 
 
 async def read_migrations(dir: str) -> list[MigrationFile]:
-    migrations = []
-    files = sorted(
-        [file for file in Path(dir).iterdir() if not str(file.name).startswith("__")]
-    )
+    migrations: list[MigrationFile] = []
+    files = sorted([file for file in Path(dir).iterdir() if not str(file.name).startswith("__")])
     hash = hashlib.sha256()
     for file in files:
         if file.suffix == ".py":
@@ -84,14 +79,20 @@ async def current_migrations(db_url: str) -> list[MigrationRecord]:
             return await db.fetchall()
 
 
-async def up(db_url, to=LATEST, dir=os.path.dirname(__file__)):
+async def up(
+    db_url: str,
+    to: int = LATEST,
+    dir: str = os.path.dirname(__file__),
+) -> None:
     await ensure_migrations_table(db_url)
     migrations = await read_migrations(dir)
     applied = await current_migrations(db_url)
-    migrations_to_run = zip_longest(migrations, applied)
+    migrations_to_run: List[Tuple[Optional[MigrationFile], Optional[MigrationRecord]]] = list(zip_longest(migrations, applied))
     if to != ZERO:
         migrations_to_run = migrations_to_run[:to]
     for migration, record in migrations_to_run:
+        if migration is None:
+            raise RuntimeError("Database has applied migrations not present in migration files.")
         if record and migration != record:
             message = f"Incompatible migration history at {migration.name}"
             raise RuntimeError(message)
@@ -100,17 +101,23 @@ async def up(db_url, to=LATEST, dir=os.path.dirname(__file__)):
         async with await AsyncConnection.connect(db_url) as conn:
             async with conn.cursor() as db:
                 for step in migration.steps:
-                    await db.execute(step.up)
+                    await db.execute(step.up)  # type: ignore[arg-type]
                 await db.execute(
-                    """
+                    SQL(
+                        """
                     INSERT INTO migrations (name, digest)
                     VALUES (%s, %s)
-                    """,
+                    """
+                    ),
                     [migration.name, migration.digest],
                 )
 
 
-async def down(db_url, to=ZERO, dir=os.path.dirname(__file__)):
+async def down(
+    db_url: str,
+    to: int = LATEST,
+    dir: str = os.path.dirname(__file__),
+) -> None:
     await ensure_migrations_table(db_url)
     migrations = await read_migrations(dir)
     applied = await current_migrations(db_url)
@@ -124,11 +131,13 @@ async def down(db_url, to=ZERO, dir=os.path.dirname(__file__)):
         async with await AsyncConnection.connect(db_url) as conn:
             async with conn.cursor() as db:
                 for step in reversed(migration.steps):
-                    await db.execute(step.down)
+                    await db.execute(step.down)  # type: ignore[arg-type]
                 await db.execute(
-                    """
+                    SQL(
+                        """
                     DELETE FROM migrations
                     WHERE name = %s;
-                    """,
+                    """
+                    ),
                     [migration.name],
                 )
