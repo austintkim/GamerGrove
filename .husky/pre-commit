@@ -1,2 +1,5 @@
-#!/bin/sh
+# Frontend lint-staged
 npx lint-staged
+
+# Backend Python formatting/linting
+poetry run pre-commit run --files $(git diff --cached --name-only | grep '\.py$' || true)
