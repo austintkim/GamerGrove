@@ -23,8 +23,8 @@ api-unit-tests-job:
     - poetry config virtualenvs.create false
     - poetry install --no-interaction --no-ansi
     script:
-      - cd api
-      - poetry run pytest --maxfail=1 --disable-warnings -q
+      - poetry run pytest api/tests --maxfail=1 --disable-warnings -q
+
 
 
 # # Build API Image:
