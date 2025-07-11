@@ -9,30 +9,22 @@ stages:
 variables:
   EC2_HOST: "35.173.203.96"
 
-# Run flake8 to check for code quality
-# And also optionally run unit tests
-# tests:
-#     image: python:3-bullseye
-#     stage: test
-#     script:
-#         - pip install flake8
-#         - flake8 api
-#         # Run unit tests
-# api-unit-tests-job:
-#     image: python:3-bullseye
-#     stage: test
-#     needs:
-#         - tests
-#     variables:
-#         DATABASE_URL: '${DATABASE_URL_FROM_ENV_FILE}'
-#         CORS_HOST: '${CORS_HOST}'
-#         SIGNING_KEY: '${SIGNING_KEY_FROM_ENV_FILE}'
-#         API_KEY: '${RAWG_API_KEY}'
-#     script:
-#         - cd api
-#         - pip install -r requirements.txt
-#         - python -m pytest
-
+api-unit-tests-job:
+    image: python:3-bullseye
+    stage: test
+    variables:
+        DATABASE_URL: '${DATABASE_URL_FROM_ENV_FILE}'
+        CORS_HOST: '${CORS_HOST}'
+        SIGNING_KEY: '${SIGNING_KEY_FROM_ENV_FILE}'
+        API_KEY: '${RAWG_API_KEY}'
+    before_script:
+    - python -m pip install --upgrade pip
+    - pip install poetry
+    - poetry config virtualenvs.create false
+    - poetry install --no-interaction --no-ansi
+    script:
+      - cd api
+      - poetry run pytest --maxfail=1 --disable-warnings -q
 
 
 # # Build API Image:
