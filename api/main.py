@@ -3,10 +3,10 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from seederfile import seed_data
 
 from api.authenticator import authenticator
 from api.routers import accounts, boards, comments, games, icons, libraries, reviews, screenshots, stores, votes
+from api.seederfile import seed_data
 
 load_dotenv()
 
