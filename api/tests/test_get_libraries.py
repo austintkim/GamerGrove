@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
-from main import app
 from queries.libraries import LibraryOut, LibraryQueries
+
+from api.main import app
 
 client = TestClient(app)
 
