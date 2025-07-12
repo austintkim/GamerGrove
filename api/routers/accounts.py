@@ -1,9 +1,10 @@
 import string
 from typing import Any, Union
 
-from authenticator import authenticator
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from pydantic import BaseModel
+
+from api.authenticator import authenticator
 
 from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken
 

@@ -1,7 +1,8 @@
 from typing import Any, Union
 
-from authenticator import authenticator
 from fastapi import APIRouter, Depends
+
+from api.authenticator import authenticator
 
 from ..queries.boards import BoardIn, BoardQueries
 from ..queries.libraries import HttpError, LibraryIn, LibraryInBase, LibraryOut, LibraryQueries

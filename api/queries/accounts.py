@@ -224,7 +224,7 @@ class AccountQueries:
         username: str,
         data: AccountInDelete,
     ) -> bool:
-        from authenticator import authenticator
+        from api.authenticator import authenticator
 
         with pool.connection() as conn:
             with conn.cursor() as db:
@@ -287,7 +287,7 @@ class AccountQueries:
         current_password: str,
         new_password: Optional[str] = None,
     ) -> int:
-        from authenticator import authenticator
+        from api.authenticator import authenticator
 
         with pool.connection() as conn:
             with conn.cursor() as db:
@@ -389,7 +389,7 @@ class AccountQueries:
         result = self.passwords_check(id, username, data.password, data.new_password)
 
         if result == 1:
-            from authenticator import authenticator
+            from api.authenticator import authenticator
 
             with pool.connection() as conn:
                 with conn.cursor() as db:

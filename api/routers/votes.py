@@ -1,7 +1,8 @@
 from typing import Any, Union
 
-from authenticator import authenticator
 from fastapi import APIRouter, Depends
+
+from api.authenticator import authenticator
 
 from ..queries.reviews import ReviewIn, ReviewQueries
 from ..queries.votes import HttpError, VoteIn, VoteInBase, VoteInUpdate, VoteOut, VoteQueries
