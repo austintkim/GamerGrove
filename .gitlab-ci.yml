@@ -2,28 +2,28 @@ services:
     - docker:dind
 
 stages:
-    # - test
+    - test
     - build
     - deploy
 
 variables:
   EC2_HOST: "35.173.203.96"
 
-# api-unit-tests-job:
-#     image: python:3-bullseye
-#     stage: test
-#     variables:
-#         DATABASE_URL: '${DATABASE_URL_FROM_ENV_FILE}'
-#         CORS_HOST: '${CORS_HOST}'
-#         SIGNING_KEY: '${SIGNING_KEY_FROM_ENV_FILE}'
-#         API_KEY: '${RAWG_API_KEY}'
-#     before_script:
-#     - python -m pip install --upgrade pip
-#     - pip install poetry
-#     - poetry config virtualenvs.create false
-#     - poetry install --no-interaction --no-ansi
-#     script:
-#       - poetry run pytest api/tests --maxfail=1 --disable-warnings -q
+api-unit-tests-job:
+    image: python:3-bullseye
+    stage: test
+    variables:
+        DATABASE_URL: '${DATABASE_URL_FROM_ENV_FILE}'
+        CORS_HOST: '${CORS_HOST}'
+        SIGNING_KEY: '${SIGNING_KEY_FROM_ENV_FILE}'
+        API_KEY: '${RAWG_API_KEY}'
+    before_script:
+    - python -m pip install --upgrade pip
+    - pip install poetry
+    - poetry config virtualenvs.create false
+    - poetry install --no-interaction --no-ansi
+    script:
+      - poetry run pytest api/tests --maxfail=1 --disable-warnings -q
 
 
 
