@@ -57,10 +57,12 @@ build-front-end-job:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
+      - ghi/node_modules/
   before_script:
-    - npm ci
+    - npm ci                     # install root dependencies (eslint, etc.)
+    - cd ghi && npm ci && cd .. # install frontend dependencies
   script:
-    - npm run lint
+    - npm run lint              # lint using root script on ghi
     - cd ghi
     - VITE_API_HOST="https://gamergroveapi.com" npm run build -- --base=/gamer-grove/
   artifacts:
