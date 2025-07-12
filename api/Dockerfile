@@ -5,18 +5,21 @@ RUN apt-get update && apt-get install -y build-essential && rm -rf /var/lib/apt/
 
 # Upgrade pip, setuptools, wheel and install Poetry
 RUN python -m pip install --upgrade pip setuptools wheel
-RUN poetry install --no-root --no-interaction --no-ansi
+RUN pip install poetry
+
+# Add docker-compose-wait
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+RUN chmod +x /wait
 
 WORKDIR /app
 
-# Copy only poetry files for dependency install
+ENV POETRY_VIRTUALENVS_CREATE=false
+
 COPY pyproject.toml poetry.lock* /app/
+RUN poetry install --no-interaction --no-ansi --no-root
 
-# Install dependencies (without installing the package itself)
-RUN poetry install --no-root --no-dev
-
-# Copy app source code
 COPY . /app
 
-# Run migrations and start FastAPI on port 80
-CMD ["sh", "-c", "python -m migrations up && poetry run uvicorn main:app --host 0.0.0.0 --port 80 --forwarded-allow-ips '*'"]
+ENV PYTHONPATH=/app
+
+CMD ["sh", "-c", "/wait && python -m api.migrations up && poetry run uvicorn api.main:app --host 0.0.0.0 --port 80 --forwarded-allow-ips '*'"]
