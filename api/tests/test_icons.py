@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
-from main import app
-from queries.icons import IconOut, IconQueries
+
+from api.main import app
+from api.queries.icons import IconOut, IconQueries
 
 client = TestClient(app)
 

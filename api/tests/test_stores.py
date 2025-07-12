@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
-from main import app
-from queries.stores import StoresOut, StoresQueries
+
+from api.main import app
+from api.queries.stores import StoresOut, StoresQueries
 
 client = TestClient(app)
 

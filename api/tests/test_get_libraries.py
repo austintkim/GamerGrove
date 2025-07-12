@@ -3,8 +3,6 @@ from fastapi.testclient import TestClient
 from api.main import app
 from api.queries.libraries import LibraryOut, LibraryQueries
 
-print(type(app))
-
 client = TestClient(app)
 
 
