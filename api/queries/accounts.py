@@ -127,7 +127,7 @@ class AccountQueries:
                         """
                         SELECT 1
                         FROM accounts
-                        WHERE {field} = %s
+                        WHERE {} = %s
                         AND id != %s
                         """
                     ).format(sql.Identifier(field))
@@ -137,7 +137,7 @@ class AccountQueries:
                         """
                         SELECT 1
                         FROM accounts
-                        WHERE {field} = %s
+                        WHERE {} = %s
                         """
                     ).format(sql.Identifier(field))
                     db.execute(query, [value])
