@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from api.authenticator import authenticator
 
-from ..queries.games import GameIn, GameQueries
+from ..queries.games import GameInUpdate, GameQueries
 from ..queries.reviews import HttpError, ReviewIn, ReviewInBase, ReviewInUpdate, ReviewOut, ReviewQueries
 
 router = APIRouter()
@@ -56,9 +56,9 @@ async def create_review(
     game_dict["rating_total"] += rating
     game_dict["rating"] = game_dict["rating_total"] / game_dict["rating_count"]
 
-    game_in = GameIn(**game_dict)
+    game_in_update = GameInUpdate(**game_dict)
 
-    games_queries.update_game(game_id, game_in)
+    games_queries.update_game(game_id, game_in_update)
 
     review_dict["account_id"] = account_id
     username = account_data["username"]
@@ -89,9 +89,9 @@ async def delete_review(
     game_dict["rating_total"] -= rating
     game_dict["rating"] = game_dict["rating_total"] / game_dict["rating_count"]
 
-    game_in = GameIn(**game_dict)
+    game_in_update = GameInUpdate(**game_dict)
 
-    games_queries.update_game(game_id, game_in)
+    games_queries.update_game(game_id, game_in_update)
 
     account_id = account_data["id"]
     return queries.delete_review(id, account_id)
@@ -120,9 +120,9 @@ async def update_review(
     game_dict["rating_total"] += rating
     game_dict["rating"] = game_dict["rating_total"] / game_dict["rating_count"]
 
-    game_in = GameIn(**game_dict)
+    game_in_update = GameInUpdate(**game_dict)
 
-    games_queries.update_game(game_id, game_in)
+    games_queries.update_game(game_id, game_in_update)
 
     comment_count = review_details["comment_count"]
     upvote_count = review_details["upvote_count"]

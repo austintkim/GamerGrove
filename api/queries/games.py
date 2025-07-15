@@ -34,6 +34,24 @@ class GameIn(BaseModel):
     reviews_count: int
 
 
+class GameInUpdate(BaseModel):
+    name: str
+    description: str
+    rating: float
+    dates: date
+    background_img: str
+    xbox: bool
+    playstation: bool
+    nintendo: bool
+    pc: bool
+    rating_count: float
+    rating_total: float
+    genre: str
+    developers: str
+    rawg_pk: int
+    reviews_count: int
+
+
 class GameOut(BaseModel):
     id: int
     name: str
@@ -196,7 +214,7 @@ class GameQueries:
                         detail=f"Error creating game - {str(e)}",
                     )
 
-    def update_game(self, id: int, game_dict: GameIn) -> GameOut:
+    def update_game(self, id: int, game_in_update: GameInUpdate) -> GameOut:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 result = db.execute(
@@ -220,21 +238,21 @@ class GameQueries:
                     WHERE id = %s
                     """,
                     [
-                        game_dict.name,
-                        game_dict.description,
-                        game_dict.rating,
-                        game_dict.dates,
-                        game_dict.background_img,
-                        game_dict.Xbox,
-                        game_dict.PlayStation,
-                        game_dict.Nintendo,
-                        game_dict.PC,
-                        game_dict.rating_count,
-                        game_dict.rating_total,
-                        game_dict.genre,
-                        game_dict.developers,
-                        game_dict.rawg_pk,
-                        game_dict.reviews_count,
+                        game_in_update.name,
+                        game_in_update.description,
+                        game_in_update.rating,
+                        game_in_update.dates,
+                        game_in_update.background_img,
+                        game_in_update.xbox,
+                        game_in_update.playstation,
+                        game_in_update.nintendo,
+                        game_in_update.pc,
+                        game_in_update.rating_count,
+                        game_in_update.rating_total,
+                        game_in_update.genre,
+                        game_in_update.developers,
+                        game_in_update.rawg_pk,
+                        game_in_update.reviews_count,
                         id,
                     ],
                 )
