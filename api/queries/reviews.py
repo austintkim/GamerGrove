@@ -176,14 +176,14 @@ class ReviewQueries:
                     if row and db.description is not None:
                         return ReviewOut(
                             id=row[0],
-                            body=row[1],
-                            title=row[2],
-                            account_id=row[3],
-                            username=row[4],
-                            game_id=row[5],
-                            comment_count=row[6],
-                            upvote_count=row[7],
-                            rating=row[8],
+                            game_id=row[1],
+                            account_id=row[2],
+                            username=row[3],
+                            body=row[4],
+                            title=row[5],
+                            rating=row[6],
+                            comment_count=row[7],
+                            upvote_count=row[8],
                             date_created=row[9],
                             last_update=row[10],
                         )

@@ -236,6 +236,7 @@ class GameQueries:
                         rawg_pk = %s,
                         reviews_count = %s
                     WHERE id = %s
+                    RETURNING *
                     """,
                     [
                         game_in_update.name,
@@ -259,7 +260,7 @@ class GameQueries:
                 row = result.fetchone()
                 if row and db.description is not None:
                     record = dict(zip([col.name for col in db.description], row))
-                    return GameOut(id=id, **record)
+                    return GameOut(**record)
 
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
