@@ -84,7 +84,9 @@ function Dashboard() {
 	};
 
 	const fetchUserGames = async (userId) => {
-		const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${userId}`;
+		const libraryUrl = `${
+			import.meta.env.VITE_API_HOST
+		}/api/users/libraries/${userId}`;
 		const libraryConfig = {
 			credentials: 'include',
 		};
@@ -104,7 +106,9 @@ function Dashboard() {
 			const gameDetails = await Promise.all(
 				libraryData.map(async (item) => {
 					const response = await fetch(
-						`${import.meta.env.VITE_API_HOST}/api/games/${item.game_id}`
+						`${import.meta.env.VITE_API_HOST}/api/games/${
+							item.game_id
+						}`
 					);
 					const gamesData = await response.json();
 					gamesData['board_id'] = item.board_id;
