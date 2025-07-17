@@ -128,7 +128,7 @@ deploy-to-ec2:
       sudo apt-get install -y nginx &&
       echo 'server {
           listen 80;
-          server_name gamergrove.api.com;
+          server_name gamergroveapi.com;
 
           location / {
               proxy_pass http://localhost:8000;
