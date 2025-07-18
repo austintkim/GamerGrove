@@ -93,7 +93,7 @@ deploy-to-ec2:
   image: docker:20.10.11
   variables:
     GITLAB_IMAGE: ${CI_REGISTRY_IMAGE}/api
-    DATABASE_URL: "postgresql://${EC2_PG_USERNAME}:${EC2_PG_PASSWORD}@localhost:5432/gamergrove"
+    DATABASE_URL: "postgresql://${EC2_PG_USERNAME}:${EC2_PG_PASSWORD}@postgres:5432/gamergrove"
     SIGNING_KEY: ${SIGNING_KEY}
 
   before_script:
@@ -119,7 +119,7 @@ deploy-to-ec2:
         docker pull $GITLAB_IMAGE:latest &&
         docker stop my-api || true &&
         docker rm my-api || true &&
-        docker run -d --name my-api  -e SIGNING_KEY=$SIGNING_KEY -e DATABASE_URL=$DATABASE_URL -p 8000:80 $GITLAB_IMAGE:latest
+        docker run -d --name my-api --network gamergrove-net -e SIGNING_KEY=$SIGNING_KEY -e DATABASE_URL=$DATABASE_URL -p 8000:80 $GITLAB_IMAGE:latest
       " || (echo "Failed to deploy Docker container" && exit 1)
 
     # Install and configure NGINX
