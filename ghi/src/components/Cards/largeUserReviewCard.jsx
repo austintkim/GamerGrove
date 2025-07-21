@@ -457,7 +457,7 @@ function LargeUserReviewCard({
 									{formatDistanceToNow(
 										new Date(`${review.date_created}Z`),
 										{ addSuffix: true }
-									)}
+									)} by {review.username}
 								</p>
 							)}
 						</div>
