@@ -3,7 +3,7 @@ import StarRating from '../GameDetails/StarRating';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 
-function UserLikeCard({ likedReviews, likedReviewGames }) {
+function UserLikeCard({ userData, likedReviews, likedReviewGames }) {
 	const navigate = useNavigate();
 
 	const gamesMap = new Map(likedReviewGames.map((game) => [game.id, game]));
@@ -76,6 +76,41 @@ function UserLikeCard({ likedReviews, likedReviewGames }) {
 											<StarRating
 												rating={review.rating}
 											/>
+										</div>
+										<div style={{ marginBottom: '10px' }}>
+											{review.account_id ===
+												userData.id && (
+												<>
+													<button
+														className="lurcard-edit-delete"
+														style={{
+															color: 'black',
+														}}
+														onClick={() => {
+															navigate(
+																`/reviews/update/${review.id}/${review.game_id}`
+															);
+														}}
+													>
+														Edit
+													</button>{' '}
+													<button
+														className="lurcard-delete"
+														style={{
+															color: 'black',
+															fontFamily: 'K2D',
+															fontSize: '18px',
+														}}
+														onClick={() => {
+															navigate(
+																`/reviews/delete/${review.id}`
+															);
+														}}
+													>
+														Delete
+													</button>{' '}
+												</>
+											)}
 										</div>
 									</div>
 								)}

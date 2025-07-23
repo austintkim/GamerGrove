@@ -458,6 +458,7 @@ function Dashboard() {
 						<UserLikeCard
 							likedReviews={userLikedReviewDetails}
 							likedReviewGames={likeGameDetails}
+							userData={userDataDetails}
 						/>
 						<br />
 					</section>
