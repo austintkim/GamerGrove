@@ -48,7 +48,7 @@ class StoresQueries:
                     FROM storesdb
                     WHERE rawg_pk = %s;
                     """,
-                    [str(rawg_pk)],
+                    [rawg_pk],
                 )
                 rows = result.fetchall()
                 stores: list[StoresOut] = []

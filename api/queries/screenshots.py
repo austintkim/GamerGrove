@@ -70,7 +70,7 @@ class ScreenshotsQueries:
                         FROM screenshots
                         WHERE rawg_pk = %s;
                         """,
-                        [str(rawg_pk)],
+                        [rawg_pk],
                     )
                     rows = db.fetchall()
 
