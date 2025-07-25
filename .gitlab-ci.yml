@@ -25,8 +25,6 @@ api-unit-tests-job:
     script:
       - poetry run pytest api/tests --maxfail=1 --disable-warnings -q
 
-
-
 # # Build API Image:
 # # This job builds the API docker image and pushes it to the GitLab docker registry
 # # When this job finishes you will need to use the glv-cloud-cli reset command
