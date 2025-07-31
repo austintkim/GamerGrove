@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { AuthProvider } from '@galvanize-inc/jwtdown-for-react';
+import DownPage from './DownPage';
 
 import './App.css';
 import Home from './Home';
@@ -46,6 +48,30 @@ if (!API_HOST) {
 const MODE = import.meta.env.MODE;
 
 function App() {
+	const [isBackendUp, setIsBackendUp] = useState(true);
+	useEffect(() => {
+		const checkBackend = async () => {
+			try {
+				const response = await fetch(`${API_HOST}/api/health`);
+				if (!response.ok) {
+					throw new Error(`Server responded with ${response.status}`);
+				}
+				setIsBackendUp(true);
+			} catch (err) {
+				console.error('Backend is down:', err.message);
+				setIsBackendUp(false);
+			}
+		};
+
+		checkBackend();
+
+		const interval = setInterval(checkBackend, 30000);
+		return () => clearInterval(interval);
+	}, []);
+
+	if (!isBackendUp) {
+		return <DownPage />;
+	}
 	return (
 		<AuthProvider baseUrl={API_HOST}>
 			{MODE === 'production' ? (
