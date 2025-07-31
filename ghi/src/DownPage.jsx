@@ -1,5 +1,5 @@
 import gears from './assets/gears.gif';
-export default function MaintenancePage() {
+export default function DownPage() {
 	return (
 		<div style={{ textAlign: 'center', padding: '25rem', color: 'white' }}>
 			<img
@@ -16,7 +16,7 @@ export default function MaintenancePage() {
 					zIndex: 3,
 				}}
 			/>
-			<h1>GamerGrove is Under Maintenance</h1>
+			<h1>GamerGrove is Currently Experiencing Issues</h1>
 			<p>
 				Please check back shortly. We&apos;re working to get things back
 				online!
