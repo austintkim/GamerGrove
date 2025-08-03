@@ -123,6 +123,7 @@ deploy-to-ec2:
     # Install and configure NGINX
     - ssh -v ubuntu@$EC2_HOST "
         sudo apt-get update &&
+        sudo apt --fix-broken install -y &&
         sudo apt-get install -y nginx &&
         if [ ! -f /etc/nginx/sites-available/gamer-grove-fastapi ]; then echo 'server {
             listen 80;
