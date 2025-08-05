@@ -1,3 +1,4 @@
+import os
 import string
 from typing import Any, Union
 
@@ -7,6 +8,9 @@ from pydantic import BaseModel
 from api.authenticator import authenticator
 
 from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken
+
+MAILJET_API_KEY = os.getenv("MAILJET_API_KEY")
+MAILJET_API_SECRET = os.getenv("MAILJET_API_SECRET")
 
 
 class HttpError(BaseModel):
