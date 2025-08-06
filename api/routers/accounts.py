@@ -2,15 +2,13 @@ import os
 import string
 from typing import Any, Union
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Response, status
+from mailjet_rest import Client
 from pydantic import BaseModel
 
 from api.authenticator import authenticator
 
 from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken
-
-MAILJET_API_KEY = os.getenv("MAILJET_API_KEY")
-MAILJET_API_SECRET = os.getenv("MAILJET_API_SECRET")
 
 
 class HttpError(BaseModel):
@@ -18,6 +16,39 @@ class HttpError(BaseModel):
 
 
 router = APIRouter()
+
+
+def send_password_reset_email(to_email: str, token: str):
+    MAILJET_API_KEY = os.getenv("MAILJET_API_KEY")
+    MAILJET_API_SECRET = os.getenv("MAILJET_API_SECRET")
+
+    mailjet: Client
+    if MAILJET_API_KEY is not None and MAILJET_API_SECRET is not None:
+        mailjet = Client(auth=(MAILJET_API_KEY, MAILJET_API_SECRET), version="v3.1")
+    else:
+        raise RuntimeError("MAILJET API credentials are not fully set")
+
+    reset_link = f"https://gamergrove.com/reset-password?token={token}"
+    data: dict[str, list[dict[str, object]]] = {
+        "Messages": [
+            {
+                "From": {"Email": "noreply@gamergrove.com", "Name": "GamerGrove"},
+                "To": [{"Email": to_email}],
+                "Subject": "Reset your GamerGrove password",
+                "HTMLPart": f'<a href="{reset_link}">Reset Password</a>',
+            }
+        ]
+    }
+    result = mailjet.send.create(data=data)
+    print("Mailjet response status:", result.status_code)
+    print("Mailjet response body:", result.json())
+
+
+@router.post("/forgot_password")
+def forgot_password(email: str, background_tasks: BackgroundTasks):
+    token = "secure-random-token"
+    background_tasks.add_task(send_password_reset_email, email, token)
+    return {"message": "Reset email sent if email exists."}
 
 
 def password_strength(password: str) -> tuple[int, dict[str, int]]:

@@ -30,13 +30,15 @@ services:
             CORS_HOST: ${CORS_HOST}
             SIGNING_KEY: ${SIGNING_KEY_FROM_ENV_FILE}
             API_KEY: ${RAWG_API_KEY}
+            MAILJET_API_KEY: ${MAILJET_API_KEY}
+            MAILJET_API_SECRET: ${MAILJET_API_SECRET}
         build:
             context: .
             dockerfile: api/Dockerfile.dev
         ports:
             - 8000:8000
         volumes:
-            - ./api:/app/api 
+            - ./api:/app/api
         depends_on:
             - pg-admin
             - postgres
