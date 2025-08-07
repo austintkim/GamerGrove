@@ -32,7 +32,7 @@ def send_password_reset_email(to_email: str, token: str):
     data: dict[str, list[dict[str, object]]] = {
         "Messages": [
             {
-                "From": {"Email": "noreply@gamergrove.com", "Name": "GamerGrove"},
+                "From": {"Email": "noreply@gamergroveapi.com", "Name": "GamerGrove"},
                 "To": [{"Email": to_email}],
                 "Subject": "Reset your GamerGrove password",
                 "HTMLPart": f'<a href="{reset_link}">Reset Password</a>',
