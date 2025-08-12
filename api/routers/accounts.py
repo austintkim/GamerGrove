@@ -36,6 +36,7 @@ def send_password_reset_email(to_email: str, token: str):
                 "From": {"Email": "noreply@gamergroveapi.com", "Name": "GamerGrove"},
                 "To": [{"Email": to_email}],
                 "Subject": "Reset your GamerGrove password",
+                "TrackClick": "Disabled",
                 "HTMLPart": f'<a href="{reset_link}">Reset Password</a>',
             }
         ]
