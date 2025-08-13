@@ -117,7 +117,7 @@ deploy-to-ec2:
         docker pull $GITLAB_IMAGE:latest &&
         docker stop my-api || true &&
         docker rm my-api || true &&
-        docker run -d --name my-api --network gamergrove-net -e SIGNING_KEY=$SIGNING_KEY -e DATABASE_URL=$DATABASE_URL -p 8000:80 $GITLAB_IMAGE:latest
+        docker run -d --name my-api --network gamergrove-net -e ENV=production -e SIGNING_KEY=$SIGNING_KEY -e DATABASE_URL=$DATABASE_URL -p 8000:80 $GITLAB_IMAGE:latest
       " || (echo "Failed to deploy Docker container" && exit 1)
 
     # Install and configure NGINX
