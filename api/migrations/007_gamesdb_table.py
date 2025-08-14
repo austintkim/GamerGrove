@@ -16,7 +16,7 @@ steps = [
         rating_total FLOAT,
         genre VARCHAR(1500),
         developers VARCHAR(1500),
-        rawg_pk VARCHAR(20) UNIQUE,
+        rawg_pk INT UNIQUE,
         reviews_count INTEGER
         );
         """,
