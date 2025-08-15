@@ -1,25 +1,26 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import { AuthProvider } from '@galvanize-inc/jwtdown-for-react';
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import DownPage from './DownPage';
 
 import './App.css';
-import Home from './Home';
 import Dashboard from './components/Dashboard/dashboard';
-import Listgames from './components/Games/Listgames';
 import GameDetails from './components/GameDetails/gameDetails';
 import NonUserGameDetails from './components/GameDetails/nonUserGameDetails';
+import Listgames from './components/Games/Listgames';
+import Home from './Home';
 
+import DeleteAccountForm from './components/Accounts/DeleteAccountForm';
+import ForgotPasswordForm from './components/Accounts/ForgotPasswordForm';
+import Login from './components/Accounts/Login';
+import Settings from './components/Accounts/Settings';
 import SignUpForm from './components/Accounts/SignUpForm';
 import Welcome from './components/Accounts/Welcome';
-import Login from './components/Accounts/Login';
 import WelcomeBack from './components/Accounts/WelcomeBack';
 import BoardForm from './components/Boards/BoardForm';
-import Settings from './components/Accounts/Settings';
-import DeleteAccountForm from './components/Accounts/DeleteAccountForm';
 
-import UpdateReviewForm from './components/Reviews/UpdateReviewForm';
 import DeleteReviewForm from './components/Reviews/DeleteReviewForm';
+import UpdateReviewForm from './components/Reviews/UpdateReviewForm';
 import SearchResults from './components/SearchResults/SearchResults';
 
 import BoardPage from './components/Boards/boardPage';
@@ -90,6 +91,11 @@ function App() {
 							path="/settings/delete/:id/:username"
 							element={<DeleteAccountForm />}
 						/>
+						<Route
+							path="/reset-password"
+							element={<ForgotPasswordForm />}
+						/>
+
 						<Route path="/boards/create" element={<BoardForm />} />
 						<Route
 							path="/boards/delete/:id"
@@ -133,6 +139,10 @@ function App() {
 						<Route
 							path="/settings/delete/:id/:username"
 							element={<DeleteAccountForm />}
+						/>
+						<Route
+							path="/reset-password"
+							element={<ForgotPasswordForm />}
 						/>
 						<Route path="/boards/create" element={<BoardForm />} />
 						<Route
