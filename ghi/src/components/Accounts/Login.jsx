@@ -182,11 +182,12 @@ const LoginForm = () => {
 										</div>
 									</div>
 									<div>
-										<input
+										<button
 											style={{ marginBottom: '15px' }}
 											type="submit"
-											value="Login"
-										/>
+										>
+											Login
+										</button>
 									</div>
 									<div
 										className="alert alert-danger mb-0"
