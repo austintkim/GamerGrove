@@ -59,6 +59,10 @@ class AccountOutWithPassword(AccountOut):
     hashed_password: str
 
 
+class ResetEmailForm(BaseModel):
+    email: str
+
+
 class AccountQueries:
     def get(self, username: str) -> AccountOut:
         with pool.connection() as conn:
