@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 from api.authenticator import authenticator
 
-from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken
+from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken, ResetEmailForm
 from ..settings import settings
 
 
@@ -48,8 +48,9 @@ def send_password_reset_email(to_email: str, token: str):
 
 
 @router.post("/forgot_password")
-def forgot_password(email: str, background_tasks: BackgroundTasks):
+def forgot_password(reset_email: ResetEmailForm, background_tasks: BackgroundTasks):
     token = secrets.token_urlsafe(32)
+    email = reset_email.email
     background_tasks.add_task(send_password_reset_email, email, token)
     return {"message": "Reset email sent if email exists."}
 
