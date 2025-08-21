@@ -5,12 +5,19 @@ from typing import Any, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Response, status
 from mailjet_rest import Client
+from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
 from api.authenticator import authenticator
 
 from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken, ResetEmailForm
 from ..settings import settings
+
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+pool = ConnectionPool(conninfo=database_url)
 
 
 class HttpError(BaseModel):
