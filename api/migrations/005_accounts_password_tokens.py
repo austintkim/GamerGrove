@@ -6,7 +6,7 @@ steps = [
         email VARCHAR(255) UNIQUE,
         token_text VARCHAR(255) UNIQUE,
         time_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        used BOOLEAN
+        used BOOLEAN DEFAULT FALSE
         );
         """,
         """
