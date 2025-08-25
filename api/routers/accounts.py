@@ -50,6 +50,32 @@ def send_password_reset_email(to_email: str, token: str):
         ]
     }
     result = mailjet.send.create(data=data)
+
+    with pool.connection() as conn:
+        with conn.cursor() as db:
+            try:
+                res = db.execute(
+                    """
+                    INSERT INTO accounts_password_tokens (email, token_text)
+                    VALUES (%s, %s)
+                    RETURNING id, email, token_text, time_created, used;
+                    """,
+                    [
+                        to_email,
+                        token,
+                    ],
+                )
+                row = res.fetchone()
+                if row is None:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Account password token insertion failed unexpectedly",
+                    )
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Something went wrong during token creation: {e}",
+                )
     print("Mailjet response status:", result.status_code)
     print("Mailjet response body:", result.json())
 
