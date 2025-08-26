@@ -80,7 +80,7 @@ def send_password_reset_email(to_email: str, token: str):
     print("Mailjet response body:", result.json())
 
 
-@router.post("/forgot_password")
+@router.post("/api/accounts/forgot_password")
 def forgot_password(reset_email: ResetEmailForm, background_tasks: BackgroundTasks):
     token = secrets.token_urlsafe(32)
     email = reset_email.email
