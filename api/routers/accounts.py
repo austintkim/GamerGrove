@@ -5,6 +5,7 @@ from typing import Any, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Response, status
 from mailjet_rest import Client
+from psycopg.errors import UniqueViolation
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
@@ -51,38 +52,38 @@ def send_password_reset_email(to_email: str, token: str):
     }
     result = mailjet.send.create(data=data)
 
-    with pool.connection() as conn:
-        with conn.cursor() as db:
-            try:
-                res = db.execute(
-                    """
-                    INSERT INTO accounts_password_tokens (email, token_text)
-                    VALUES (%s, %s)
-                    RETURNING id, email, token_text, time_created, used;
-                    """,
-                    [
-                        to_email,
-                        token,
-                    ],
-                )
-                row = res.fetchone()
-                if row is None:
-                    raise HTTPException(
-                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        detail="Account password token insertion failed unexpectedly",
-                    )
-            except Exception as e:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Something went wrong during token creation: {e}",
-                )
     print("Mailjet response status:", result.status_code)
     print("Mailjet response body:", result.json())
 
 
+def generate_unique_token(email: str, max_retries: int = 5):
+    retries = 0
+    while retries < max_retries:
+        token = secrets.token_urlsafe(32)
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    res = db.execute(
+                        """
+                    INSERT INTO accounts_password_tokens (email, token_text)
+                    VALUES (%s, %s)
+                    RETURNING token_text;
+                    """,
+                        [email, token],
+                    )
+
+                    row = res.fetchone()
+                    if row is None:
+                        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Account password token insertion failed unexpectedly")
+                    return token
+        except UniqueViolation:
+            retries += 1
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not generate a unique token after several attempts")
+
+
 @router.post("/api/accounts/forgot_password")
 def forgot_password(reset_email: ResetEmailForm, background_tasks: BackgroundTasks):
-    token = secrets.token_urlsafe(32)
+    token = generate_unique_token(reset_email.email)
     email = reset_email.email
     background_tasks.add_task(send_password_reset_email, email, token)
     return {"message": "Reset email sent if email exists."}
