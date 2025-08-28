@@ -82,7 +82,7 @@ def generate_unique_token(email: str, max_retries: int = 5):
 
 
 @router.post("/api/accounts/forgot_password")
-def forgot_password(reset_email: ResetEmailForm, background_tasks: BackgroundTasks):
+async def forgot_password(reset_email: ResetEmailForm, background_tasks: BackgroundTasks):
     token = generate_unique_token(reset_email.email)
     email = reset_email.email
     background_tasks.add_task(send_password_reset_email, email, token)

@@ -63,6 +63,10 @@ class ResetEmailForm(BaseModel):
     email: str
 
 
+class ProcessTokenForm(BaseModel):
+    token: str
+
+
 class AccountQueries:
     def get(self, username: str) -> AccountOut:
         with pool.connection() as conn:
