@@ -1,6 +1,7 @@
 import os
 import secrets
 import string
+from datetime import datetime, timedelta
 from typing import Any, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Response, status
@@ -11,7 +12,7 @@ from pydantic import BaseModel
 
 from api.authenticator import authenticator
 
-from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken, ResetEmailForm
+from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken, ProcessTokenForm, ResetEmailForm
 from ..settings import settings
 
 database_url = os.environ.get("DATABASE_URL")
@@ -87,6 +88,74 @@ async def forgot_password(reset_email: ResetEmailForm, background_tasks: Backgro
     email = reset_email.email
     background_tasks.add_task(send_password_reset_email, email, token)
     return {"message": "Reset email sent if email exists."}
+
+
+def humanize_timedelta(td: timedelta) -> str:
+    days = td.days
+    seconds = td.seconds
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+
+    parts: list[str] = []
+    if days:
+        parts.append(f"{days} day{'s' if days > 1 else ''}")
+    if hours:
+        parts.append(f"{hours} hour{'s' if hours > 1 else ''}")
+    if minutes:
+        parts.append(f"{minutes} minute{'s' if minutes > 1 else ''}")
+    if seconds:
+        parts.append(f"{seconds} second{'s' if seconds > 1 else ''}")
+
+    return ", ".join(parts) if parts else "0 seconds"
+
+
+@router.put("/api/accounts/process_token")
+async def process_token(token_text: ProcessTokenForm):
+    token = token_text.token
+
+    with pool.connection() as conn:
+        with conn.cursor() as db:
+            try:
+                result = db.execute(
+                    """
+                    SELECT time_created
+                    FROM accounts_password_tokens
+                    WHERE token_text = %s;
+                    """,
+                    [token],
+                )
+
+                row = result.fetchone()
+
+                if row is not None:
+                    time_created = row[0]
+                    now = datetime.now()
+
+                    if now - time_created >= timedelta(minutes=20):
+                        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Token expired {humanize_timedelta(now-time_created)} ago")
+                    else:
+                        res = db.execute(
+                            """
+                            UPDATE accounts_password_tokens
+                            SET used = True
+                            WHERE token_text = %s;
+                            """,
+                            [token],
+                        )
+                        row = res.fetchone()
+                        if row is None:
+                            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Token processing failed unexpectedly")
+
+                else:
+                    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="That token does not exist")
+            except HTTPException:
+                raise
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Something went wrong during token processing: {e}",
+                )
 
 
 def password_strength(password: str) -> tuple[int, dict[str, int]]:
