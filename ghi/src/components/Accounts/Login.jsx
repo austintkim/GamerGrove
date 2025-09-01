@@ -10,11 +10,26 @@ const containerStyle = {
 	justifyContent: 'center',
 };
 
+const modalOverlayStyle = {
+	position: 'fixed',
+	top: 0,
+	left: 0,
+	width: '100%',
+	height: '100%',
+	backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	display: 'flex',
+	justifyContent: 'center',
+	alignItems: 'center',
+	zIndex: 1000,
+};
+
 const LoginForm = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [incorrectLogin, setIncorrectLogin] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
+	const [showForgotPassword, setShowForgotPassword] = useState(false);
+	const [resetEmail, setResetEmail] = useState('');
 
 	const { login } = useToken();
 	const navigate = useNavigate();
@@ -47,6 +62,14 @@ const LoginForm = () => {
 		const alertElement = document.getElementById('failure-message');
 		alertElement.style.opacity = '0';
 		setTimeout(() => setIncorrectLogin(false), 300);
+	};
+
+	const handleForgotPasswordSubmit = (e) => {
+		e.preventDefault();
+		console.log('Request password reset for:', resetEmail);
+
+		setShowForgotPassword(false);
+		setResetEmail('');
 	};
 
 	const alertStyle = {
@@ -213,9 +236,93 @@ const LoginForm = () => {
 									</div>
 								</form>
 							</div>
+							<div
+								style={{
+									display: 'flex',
+									justifyContent: 'flex-start',
+									padding: '10px',
+								}}
+							>
+								<button
+									type="button"
+									onClick={() => setShowForgotPassword(true)}
+									style={{
+										background: 'none',
+										border: 'none',
+										color: 'blue',
+										textDecoration: 'underline',
+										cursor: 'pointer',
+									}}
+								>
+									Forgot Password?
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
+
+				{showForgotPassword && (
+					<div style={modalOverlayStyle}>
+						<div
+							className="card text-bg-light mb-3"
+							style={{
+								width: '100%',
+								maxWidth: '500px',
+							}}
+						>
+							<div
+								className="card-header"
+								style={{
+									textAlign: 'center',
+									fontSize: '24px',
+								}}
+							>
+								Reset Password
+							</div>
+							<div className="card-body">
+								<form onSubmit={handleForgotPasswordSubmit}>
+									<div className="mb-3">
+										<label className="form-label">
+											Email:
+										</label>
+										<input
+											type="email"
+											className="form-control"
+											required
+											value={resetEmail}
+											onChange={(e) =>
+												setResetEmail(e.target.value)
+											}
+										/>
+									</div>
+									<div
+										style={{
+											display: 'flex',
+											justifyContent: 'flex-end',
+											gap: '10px',
+										}}
+									>
+										<button
+											type="button"
+											onClick={() =>
+												setShowForgotPassword(false)
+											}
+											className="btn btn-secondary"
+										>
+											Cancel
+										</button>
+										<button
+											type="submit"
+											className="btn btn-primary"
+										>
+											Submit
+										</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 		</div>
 	);
