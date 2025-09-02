@@ -30,6 +30,8 @@ const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showForgotPassword, setShowForgotPassword] = useState(false);
 	const [resetEmail, setResetEmail] = useState('');
+	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+	const [error, setError] = useState('');
 
 	const { login } = useToken();
 	const navigate = useNavigate();
@@ -64,13 +66,34 @@ const LoginForm = () => {
 		setTimeout(() => setIncorrectLogin(false), 300);
 	};
 
-	const handleForgotPasswordSubmit = (e) => {
-		e.preventDefault();
-		console.log('Request password reset for:', resetEmail);
-
-		setShowForgotPassword(false);
+	const handleReset = async (event) => {
+		event.preventDefault();
+		setError('');
 		setResetEmail('');
-	};
+
+		const resetUrl = `${import.meta.env.VITE_API_HOST
+			}/api/accounts/forgot_password`;
+		const resetConfig = {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ email: resetEmail }),
+		};
+
+		try {
+			const response = await fetch(resetUrl, resetConfig);
+			if (response.ok) {
+				setShowSuccessMessage(true);
+			} else {
+				console.error('Failed to send reset email');
+			}
+		} catch (error) {
+			console.error('Error sending reset email:', error);
+			setError('An error occurred. Please try again.');
+		}
+
+	}
 
 	const alertStyle = {
 		display: incorrectLogin ? 'block' : 'none',
@@ -280,7 +303,7 @@ const LoginForm = () => {
 								Reset Password
 							</div>
 							<div className="card-body">
-								<form onSubmit={handleForgotPasswordSubmit}>
+								<form onSubmit={handleReset}>
 									<div className="mb-3">
 										<label className="form-label">
 											Email:
@@ -314,6 +337,9 @@ const LoginForm = () => {
 										<button
 											type="submit"
 											className="btn btn-primary"
+											onClick={() => {
+												setError('');
+											}}
 										>
 											Submit
 										</button>
