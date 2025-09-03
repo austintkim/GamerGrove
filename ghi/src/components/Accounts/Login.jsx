@@ -71,8 +71,9 @@ const LoginForm = () => {
 		setError('');
 		setResetEmail('');
 
-		const resetUrl = `${import.meta.env.VITE_API_HOST
-			}/api/accounts/forgot_password`;
+		const resetUrl = `${
+			import.meta.env.VITE_API_HOST
+		}/api/accounts/forgot_password`;
 		const resetConfig = {
 			method: 'post',
 			headers: {
@@ -92,8 +93,7 @@ const LoginForm = () => {
 			console.error('Error sending reset email:', error);
 			setError('An error occurred. Please try again.');
 		}
-
-	}
+	};
 
 	const alertStyle = {
 		display: incorrectLogin ? 'block' : 'none',
@@ -347,6 +347,39 @@ const LoginForm = () => {
 								</form>
 							</div>
 						</div>
+					</div>
+				)}
+				{showSuccessMessage && (
+					<div
+						className="alert alert-success"
+						style={{
+							position: 'fixed',
+							bottom: '40px',
+							left: '50%',
+							transform: 'translateX(-50%)',
+							minWidth: '350px',
+							maxWidth: '90%',
+							textAlign: 'center',
+							zIndex: 1100,
+						}}
+					>
+						If the email exists in our database, a reset email has been sent! It is valid for 20 minutes.
+						<button
+							onClick={() => setShowSuccessMessage(false)}
+							type="button"
+							className="close"
+							style={{
+								position: 'absolute',
+								top: '5px',
+								right: '10px',
+								background: 'none',
+								border: 'none',
+								fontSize: '20px',
+								cursor: 'pointer',
+							}}
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
 					</div>
 				)}
 			</div>
