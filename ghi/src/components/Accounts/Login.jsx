@@ -344,6 +344,16 @@ const LoginForm = () => {
 											Submit
 										</button>
 									</div>
+									{error && (
+										<div
+											style={{
+												color: 'red',
+												marginTop: '8px',
+											}}
+										>
+											{error}
+										</div>
+									)}
 								</form>
 							</div>
 						</div>
@@ -363,7 +373,8 @@ const LoginForm = () => {
 							zIndex: 1100,
 						}}
 					>
-						If the email exists in our database, a reset email has been sent! It is valid for 20 minutes.
+						If the email exists in our database, a reset email has
+						been sent! It is valid for 20 minutes.
 						<button
 							onClick={() => setShowSuccessMessage(false)}
 							type="button"
