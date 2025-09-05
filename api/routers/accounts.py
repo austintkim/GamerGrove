@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 from api.authenticator import authenticator
 
-from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken, ProcessTokenForm, ResetEmailForm
+from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken, ResetEmailForm
 from ..settings import settings
 
 database_url = os.environ.get("DATABASE_URL")
@@ -111,9 +111,7 @@ def humanize_timedelta(td: timedelta) -> str:
 
 
 @router.put("/api/accounts/process_token")
-async def process_token(token_text: ProcessTokenForm):
-    token = token_text.token
-
+async def process_token(token: str):
     with pool.connection() as conn:
         with conn.cursor() as db:
             try:
