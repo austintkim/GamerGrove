@@ -110,7 +110,7 @@ def humanize_timedelta(td: timedelta) -> str:
     return ", ".join(parts) if parts else "0 seconds"
 
 
-@router.put("/api/accounts/process_token")
+@router.put("/api/accounts/process_token/{token}")
 async def process_token(token: str):
     with pool.connection() as conn:
         with conn.cursor() as db:
