@@ -92,7 +92,7 @@ function App() {
 							element={<DeleteAccountForm />}
 						/>
 						<Route
-							path="/reset-password"
+							path="/reset-password/:token"
 							element={<ForgotPasswordForm />}
 						/>
 
@@ -141,7 +141,7 @@ function App() {
 							element={<DeleteAccountForm />}
 						/>
 						<Route
-							path="/reset-password"
+							path="/reset-password/:token"
 							element={<ForgotPasswordForm />}
 						/>
 						<Route path="/boards/create" element={<BoardForm />} />

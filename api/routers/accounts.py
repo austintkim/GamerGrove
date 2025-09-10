@@ -39,7 +39,7 @@ def send_password_reset_email(to_email: str, token: str):
     else:
         raise RuntimeError("MAILJET API credentials are not fully set")
 
-    reset_link = f"{settings.FRONTEND_BASE_URL}/reset-password?token={token}"
+    reset_link = f"{settings.FRONTEND_BASE_URL}/reset-password/{token}"
     data: dict[str, list[dict[str, object]]] = {
         "Messages": [
             {
