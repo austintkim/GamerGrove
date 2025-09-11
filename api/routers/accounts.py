@@ -29,6 +29,53 @@ class HttpError(BaseModel):
 router = APIRouter()
 
 
+def verify_account(email: str):
+    with pool.connection() as conn:
+        with conn.cursor() as db:
+            result = db.execute(
+                """
+                SELECT * FROM accounts
+                WHERE email = %s;
+                """,
+                [email],
+            )
+
+            row = result.fetchone()
+
+            if row is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Could not find an account with that email",
+                )
+            else:
+                print(row)
+
+
+def generate_unique_token(email: str, max_retries: int = 5):
+    retries = 0
+    while retries < max_retries:
+        token = secrets.token_urlsafe(32)
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    res = db.execute(
+                        """
+                    INSERT INTO accounts_password_tokens (email, token_text)
+                    VALUES (%s, %s)
+                    RETURNING token_text;
+                    """,
+                        [email, token],
+                    )
+
+                    row = res.fetchone()
+                    if row is None:
+                        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Account password token insertion failed unexpectedly")
+                    return token
+        except UniqueViolation:
+            retries += 1
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not generate a unique token after several attempts")
+
+
 def send_password_reset_email(to_email: str, token: str):
     MAILJET_API_KEY = os.getenv("MAILJET_API_KEY")
     MAILJET_API_SECRET = os.getenv("MAILJET_API_SECRET")
@@ -57,33 +104,9 @@ def send_password_reset_email(to_email: str, token: str):
     print("Mailjet response body:", result.json())
 
 
-def generate_unique_token(email: str, max_retries: int = 5):
-    retries = 0
-    while retries < max_retries:
-        token = secrets.token_urlsafe(32)
-        try:
-            with pool.connection() as conn:
-                with conn.cursor() as db:
-                    res = db.execute(
-                        """
-                    INSERT INTO accounts_password_tokens (email, token_text)
-                    VALUES (%s, %s)
-                    RETURNING token_text;
-                    """,
-                        [email, token],
-                    )
-
-                    row = res.fetchone()
-                    if row is None:
-                        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Account password token insertion failed unexpectedly")
-                    return token
-        except UniqueViolation:
-            retries += 1
-    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not generate a unique token after several attempts")
-
-
 @router.post("/api/accounts/forgot_password")
 async def forgot_password(reset_email: ResetEmailForm, background_tasks: BackgroundTasks):
+    verify_account(reset_email.email)
     token = generate_unique_token(reset_email.email)
     email = reset_email.email
     background_tasks.add_task(send_password_reset_email, email, token)
