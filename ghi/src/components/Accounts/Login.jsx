@@ -88,10 +88,13 @@ const LoginForm = () => {
 				setShowSuccessMessage(true);
 			} else {
 				console.error('Failed to send reset email');
+				setError(
+					'We could not find an account associated with that email.'
+				);
 			}
 		} catch (error) {
-			console.error('Error sending reset email:', error);
-			setError('An error occurred. Please try again.');
+			console.error('Network or unexpected error:', error);
+			setError('A network error occurred. Please try again.');
 		}
 	};
 
@@ -327,9 +330,10 @@ const LoginForm = () => {
 									>
 										<button
 											type="button"
-											onClick={() =>
-												setShowForgotPassword(false)
-											}
+											onClick={() => {
+												setShowForgotPassword(false);
+												setError('');
+											}}
 											className="btn btn-secondary"
 										>
 											Cancel
@@ -373,8 +377,7 @@ const LoginForm = () => {
 							zIndex: 1100,
 						}}
 					>
-						If the email exists in our database, a reset email has
-						been sent! It is valid for 20 minutes.
+						A reset email has been sent! It is valid for 20 minutes.
 						<button
 							onClick={() => setShowSuccessMessage(false)}
 							type="button"
