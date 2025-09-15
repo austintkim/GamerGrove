@@ -156,7 +156,7 @@ async def process_token(token: str):
                     if now - time_created >= timedelta(minutes=20):
                         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Token expired {humanize_timedelta(now-time_created)} ago")
                     else:
-                        res = db.execute(
+                        db.execute(
                             """
                             UPDATE accounts_password_tokens
                             SET used = True
@@ -164,10 +164,7 @@ async def process_token(token: str):
                             """,
                             [token],
                         )
-                        row = res.fetchone()
-                        if row is None:
-                            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Token processing failed unexpectedly")
-
+                        return {"message": "Token is valid and has been processed."}
                 else:
                     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="That token does not exist")
             except HTTPException:
