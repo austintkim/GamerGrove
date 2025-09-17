@@ -6,24 +6,32 @@ const ForgotPasswordForm = () => {
 	const [loading, setLoading] = useState(true);
 	const [valid, setValid] = useState(false);
 
-	console.log(token);
-
-	const fetchToken = async (token) => {
+	const processToken = async (token) => {
 		const processTokenUrl = `${
 			import.meta.env.VITE_API_HOST
 		}/api/accounts/process_token/${token}`;
-		const response = await fetch(processTokenUrl);
-		if (response.ok) {
+
+		const processTokenConfig = {
+			method: 'PUT',
+			credentials: 'include',
+		};
+
+		try {
+			const response = await fetch(processTokenUrl, processTokenConfig);
+			if (response.ok) {
+				setLoading(false);
+				setValid(true);
+			}
 			setLoading(false);
-			setValid(true);
-		} else {
-			setLoading(false);
+			console.warn('Token not processed');
+		} catch (error) {
+			console.error('Network or unexpected error:', error);
 		}
 	};
 
 	useEffect(() => {
 		if (token) {
-			fetchToken(token);
+			processToken(token);
 		}
 	}, [token]);
 
@@ -43,7 +51,10 @@ const ForgotPasswordForm = () => {
 	} else {
 		return (
 			<div>
-				<p style={{ color: 'white' }}> Your token is invalid.</p>
+				<p style={{ color: 'white' }}>
+					{' '}
+					Your token has either already been used or expired.
+				</p>
 			</div>
 		);
 	}
