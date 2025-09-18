@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const ForgotPasswordForm = () => {
 	const { token } = useParams();
 	const [loading, setLoading] = useState(true);
 	const [valid, setValid] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
 
 	const processToken = async (token) => {
 		const processTokenUrl = `${
@@ -21,11 +22,17 @@ const ForgotPasswordForm = () => {
 			if (response.ok) {
 				setLoading(false);
 				setValid(true);
+			} else {
+				const data = await response.json();
+				console.warn('Token error:', data.detail);
+				setErrorMessage(data.detail);
+				setLoading(false);
+				setValid(false);
 			}
-			setLoading(false);
-			console.warn('Token not processed');
 		} catch (error) {
 			console.error('Network or unexpected error:', error);
+			setErrorMessage('Unexpected error. Please try again.');
+			setLoading(false);
 		}
 	};
 
@@ -41,22 +48,12 @@ const ForgotPasswordForm = () => {
 
 	if (valid) {
 		return (
-			<div>
-				<p style={{ color: 'white' }}>
-					{' '}
-					This will be the forgot password form{' '}
-				</p>
-			</div>
+			<p style={{ color: 'white' }}>
+				This will be the forgot password form
+			</p>
 		);
 	} else {
-		return (
-			<div>
-				<p style={{ color: 'white' }}>
-					{' '}
-					Your token has either already been used or expired.
-				</p>
-			</div>
-		);
+		return <p style={{ color: 'white' }}>{errorMessage}</p>;
 	}
 };
 
