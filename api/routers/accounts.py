@@ -154,10 +154,10 @@ async def process_token(token: str):
                     used = row[1]
                     now = datetime.now()
 
-                    if now - time_created >= timedelta(minutes=20):
-                        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Token expired {humanize_timedelta(now-time_created)} ago")
-                    elif used:
+                    if used:
                         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has already been used")
+                    elif now - time_created >= timedelta(minutes=20):
+                        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Token expired {humanize_timedelta(now-time_created)} ago")
                     else:
                         db.execute(
                             """
