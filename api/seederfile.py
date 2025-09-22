@@ -11,7 +11,7 @@ pool = ConnectionPool(conninfo=database_url)
 
 icons = [
     ("A", "https://i.redd.it/dpbwgm93b4921.gif"),
-    ("B", "https://awesomefriday.ca/wp-content/uploads/2013/12/tumblr_m9sz3aJaEy1qb8idyo1_500.gif"),
+    ("B", "https://preview.redd.it/i-made-gifs-of-all-the-playable-character-hero-chibis-v0-dvatdvhpfii91.gif?width=128&auto=webp&s=5d5163631f375ab82aa781c1cf07e21dab7e4aa0"),
     ("C", "https://i.pinimg.com/originals/91/05/3a/91053ac18b8b3368d29a1409ad6be5f1.gif"),
     ("D", "https://giffiles.alphacoders.com/164/164315.gif"),
     ("E", "https://i.pinimg.com/originals/eb/a8/9e/eba89e7bb2121d9f066fbc7d616a0dc0.gif"),
