@@ -133,50 +133,68 @@ def humanize_timedelta(td: timedelta) -> str:
     return ", ".join(parts) if parts else "0 seconds"
 
 
-@router.put("/api/accounts/process_token/{token}")
-async def process_token(token: str):
+@router.get("/api/accounts/validate_token/{token}")
+async def validate_token(token: str):
     with pool.connection() as conn:
         with conn.cursor() as db:
-            try:
-                result = db.execute(
-                    """
-                    SELECT time_created, used
-                    FROM accounts_password_tokens
-                    WHERE token_text = %s;
-                    """,
-                    [token],
-                )
+            db.execute(
+                """
+                SELECT time_created, used
+                FROM accounts_password_tokens
+                WHERE token_text = %s;
+                """,
+                [token],
+            )
+            row = db.fetchone()
 
-                row = result.fetchone()
+            if not row:
+                raise HTTPException(status_code=404, detail="Token not found")
 
-                if row is not None:
-                    time_created = row[0]
-                    used = row[1]
-                    now = datetime.now()
+            time_created, used = row
+            now = datetime.now()
 
-                    if used:
-                        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has already been used")
-                    elif now - time_created >= timedelta(minutes=20):
-                        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Token expired {humanize_timedelta(now-time_created)} ago")
-                    else:
-                        db.execute(
-                            """
-                            UPDATE accounts_password_tokens
-                            SET used = True
-                            WHERE token_text = %s;
-                            """,
-                            [token],
-                        )
-                        return {"message": "Token is valid and has been processed."}
-                else:
-                    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="That token does not exist")
-            except HTTPException:
-                raise
-            except Exception as e:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Something went wrong during token processing: {e}",
-                )
+            if used:
+                raise HTTPException(status_code=401, detail="Token has already been used")
+            if now - time_created >= timedelta(minutes=20):
+                raise HTTPException(status_code=401, detail="Token has expired")
+
+            return {"message": "Token is valid"}
+
+
+@router.put("/api/accounts/use_token/{token}")
+async def use_token(token: str):
+    with pool.connection() as conn:
+        with conn.cursor() as db:
+            db.execute(
+                """
+                SELECT time_created, used
+                FROM accounts_password_tokens
+                WHERE token_text = %s;
+                """,
+                [token],
+            )
+            row = db.fetchone()
+
+            if not row:
+                raise HTTPException(status_code=404, detail="Token not found")
+
+            time_created, used = row
+            now = datetime.now()
+
+            if used:
+                raise HTTPException(status_code=401, detail="Token has already been used")
+            if now - time_created >= timedelta(minutes=20):
+                raise HTTPException(status_code=401, detail="Token has expired")
+
+            db.execute(
+                """
+                UPDATE accounts_password_tokens
+                SET used = True
+                WHERE token_text = %s;
+                """,
+                [token],
+            )
+            return {"message": "Token marked as used"}
 
 
 def password_strength(password: str) -> tuple[int, dict[str, int]]:
