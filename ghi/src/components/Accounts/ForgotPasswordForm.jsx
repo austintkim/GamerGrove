@@ -7,18 +7,18 @@ const ForgotPasswordForm = () => {
 	const [valid, setValid] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 
-	const processToken = async (token) => {
-		const processTokenUrl = `${
+	const validateToken = async (token) => {
+		const validateTokenUrl = `${
 			import.meta.env.VITE_API_HOST
-		}/api/accounts/process_token/${token}`;
+		}/api/accounts/validate_token/${token}`;
 
-		const processTokenConfig = {
-			method: 'PUT',
+		const validateTokenConfig = {
+			method: 'GET',
 			credentials: 'include',
 		};
 
 		try {
-			const response = await fetch(processTokenUrl, processTokenConfig);
+			const response = await fetch(validateTokenUrl, validateTokenConfig);
 			if (response.ok) {
 				setLoading(false);
 				setValid(true);
@@ -38,7 +38,7 @@ const ForgotPasswordForm = () => {
 
 	useEffect(() => {
 		if (token) {
-			processToken(token);
+			validateToken(token);
 		}
 	}, [token]);
 
