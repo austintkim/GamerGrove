@@ -134,12 +134,12 @@ def humanize_timedelta(td: timedelta) -> str:
 
 
 @router.get("/api/accounts/validate_token/{token}")
-async def validate_token(token: str):
+async def validate_token(token: str) -> dict[str, Any]:
     with pool.connection() as conn:
         with conn.cursor() as db:
             db.execute(
                 """
-                SELECT time_created, used
+                SELECT email, time_created, used
                 FROM accounts_password_tokens
                 WHERE token_text = %s;
                 """,
@@ -150,7 +150,7 @@ async def validate_token(token: str):
             if not row:
                 raise HTTPException(status_code=404, detail="Token not found")
 
-            time_created, used = row
+            email, time_created, used = row
             now = datetime.now()
 
             if used:
@@ -158,7 +158,26 @@ async def validate_token(token: str):
             if now - time_created >= timedelta(minutes=20):
                 raise HTTPException(status_code=401, detail="Token has expired")
 
-            return {"message": "Token is valid"}
+            db.execute(
+                """
+                SELECT * FROM accounts
+                WHERE email = %s;
+                """,
+                [email],
+            )
+
+            row = db.fetchone()
+            if not row:
+                raise HTTPException(status_code=404, detail="Account associated with email not found")
+
+            if not db.description:
+                raise HTTPException(status_code=500, detail="Unexpected: No result description found")
+
+            columns = [desc[0] for desc in db.description]
+
+            account_data: dict[str, Any] = dict(zip(columns, row))
+
+            return {"message": "Token is valid", "account": account_data}
 
 
 @router.put("/api/accounts/use_token/{token}")
