@@ -5,7 +5,10 @@ const ForgotPasswordForm = () => {
 	const { token } = useParams();
 	const [loading, setLoading] = useState(true);
 	const [valid, setValid] = useState(false);
+	const [accountData, setAccountData] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
+
+	console.log(accountData);
 
 	const validateToken = async (token) => {
 		const validateTokenUrl = `${
@@ -19,9 +22,11 @@ const ForgotPasswordForm = () => {
 
 		try {
 			const response = await fetch(validateTokenUrl, validateTokenConfig);
-			if (response.ok) {
+			const data = await response.json();
+			if (response.ok && data) {
 				setLoading(false);
 				setValid(true);
+				setAccountData(data.account);
 			} else {
 				const data = await response.json();
 				console.warn('Token error:', data.detail);
