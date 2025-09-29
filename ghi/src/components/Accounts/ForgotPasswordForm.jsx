@@ -28,7 +28,6 @@ const ForgotPasswordForm = () => {
 				setValid(true);
 				setAccountData(data.account);
 			} else {
-				const data = await response.json();
 				console.warn('Token error:', data.detail);
 				setErrorMessage(data.detail);
 				setLoading(false);
