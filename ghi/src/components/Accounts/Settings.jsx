@@ -640,24 +640,24 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
 																			3
 																				? 'orange'
 																				: newPasswordScore ===
-																					  3
-																					? 'yellow'
-																					: newPasswordScore ===
-																						  4
-																						? 'green'
-																						: 'white',
+																				  3
+																				? 'yellow'
+																				: newPasswordScore ===
+																				  4
+																				? 'green'
+																				: 'white',
 																	}}
 																>
 																	{newPasswordScore <
 																	3
 																		? 'Weak'
 																		: newPasswordScore ===
-																			  3
-																			? 'Moderate'
-																			: newPasswordScore ===
-																				  4
-																				? 'Strong'
-																				: ''}
+																		  3
+																		? 'Moderate'
+																		: newPasswordScore ===
+																		  4
+																		? 'Strong'
+																		: ''}
 																</span>
 															</p>
 														)}
