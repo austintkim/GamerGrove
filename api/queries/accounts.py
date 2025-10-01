@@ -62,6 +62,9 @@ class AccountOutWithPassword(AccountOut):
 class ResetEmailForm(BaseModel):
     email: str
 
+class UpdatePasswordForm(BaseModel):
+    new_password: str
+
 
 class AccountQueries:
     def get(self, username: str) -> AccountOut:
