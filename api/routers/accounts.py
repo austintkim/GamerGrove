@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 from api.authenticator import authenticator
 
-from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken, ResetEmailForm
+from ..queries.accounts import AccountForm, AccountIn, AccountInDelete, AccountInUpdate, AccountOut, AccountQueries, AccountToken, ResetEmailForm, UpdatePasswordForm
 from ..settings import settings
 
 database_url = os.environ.get("DATABASE_URL")
@@ -181,7 +181,10 @@ async def validate_token(token: str) -> dict[str, Any]:
 
 
 @router.put("/api/accounts/use_token/{token}")
-async def use_token(token: str):
+async def use_token(
+    token: str,
+    data: UpdatePasswordForm
+):
     with pool.connection() as conn:
         with conn.cursor() as db:
             db.execute(
@@ -213,6 +216,8 @@ async def use_token(token: str):
                 """,
                 [token],
             )
+            new_password = data.new_password
+            print(new_password)
             return {"message": "Token marked as used"}
 
 
