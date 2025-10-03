@@ -181,44 +181,43 @@ async def validate_token(token: str) -> dict[str, Any]:
 
 
 @router.put("/api/accounts/use_token/{token}")
-async def use_token(
-    token: str,
-    data: UpdatePasswordForm
-):
+async def use_token(token: str, data: UpdatePasswordForm):
+    now = datetime.now()
+
     with pool.connection() as conn:
         with conn.cursor() as db:
+            # Atomic update: mark token as used only if it's not already used and not expired
             db.execute(
                 """
-                SELECT time_created, used
-                FROM accounts_password_tokens
-                WHERE token_text = %s;
+                UPDATE accounts_password_tokens
+                SET used = TRUE
+                WHERE token_text = %s
+                  AND used = FALSE
+                  AND time_created >= %s
+                RETURNING email;
                 """,
-                [token],
+                [token, now - timedelta(minutes=20)],
             )
             row = db.fetchone()
 
             if not row:
-                raise HTTPException(status_code=404, detail="Token not found")
+                # Either token doesn't exist, already used, or expired
+                raise HTTPException(status_code=401, detail="Invalid, used, or expired token")
 
-            time_created, used = row
-            now = datetime.now()
+            email = row[0]
 
-            if used:
-                raise HTTPException(status_code=401, detail="Token has already been used")
-            if now - time_created >= timedelta(minutes=20):
-                raise HTTPException(status_code=401, detail="Token has expired")
+            # Transaction automatically handled by 'with conn:'
+            with conn:
+                db.execute(
+                    """
+                    UPDATE accounts
+                    SET hashed_password = %s
+                    WHERE email = %s;
+                    """,
+                    [data.new_password, email],
+                )
 
-            db.execute(
-                """
-                UPDATE accounts_password_tokens
-                SET used = True
-                WHERE token_text = %s;
-                """,
-                [token],
-            )
-            new_password = data.new_password
-            print(new_password)
-            return {"message": "Token marked as used"}
+            return {"message": "Token marked as used and password updated"}
 
 
 def password_strength(password: str) -> tuple[int, dict[str, int]]:
