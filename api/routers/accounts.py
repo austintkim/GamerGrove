@@ -206,6 +206,8 @@ async def use_token(token: str, data: UpdatePasswordForm):
 
             email = row[0]
 
+            hashed_password = authenticator.hash_password(data.new_password) # type: ignore
+
             # Transaction automatically handled by 'with conn:'
             with conn:
                 db.execute(
@@ -214,7 +216,7 @@ async def use_token(token: str, data: UpdatePasswordForm):
                     SET hashed_password = %s
                     WHERE email = %s;
                     """,
-                    [data.new_password, email],
+                    [hashed_password, email],
                 )
 
             return {"message": "Token marked as used and password updated"}
