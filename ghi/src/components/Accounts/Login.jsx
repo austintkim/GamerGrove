@@ -319,6 +319,7 @@ const LoginForm = () => {
 											onChange={(e) =>
 												setResetEmail(e.target.value)
 											}
+											placeholder="Please enter the email associated with your account!"
 										/>
 									</div>
 									<div
