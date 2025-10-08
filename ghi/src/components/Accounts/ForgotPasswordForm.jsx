@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const ForgotPasswordForm = () => {
 	const { token } = useParams();
@@ -8,7 +8,7 @@ const ForgotPasswordForm = () => {
 	const [accountData, setAccountData] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 
-	console.log(accountData);
+	const navigate = useNavigate();
 
 	const validateToken = async (token) => {
 		const validateTokenUrl = `${
@@ -46,18 +46,49 @@ const ForgotPasswordForm = () => {
 		}
 	}, [token]);
 
+	const containerStyle = {
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center',
+		height: '100vh',
+		backgroundColor: '#121212',
+		textAlign: 'center',
+	};
+
 	if (loading) {
-		return <div>Loading...</div>;
+		return (
+			<div style={containerStyle}>
+				<p style={{ color: 'white' }}>Loading...</p>
+			</div>
+		);
 	}
 
 	if (valid) {
 		return (
-			<p style={{ color: 'white' }}>
-				This will be the forgot password form
-			</p>
+			<div style={containerStyle}>
+				<p style={{ color: 'white' }}>
+					This will be the forgot password form
+				</p>
+			</div>
 		);
 	} else {
-		return <p style={{ color: 'white' }}>{errorMessage}</p>;
+		return (
+			<div style={containerStyle}>
+				<h1 style={{ color: 'white' }}>{errorMessage}</h1>
+				<button
+					type="button"
+					onClick={() => navigate('/login')}
+					style={{
+						marginTop: '1rem',
+						padding: '0.5rem 1rem',
+						cursor: 'pointer',
+					}}
+				>
+					Return to Login Page
+				</button>
+			</div>
+		);
 	}
 };
 
