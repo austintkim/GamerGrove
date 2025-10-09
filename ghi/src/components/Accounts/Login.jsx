@@ -94,7 +94,7 @@ const LoginForm = () => {
 			}
 		} catch (error) {
 			console.error('Network or unexpected error:', error);
-			setError('A network error occurred. Please try again.');
+			setError('A network error occurred. Please try again later.');
 		}
 	};
 

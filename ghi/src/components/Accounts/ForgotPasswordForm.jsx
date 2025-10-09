@@ -5,8 +5,13 @@ const ForgotPasswordForm = () => {
 	const { token } = useParams();
 	const [loading, setLoading] = useState(true);
 	const [valid, setValid] = useState(false);
-	const [accountData, setAccountData] = useState('');
-	const [errorMessage, setErrorMessage] = useState('');
+	const [tokenErrorMessage, setTokenErrorMessage] = useState('');
+	const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+	const [newPassword, setNewPassword] = useState('');
+	const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+	const [newPasswordMismatch, setNewPasswordMismatch] = useState(false);
+	const [countdown, setCountdown] = useState(3);
+	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -26,16 +31,15 @@ const ForgotPasswordForm = () => {
 			if (response.ok && data) {
 				setLoading(false);
 				setValid(true);
-				setAccountData(data.account);
 			} else {
 				console.warn('Token error:', data.detail);
-				setErrorMessage(data.detail);
+				setTokenErrorMessage(data.detail);
 				setLoading(false);
 				setValid(false);
 			}
 		} catch (error) {
 			console.error('Network or unexpected error:', error);
-			setErrorMessage('Unexpected error. Please try again.');
+			setTokenErrorMessage('Unexpected error. Please try again.');
 			setLoading(false);
 		}
 	};
@@ -56,6 +60,90 @@ const ForgotPasswordForm = () => {
 		textAlign: 'center',
 	};
 
+	const modalOverlayStyle = {
+		position: 'fixed',
+		top: 0,
+		left: 0,
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		zIndex: 1000,
+	};
+
+	const handleDismissNewPassword = () => {
+		const alertElement = document.getElementById(
+			'warning-message-new-password'
+		);
+		alertElement.style.opacity = '0';
+		setTimeout(() => setNewPasswordMismatch(false), 300);
+	};
+
+	const alertStyleNewPassword = {
+		display: newPasswordMismatch ? 'flex' : 'none',
+		maxWidth: '280px',
+		padding: '5px 15px',
+		whiteSpace: 'nowrap',
+		opacity: newPasswordMismatch ? '1' : '0',
+		transition: 'opacity 0.3s ease',
+	};
+
+	const handleReset = async (event) => {
+		event.preventDefault();
+
+		setPasswordErrorMessage('');
+		setNewPasswordMismatch(false);
+
+		if (newPassword !== newPasswordConfirm) {
+			setNewPasswordMismatch(true);
+			return;
+		}
+
+		const changeUrl = `${
+			import.meta.env.VITE_API_HOST
+		}/api/accounts/use_token/${token}`;
+
+		const changeConfig = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ new_password: newPassword }),
+		};
+
+		try {
+			const response = await fetch(changeUrl, changeConfig);
+
+			if (response.ok) {
+				setNewPassword('');
+				setNewPasswordConfirm('');
+
+				setShowSuccessMessage(true);
+				setCountdown(3);
+
+				const interval = setInterval(() => {
+					setCountdown((prev) => prev - 1);
+				}, 1000);
+
+				setTimeout(() => {
+					clearInterval(interval);
+					navigate('/login');
+				}, 3000);
+			} else {
+				console.error('Failed to change password');
+				setPasswordErrorMessage(
+					'We could not change your password successfully.'
+				);
+			}
+		} catch (error) {
+			console.error('Network or unexpected error', error);
+			setPasswordErrorMessage(
+				'A network error occurred. Please try again later.'
+			);
+		}
+	};
 	if (loading) {
 		return (
 			<div style={containerStyle}>
@@ -66,16 +154,147 @@ const ForgotPasswordForm = () => {
 
 	if (valid) {
 		return (
-			<div style={containerStyle}>
-				<p style={{ color: 'white' }}>
-					This will be the forgot password form
-				</p>
+			<div style={modalOverlayStyle}>
+				<div
+					className="card text-bg-light mb-3"
+					style={{
+						width: '100%',
+						maxWidth: '500px',
+					}}
+				>
+					<div
+						className="card-header"
+						style={{
+							textAlign: 'center',
+							fontSize: '24px',
+						}}
+					>
+						Change Password
+					</div>
+					<div className="card-body">
+						<form onSubmit={handleReset}>
+							<div className="mb-3">
+								<label className="form-label">
+									New Password:
+								</label>
+								<input
+									type="password"
+									className="form-control"
+									required
+									value={newPassword}
+									onChange={(e) =>
+										setNewPassword(e.target.value)
+									}
+								/>
+							</div>
+							<div className="mb-3">
+								<label className="form-label">
+									New Password Confirmation:
+								</label>
+								<input
+									type="password"
+									className="form-control"
+									required
+									value={newPasswordConfirm}
+									onChange={(e) =>
+										setNewPasswordConfirm(e.target.value)
+									}
+								/>
+							</div>
+							<div
+								className="alert alert-warning mb-0"
+								id="warning-message-new-password"
+								style={alertStyleNewPassword}
+							>
+								Your new passwords do not match!
+								<button
+									onClick={handleDismissNewPassword}
+									type="button"
+									className="close"
+									style={{
+										position: 'absolute',
+										top: '0',
+										right: '5px',
+										fontSize: '16px',
+									}}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+
+							<div
+								style={{
+									display: 'flex',
+									justifyContent: 'flex-end',
+									gap: '10px',
+								}}
+							>
+								<button
+									type="submit"
+									className="btn btn-primary"
+									onClick={() => {
+										setPasswordErrorMessage('');
+									}}
+								>
+									Submit
+								</button>
+							</div>
+							{passwordErrorMessage && (
+								<div
+									style={{
+										color: 'red',
+										marginTop: '8px',
+									}}
+								>
+									{passwordErrorMessage}
+								</div>
+							)}
+						</form>
+					</div>
+				</div>
+				{showSuccessMessage && (
+					<div
+						className="alert alert-success"
+						style={{
+							position: 'fixed',
+							bottom: '40px',
+							left: '50%',
+							transform: 'translateX(-50%)',
+							minWidth: '350px',
+							maxWidth: '90%',
+							textAlign: 'center',
+							zIndex: 1100,
+						}}
+					>
+						<p>Your password has been successfully changed!</p>
+						<p>
+							You will be redirected to the login page in{' '}
+							<strong>{countdown}</strong> seconds.
+						</p>
+						<button
+							onClick={() => setShowSuccessMessage(false)}
+							type="button"
+							className="close"
+							style={{
+								position: 'absolute',
+								top: '5px',
+								right: '10px',
+								background: 'none',
+								border: 'none',
+								fontSize: '20px',
+								cursor: 'pointer',
+							}}
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				)}
 			</div>
 		);
 	} else {
 		return (
 			<div style={containerStyle}>
-				<h1 style={{ color: 'white' }}>{errorMessage}</h1>
+				<h1 style={{ color: 'white' }}>{tokenErrorMessage}</h1>
 				<button
 					type="button"
 					onClick={() => navigate('/login')}
