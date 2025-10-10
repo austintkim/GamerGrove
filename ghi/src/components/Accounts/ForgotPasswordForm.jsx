@@ -106,7 +106,7 @@ const ForgotPasswordForm = () => {
 		}/api/accounts/use_token/${token}`;
 
 		const changeConfig = {
-			method: 'POST',
+			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 			},
