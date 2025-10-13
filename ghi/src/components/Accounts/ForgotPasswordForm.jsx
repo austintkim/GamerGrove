@@ -8,7 +8,9 @@ const ForgotPasswordForm = () => {
 	const [tokenErrorMessage, setTokenErrorMessage] = useState('');
 	const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 	const [newPassword, setNewPassword] = useState('');
+	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+	const [showNewPasswordConfirm, setShowNewPasswordConfirm] = useState(false);
 	const [newPasswordMismatch, setNewPasswordMismatch] = useState(false);
 	const [countdown, setCountdown] = useState(3);
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -88,6 +90,14 @@ const ForgotPasswordForm = () => {
 		whiteSpace: 'nowrap',
 		opacity: newPasswordMismatch ? '1' : '0',
 		transition: 'opacity 0.3s ease',
+	};
+
+	const toggleNewPasswordVisibility = () => {
+		setShowNewPassword(!showNewPassword);
+	};
+
+	const toggleNewPasswordConfirmVisibility = () => {
+		setShowNewPasswordConfirm(!showNewPasswordConfirm);
 	};
 
 	const handleReset = async (event) => {
@@ -177,29 +187,95 @@ const ForgotPasswordForm = () => {
 								<label className="form-label">
 									New Password:
 								</label>
-								<input
-									type="password"
-									className="form-control"
-									required
-									value={newPassword}
-									onChange={(e) =>
-										setNewPassword(e.target.value)
-									}
-								/>
+								<div style={{ position: 'relative' }}>
+									<input
+										className="form-control"
+										required
+										type={
+											!showNewPassword || !newPassword
+												? 'password'
+												: 'text'
+										}
+										value={newPassword}
+										name="new-password"
+										id="new-password"
+										style={{
+											marginBottom: '15px',
+											paddingRight: '40px',
+										}}
+										onChange={(e) =>
+											setNewPassword(e.target.value)
+										}
+									/>
+									<button
+										type="button"
+										disabled={!newPassword}
+										onClick={toggleNewPasswordVisibility}
+										style={{
+											position: 'absolute',
+											right: '10px',
+											top: '50%',
+											transform: 'translateY(-50%)',
+											background: 'none',
+											border: 'none',
+											cursor: 'pointer',
+										}}
+									>
+										{!showNewPassword || !newPassword
+											? '👁️'
+											: '👁️‍🗨️'}
+									</button>
+								</div>
 							</div>
 							<div className="mb-3">
 								<label className="form-label">
 									New Password Confirmation:
 								</label>
-								<input
-									type="password"
-									className="form-control"
-									required
-									value={newPasswordConfirm}
-									onChange={(e) =>
-										setNewPasswordConfirm(e.target.value)
-									}
-								/>
+								<div style={{ position: 'relative' }}>
+									<input
+										className="form-control"
+										required
+										type={
+											!showNewPasswordConfirm ||
+											!newPasswordConfirm
+												? 'password'
+												: 'text'
+										}
+										name="new-password-confirm"
+										id="new-password-confirm"
+										style={{
+											marginBottom: '15px',
+											paddingRight: '40px',
+										}}
+										value={newPasswordConfirm}
+										onChange={(e) =>
+											setNewPasswordConfirm(
+												e.target.value
+											)
+										}
+									/>
+									<button
+										type="button"
+										disabled={!newPasswordConfirm}
+										onClick={
+											toggleNewPasswordConfirmVisibility
+										}
+										style={{
+											position: 'absolute',
+											right: '10px',
+											top: '50%',
+											transform: 'translateY(-50%)',
+											background: 'none',
+											border: 'none',
+											cursor: 'pointer',
+										}}
+									>
+										{!showNewPasswordConfirm ||
+										!newPasswordConfirm
+											? '👁️'
+											: '👁️‍🗨️'}
+									</button>
+								</div>
 							</div>
 							<div
 								className="alert alert-warning mb-0"
