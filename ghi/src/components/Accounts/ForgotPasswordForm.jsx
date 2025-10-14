@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import pc from '../../assets/pc.gif';
 
 const ForgotPasswordForm = () => {
 	const { token } = useParams();
@@ -165,6 +166,21 @@ const ForgotPasswordForm = () => {
 	if (valid) {
 		return (
 			<div style={modalOverlayStyle}>
+				<img
+					src={pc}
+					alt=""
+					style={{
+						position: 'fixed',
+						bottom: '52%',
+						left: '50%',
+						transform: 'translate(-50%, -50%)',
+						width: '250px',
+						objectFit: 'contain',
+						cursor: 'pointer',
+						padding: '16px',
+						zIndex: 3,
+					}}
+				/>
 				<div
 					className="card text-bg-light mb-3"
 					style={{
