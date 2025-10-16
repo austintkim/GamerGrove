@@ -187,39 +187,50 @@ async def use_token(token: str, account_id: int, data: UpdatePasswordForm):
     with pool.connection() as conn:
         with conn.cursor() as db:
             with conn:
-                db.execute("""
+                db.execute(
+                    """
                     UPDATE accounts_password_tokens
                     SET used = TRUE
                     WHERE token_text = %s
                     AND used = FALSE
                     AND time_created >= %s
                     RETURNING email;
-                """, [token, now - timedelta(minutes=20)])
+                """,
+                    [token, now - timedelta(minutes=20)],
+                )
 
                 row = db.fetchone()
                 if not row:
                     raise HTTPException(status_code=401, detail="Invalid, used, or expired token")
 
                 email = row[0]
-                hashed_password = authenticator.hash_password(data.new_password) #type: ignore
+                hashed_password = authenticator.hash_password(data.new_password)  # type: ignore
 
-                db.execute("""
+                db.execute(
+                    """
                     UPDATE accounts
                     SET hashed_password = %s
                     WHERE email = %s;
-                """, [hashed_password, email])
+                """,
+                    [hashed_password, email],
+                )
 
-                db.execute("""
+                db.execute(
+                    """
                     UPDATE accounts_password_history
                     SET is_current = FALSE
                     WHERE account_id = %s;
-                """, [account_id])
+                """,
+                    [account_id],
+                )
 
-                db.execute("""
+                db.execute(
+                    """
                     INSERT INTO accounts_password_history (account_id, hashed_password, is_current)
                     VALUES (%s, %s, %s);
-                """, [account_id, hashed_password, True])
-
+                """,
+                    [account_id, hashed_password, True],
+                )
 
                 return {"message": "Token marked as used and password updated"}
 

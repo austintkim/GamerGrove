@@ -4,6 +4,7 @@ import pc from '../../assets/pc.gif';
 
 const ForgotPasswordForm = () => {
 	const { token } = useParams();
+	const [accountId, setAccountId] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [valid, setValid] = useState(false);
 	const [tokenErrorMessage, setTokenErrorMessage] = useState('');
@@ -34,6 +35,7 @@ const ForgotPasswordForm = () => {
 			if (response.ok && data) {
 				setLoading(false);
 				setValid(true);
+				setAccountId(Number(data.account.id));
 			} else {
 				console.warn('Token error:', data.detail);
 				setTokenErrorMessage(data.detail);
@@ -114,7 +116,7 @@ const ForgotPasswordForm = () => {
 
 		const changeUrl = `${
 			import.meta.env.VITE_API_HOST
-		}/api/accounts/use_token/${token}`;
+		}/api/accounts/use_token/${token}/${accountId}`;
 
 		const changeConfig = {
 			method: 'PUT',
