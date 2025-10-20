@@ -82,10 +82,6 @@ function App() {
 						<Route path="/signup" element={<SignUpForm />} />
 						<Route path="/signup/welcome" element={<Welcome />} />
 						<Route path="/login" element={<Login />} />
-						<Route
-							path="/login/welcomeback"
-							element={<WelcomeBack />}
-						/>
 						<Route path="/settings" element={<Settings />} />
 						<Route
 							path="/settings/delete/:id/:username"
@@ -131,10 +127,6 @@ function App() {
 						<Route path="/signup" element={<SignUpForm />} />
 						<Route path="/signup/welcome" element={<Welcome />} />
 						<Route path="/login" element={<Login />} />
-						<Route
-							path="/login/welcomeback"
-							element={<WelcomeBack />}
-						/>
 						<Route path="/settings" element={<Settings />} />
 						<Route
 							path="/settings/delete/:id/:username"
