@@ -16,7 +16,6 @@ import Login from './components/Accounts/Login';
 import Settings from './components/Accounts/Settings';
 import SignUpForm from './components/Accounts/SignUpForm';
 import Welcome from './components/Accounts/Welcome';
-import WelcomeBack from './components/Accounts/WelcomeBack';
 import BoardForm from './components/Boards/BoardForm';
 
 import DeleteReviewForm from './components/Reviews/DeleteReviewForm';
