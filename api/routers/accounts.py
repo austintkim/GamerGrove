@@ -51,29 +51,60 @@ def verify_account(email: str):
                 print(row)
 
 
-def generate_unique_token(email: str, max_retries: int = 5):
+def generate_unique_token(email: str, max_retries: int = 5) -> str:
     retries = 0
     while retries < max_retries:
         token = secrets.token_urlsafe(32)
         try:
             with pool.connection() as conn:
                 with conn.cursor() as db:
-                    res = db.execute(
-                        """
-                    INSERT INTO accounts_password_tokens (email, token_text)
-                    VALUES (%s, %s)
-                    RETURNING token_text;
-                    """,
-                        [email, token],
-                    )
+                    with conn:
+                        db.execute(
+                            """
+                            UPDATE accounts_password_tokens
+                            SET used = TRUE
+                            WHERE email = %s AND used = FALSE
+                            RETURNING id;
+                            """,
+                            [email],
+                        )
+                        updated_row = db.fetchone()
+                        if updated_row is None:
+                            db.execute(
+                                "SELECT EXISTS(SELECT 1 FROM accounts_password_tokens WHERE email = %s);",
+                                [email],
+                            )
+                            exists_row = db.fetchone()
+                            exists = bool(exists_row[0]) if exists_row is not None else False
+                            if exists:
+                                raise HTTPException(
+                                    status_code=status.HTTP_409_CONFLICT,
+                                    detail="Existing token could not be invalidated.",
+                                )
 
-                    row = res.fetchone()
-                    if row is None:
-                        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Account password token insertion failed unexpectedly")
-                    return token
+                        res = db.execute(
+                            """
+                            INSERT INTO accounts_password_tokens (email, token_text)
+                            VALUES (%s, %s)
+                            RETURNING token_text;
+                            """,
+                            [email, token],
+                        )
+
+                        row = res.fetchone()
+                        if row is None:
+                            raise HTTPException(
+                                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                detail="Account password token insertion failed unexpectedly",
+                            )
+                        return str(row[0])
         except UniqueViolation:
             retries += 1
-    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not generate a unique token after several attempts")
+
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Could not generate a unique token after several attempts",
+    )
 
 
 def send_password_reset_email(to_email: str, token: str):
