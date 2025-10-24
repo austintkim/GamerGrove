@@ -135,7 +135,9 @@ function Dashboard() {
 	};
 
 	const fetchUserBoards = async (userId) => {
-		const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${userId}`;
+		const boardUrl = `${
+			import.meta.env.VITE_API_HOST
+		}/api/boards/users/${userId}`;
 		const boardConfig = {
 			credentials: 'include',
 		};
@@ -173,7 +175,9 @@ function Dashboard() {
 	};
 
 	const fetchUserReviews = async (accountId) => {
-		const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/users/${accountId}`;
+		const reviewsUrl = `${
+			import.meta.env.VITE_API_HOST
+		}/api/reviews/users/${accountId}`;
 
 		try {
 			const response = await fetch(reviewsUrl, {
