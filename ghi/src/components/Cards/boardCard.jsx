@@ -66,7 +66,9 @@ function BoardCard({ boards }) {
 								{[...Array(3)].map((_, index) => {
 									const game =
 										board.games && board.games[index];
-									const key = `${game ? game.game_id : 'empty'}-${board.id}-${index}`;
+									const key = `${
+										game ? game.game_id : 'empty'
+									}-${board.id}-${index}`;
 									const backgroundImage = game
 										? game.background_img
 										: 'https://i.postimg.cc/mkwt0Hbr/black-370118-1280.png';
@@ -74,7 +76,13 @@ function BoardCard({ boards }) {
 									return (
 										<div
 											key={key}
-											className={`flex-container ${index === 0 ? 'left' : index === 1 ? 'right' : 'center'}`}
+											className={`flex-container ${
+												index === 0
+													? 'left'
+													: index === 1
+													? 'right'
+													: 'center'
+											}`}
 										>
 											<div
 												style={{
