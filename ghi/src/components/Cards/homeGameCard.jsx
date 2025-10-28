@@ -160,10 +160,6 @@ function HomeGameCard({ games, userCookie0, userData0 }) {
 			if (addEntryResponse.ok) {
 				//empty
 			} else {
-				console.error(
-					'Failed to add to wishlist. Server response:',
-					response
-				);
 				throw new Error('Failed to add to wishlist');
 			}
 		} catch (error) {
