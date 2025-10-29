@@ -9,7 +9,9 @@ function LargeNonUserReviewCard({ gameId }) {
 	const [userReviews, setUserReviews] = useState([]);
 
 	const fetchReviewsForGame = async (gameId) => {
-		const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/games/${gameId}`;
+		const reviewsUrl = `${
+			import.meta.env.VITE_API_HOST
+		}/api/reviews/games/${gameId}`;
 
 		try {
 			const response = await fetch(reviewsUrl);
