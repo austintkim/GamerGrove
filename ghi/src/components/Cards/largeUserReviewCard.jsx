@@ -81,7 +81,9 @@ function LargeUserReviewCard({
 			upvote: true,
 		};
 		if (user) {
-			const reviewVotesUrl = `${import.meta.env.VITE_API_HOST}/api/votes/reviews/${reviewId}`;
+			const reviewVotesUrl = `${
+				import.meta.env.VITE_API_HOST
+			}/api/votes/reviews/${reviewId}`;
 			const response = await fetch(reviewVotesUrl, {
 				credentials: 'include',
 			});
@@ -115,7 +117,9 @@ function LargeUserReviewCard({
 				for (const v of votes) {
 					if (v.account_id == user) {
 						if (v.upvote == true) {
-							const deleteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+							const deleteUrl = `${
+								import.meta.env.VITE_API_HOST
+							}/api/votes/${v.id}/${user}`;
 
 							const deleteConfig = {
 								method: 'delete',
@@ -141,7 +145,9 @@ function LargeUserReviewCard({
 							fetchReviewsForGame(gameId, true);
 							return;
 						} else {
-							const upVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+							const upVoteUrl = `${
+								import.meta.env.VITE_API_HOST
+							}/api/votes/${v.id}/${user}`;
 							const upVoteConfig = {
 								method: 'put',
 								body: JSON.stringify(upVoteData),
@@ -201,10 +207,14 @@ function LargeUserReviewCard({
 			upvote: false,
 		};
 		if (user) {
-			const voteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/reviews/${reviewId}`;
+			const voteUrl = `${
+				import.meta.env.VITE_API_HOST
+			}/api/votes/reviews/${reviewId}`;
 			const response = await fetch(voteUrl, { credentials: 'include' });
 			if (response.status === 404) {
-				const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes`;
+				const downVoteUrl = `${
+					import.meta.env.VITE_API_HOST
+				}/api/votes`;
 				const downVoteConfig = {
 					method: 'post',
 					body: JSON.stringify(downVoteData),
@@ -232,7 +242,9 @@ function LargeUserReviewCard({
 				for (const v of votes) {
 					if (v.account_id == user) {
 						if (v.upvote == false) {
-							const deleteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+							const deleteUrl = `${
+								import.meta.env.VITE_API_HOST
+							}/api/votes/${v.id}/${user}`;
 
 							const deleteConfig = {
 								method: 'delete',
@@ -258,7 +270,9 @@ function LargeUserReviewCard({
 							fetchReviewsForGame(gameId, true);
 							return;
 						} else {
-							const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes/${v.id}/${user}`;
+							const downVoteUrl = `${
+								import.meta.env.VITE_API_HOST
+							}/api/votes/${v.id}/${user}`;
 							const downVoteConfig = {
 								method: 'put',
 								body: JSON.stringify(downVoteData),
@@ -287,7 +301,9 @@ function LargeUserReviewCard({
 						}
 					}
 				}
-				const downVoteUrl = `${import.meta.env.VITE_API_HOST}/api/votes`;
+				const downVoteUrl = `${
+					import.meta.env.VITE_API_HOST
+				}/api/votes`;
 				const downVoteConfig = {
 					method: 'post',
 					body: JSON.stringify(downVoteData),
@@ -457,7 +473,8 @@ function LargeUserReviewCard({
 									{formatDistanceToNow(
 										new Date(`${review.date_created}Z`),
 										{ addSuffix: true }
-									)} by {review.username}
+									)}{' '}
+									by {review.username}
 								</p>
 							)}
 						</div>
