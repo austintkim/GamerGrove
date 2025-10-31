@@ -28,7 +28,11 @@ function ScreenshotsCard({ rawgPk }) {
 				{screenshots.map((screenshot, index) => (
 					<div
 						key={index}
-						className={`scard-${index === 0 ? 'Herophoto' : `Smallphoto${index === 1 ? 'Top' : 'Bottom'}`}`}
+						className={`scard-${
+							index === 0
+								? 'Herophoto'
+								: `Smallphoto${index === 1 ? 'Top' : 'Bottom'}`
+						}`}
 					>
 						<img
 							src={screenshot.image_url}
