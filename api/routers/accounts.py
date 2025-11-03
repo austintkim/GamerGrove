@@ -234,6 +234,29 @@ async def use_token(token: str, account_id: int, data: UpdatePasswordForm):
                 if not row:
                     raise HTTPException(status_code=401, detail="Invalid, used, or expired token")
 
+                password_score, conditions = password_strength(data.new_password)
+
+                if not password_score:
+                    missing = get_missing_parts(conditions)
+
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"Your password strength is invalid - it must be at least 8 characters. It must also be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.",
+                    )
+                elif password_score < 3:
+                    missing = get_missing_parts(conditions)
+
+                    if password_score == 1:
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least two of the following missing requirements: {missing}.",
+                        )
+                    else:
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least one of the following missing requirements: {missing}.",
+                        )
+
                 email = row[0]
                 hashed_password = authenticator.hash_password(data.new_password)  # type: ignore
 
