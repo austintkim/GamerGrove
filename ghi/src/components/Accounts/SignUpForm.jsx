@@ -409,23 +409,23 @@ function SignUpForm() {
 																	3
 																		? 'orange'
 																		: passwordScore ===
-																			  3
-																			? 'yellow'
-																			: passwordScore ===
-																				  4
-																				? 'green'
-																				: 'white',
+																		  3
+																		? 'yellow'
+																		: passwordScore ===
+																		  4
+																		? 'green'
+																		: 'white',
 															}}
 														>
 															{passwordScore < 3
 																? 'Weak'
 																: passwordScore ===
-																	  3
-																	? 'Moderate'
-																	: passwordScore ===
-																		  4
-																		? 'Strong'
-																		: ''}
+																  3
+																? 'Moderate'
+																: passwordScore ===
+																  4
+																? 'Strong'
+																: ''}
 														</span>
 													</p>
 												)}
