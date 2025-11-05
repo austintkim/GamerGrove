@@ -17,13 +17,16 @@ const ForgotPasswordForm = () => {
 	const [countdown, setCountdown] = useState(3);
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+	// ✅ NEW STATE FOR PASSWORD STRENGTH
+	const [passwordScore, setPasswordScore] = useState(null);
+	const [showPasswordHint, setShowPasswordHint] = useState(false);
+
 	const navigate = useNavigate();
 
 	const validateToken = async (token) => {
 		const validateTokenUrl = `${
 			import.meta.env.VITE_API_HOST
 		}/api/accounts/validate_token/${token}`;
-
 		const validateTokenConfig = {
 			method: 'GET',
 			credentials: 'include',
@@ -55,59 +58,33 @@ const ForgotPasswordForm = () => {
 		}
 	}, [token]);
 
-	const containerStyle = {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: '100vh',
-		backgroundColor: '#121212',
-		textAlign: 'center',
+	// ✅ PASSWORD STRENGTH CHECKER (copied from SignUpForm)
+	const checkPasswordStrength = (password) => {
+		let score = 0;
+		if (password.length >= 8 && /[A-Z]/.test(password)) score++;
+		if (password.length >= 8 && /[a-z]/.test(password)) score++;
+		if (password.length >= 8 && /[0-9]/.test(password)) score++;
+		if (password.length >= 8 && /[^A-Za-z0-9]/.test(password)) score++;
+		setPasswordScore(score);
 	};
 
-	const modalOverlayStyle = {
-		position: 'fixed',
-		top: 0,
-		left: 0,
-		width: '100%',
-		height: '100%',
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-		zIndex: 1000,
-	};
-
-	const handleDismissNewPassword = () => {
-		const alertElement = document.getElementById(
-			'warning-message-new-password'
-		);
-		alertElement.style.opacity = '0';
-		setTimeout(() => setNewPasswordMismatch(false), 300);
-	};
-
-	const alertStyleNewPassword = {
-		display: newPasswordMismatch ? 'flex' : 'none',
-		maxWidth: '280px',
-		padding: '5px 15px',
-		whiteSpace: 'nowrap',
-		opacity: newPasswordMismatch ? '1' : '0',
-		transition: 'opacity 0.3s ease',
-	};
-
-	const toggleNewPasswordVisibility = () => {
+	const toggleNewPasswordVisibility = () =>
 		setShowNewPassword(!showNewPassword);
-	};
-
-	const toggleNewPasswordConfirmVisibility = () => {
+	const toggleNewPasswordConfirmVisibility = () =>
 		setShowNewPasswordConfirm(!showNewPasswordConfirm);
-	};
 
 	const handleReset = async (event) => {
 		event.preventDefault();
-
 		setPasswordErrorMessage('');
 		setNewPasswordMismatch(false);
+
+		// Require strength >= moderate (same as signup)
+		if (passwordScore < 3) {
+			setPasswordErrorMessage(
+				'Password must be at least "Moderate" strength.'
+			);
+			return;
+		}
 
 		if (newPassword !== newPasswordConfirm) {
 			setNewPasswordMismatch(true);
@@ -117,292 +94,343 @@ const ForgotPasswordForm = () => {
 		const changeUrl = `${
 			import.meta.env.VITE_API_HOST
 		}/api/accounts/use_token/${token}/${accountId}`;
-
 		const changeConfig = {
 			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ new_password: newPassword }),
 		};
 
 		try {
 			const response = await fetch(changeUrl, changeConfig);
-
 			if (response.ok) {
 				setNewPassword('');
 				setNewPasswordConfirm('');
-
 				setShowSuccessMessage(true);
 				setCountdown(3);
 
-				const interval = setInterval(() => {
-					setCountdown((prev) => prev - 1);
-				}, 1000);
-
+				const interval = setInterval(
+					() => setCountdown((prev) => prev - 1),
+					1000
+				);
 				setTimeout(() => {
 					clearInterval(interval);
 					navigate('/login');
 				}, 3000);
 			} else {
-				console.error('Failed to change password');
 				setPasswordErrorMessage(
 					'We could not change your password successfully.'
 				);
 			}
-		} catch (error) {
-			console.error('Network or unexpected error', error);
+		} catch {
 			setPasswordErrorMessage(
 				'A network error occurred. Please try again later.'
 			);
 		}
 	};
+
 	if (loading) {
 		return (
-			<div style={containerStyle}>
-				<p style={{ color: 'white' }}>Loading...</p>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: '100vh',
+					background: '#121212',
+					color: 'white',
+				}}
+			>
+				<p>Loading...</p>
 			</div>
 		);
 	}
 
-	if (valid) {
+	if (!valid) {
 		return (
-			<div style={modalOverlayStyle}>
-				<img
-					src={pc}
-					alt=""
-					style={{
-						position: 'fixed',
-						bottom: '52%',
-						left: '50%',
-						transform: 'translate(-50%, -50%)',
-						width: '250px',
-						objectFit: 'contain',
-						cursor: 'pointer',
-						padding: '16px',
-						zIndex: 3,
-					}}
-				/>
-				<div
-					className="card text-bg-light mb-3"
-					style={{
-						width: '100%',
-						maxWidth: '500px',
-					}}
-				>
-					<div
-						className="card-header"
-						style={{
-							textAlign: 'center',
-							fontSize: '24px',
-						}}
-					>
-						Change Password
-					</div>
-					<div className="card-body">
-						<form onSubmit={handleReset}>
-							<div className="mb-3">
-								<label className="form-label">
-									New Password:
-								</label>
-								<div style={{ position: 'relative' }}>
-									<input
-										className="form-control"
-										required
-										type={
-											!showNewPassword || !newPassword
-												? 'password'
-												: 'text'
-										}
-										value={newPassword}
-										name="new-password"
-										id="new-password"
-										style={{
-											marginBottom: '15px',
-											paddingRight: '40px',
-										}}
-										onChange={(e) =>
-											setNewPassword(e.target.value)
-										}
-									/>
-									<button
-										type="button"
-										disabled={!newPassword}
-										onClick={toggleNewPasswordVisibility}
-										style={{
-											position: 'absolute',
-											right: '10px',
-											top: '50%',
-											transform: 'translateY(-50%)',
-											background: 'none',
-											border: 'none',
-											cursor: 'pointer',
-										}}
-									>
-										{!showNewPassword || !newPassword
-											? '👁️'
-											: '👁️‍🗨️'}
-									</button>
-								</div>
-							</div>
-							<div className="mb-3">
-								<label className="form-label">
-									New Password Confirmation:
-								</label>
-								<div style={{ position: 'relative' }}>
-									<input
-										className="form-control"
-										required
-										type={
-											!showNewPasswordConfirm ||
-											!newPasswordConfirm
-												? 'password'
-												: 'text'
-										}
-										name="new-password-confirm"
-										id="new-password-confirm"
-										style={{
-											marginBottom: '15px',
-											paddingRight: '40px',
-										}}
-										value={newPasswordConfirm}
-										onChange={(e) =>
-											setNewPasswordConfirm(
-												e.target.value
-											)
-										}
-									/>
-									<button
-										type="button"
-										disabled={!newPasswordConfirm}
-										onClick={
-											toggleNewPasswordConfirmVisibility
-										}
-										style={{
-											position: 'absolute',
-											right: '10px',
-											top: '50%',
-											transform: 'translateY(-50%)',
-											background: 'none',
-											border: 'none',
-											cursor: 'pointer',
-										}}
-									>
-										{!showNewPasswordConfirm ||
-										!newPasswordConfirm
-											? '👁️'
-											: '👁️‍🗨️'}
-									</button>
-								</div>
-							</div>
-							<div
-								className="alert alert-warning mb-0"
-								id="warning-message-new-password"
-								style={alertStyleNewPassword}
-							>
-								Your new passwords do not match!
-								<button
-									onClick={handleDismissNewPassword}
-									type="button"
-									className="close"
-									style={{
-										position: 'absolute',
-										top: '0',
-										right: '5px',
-										fontSize: '16px',
-									}}
-								>
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-
-							<div
-								style={{
-									display: 'flex',
-									justifyContent: 'flex-end',
-									gap: '10px',
-								}}
-							>
-								<button
-									type="submit"
-									className="btn btn-primary"
-									onClick={() => {
-										setPasswordErrorMessage('');
-									}}
-								>
-									Submit
-								</button>
-							</div>
-							{passwordErrorMessage && (
-								<div
-									style={{
-										color: 'red',
-										marginTop: '8px',
-									}}
-								>
-									{passwordErrorMessage}
-								</div>
-							)}
-						</form>
-					</div>
-				</div>
-				{showSuccessMessage && (
-					<div
-						className="alert alert-success"
-						style={{
-							position: 'fixed',
-							bottom: '40px',
-							left: '50%',
-							transform: 'translateX(-50%)',
-							minWidth: '350px',
-							maxWidth: '90%',
-							textAlign: 'center',
-							zIndex: 1100,
-						}}
-					>
-						<p>Your password has been successfully changed!</p>
-						<p>
-							You will be redirected to the login page in{' '}
-							<strong>{countdown}</strong> seconds.
-						</p>
-						<button
-							onClick={() => setShowSuccessMessage(false)}
-							type="button"
-							className="close"
-							style={{
-								position: 'absolute',
-								top: '5px',
-								right: '10px',
-								background: 'none',
-								border: 'none',
-								fontSize: '20px',
-								cursor: 'pointer',
-							}}
-						>
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-				)}
-			</div>
-		);
-	} else {
-		return (
-			<div style={containerStyle}>
-				<h1 style={{ color: 'white' }}>{tokenErrorMessage}</h1>
-				<button
-					type="button"
-					onClick={() => navigate('/login')}
-					style={{
-						marginTop: '1rem',
-						padding: '0.5rem 1rem',
-						cursor: 'pointer',
-					}}
-				>
-					Return to Login Page
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: '100vh',
+					background: '#121212',
+					color: 'white',
+				}}
+			>
+				<h1>{tokenErrorMessage}</h1>
+				<button onClick={() => navigate('/login')}>
+					Return to Login
 				</button>
 			</div>
 		);
 	}
+
+	return (
+		<div
+			style={{
+				position: 'fixed',
+				top: 0,
+				left: 0,
+				width: '100%',
+				height: '100%',
+				backgroundColor: 'rgba(0,0,0,0.5)',
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+		>
+			<img
+				src={pc}
+				alt=""
+				style={{
+					position: 'fixed',
+					bottom: '52%',
+					left: '50%',
+					transform: 'translate(-50%, -50%)',
+					width: '250px',
+				}}
+			/>
+
+			<div
+				className="card text-bg-light mb-3"
+				style={{ width: '100%', maxWidth: '500px' }}
+			>
+				<div
+					className="card-header"
+					style={{ textAlign: 'center', fontSize: '24px' }}
+				>
+					Change Password
+				</div>
+				<div className="card-body">
+					<form onSubmit={handleReset}>
+						{/* NEW PASSWORD INPUT */}
+						<div className="mb-3">
+							<label className="form-label">New Password:</label>
+							<div style={{ position: 'relative' }}>
+								<input
+									className="form-control"
+									required
+									type={showNewPassword ? 'text' : 'password'}
+									value={newPassword}
+									onChange={(e) => {
+										setNewPassword(e.target.value);
+										checkPasswordStrength(e.target.value);
+									}}
+									style={{
+										marginBottom: '8px',
+										paddingRight: '40px',
+									}}
+								/>
+								<button
+									type="button"
+									disabled={!newPassword}
+									onClick={toggleNewPasswordVisibility}
+									style={{
+										position: 'absolute',
+										right: '10px',
+										top: '50%',
+										transform: 'translateY(-50%)',
+										background: 'none',
+										border: 'none',
+									}}
+								>
+									{showNewPassword ? '👁️‍🗨️' : '👁️'}
+								</button>
+							</div>
+
+							{/* ✅ Password Strength Meter */}
+							{newPassword.length >= 8 && (
+								<p>
+									Password Strength:{' '}
+									<span
+										style={{
+											color:
+												passwordScore < 3
+													? 'orange'
+													: passwordScore === 3
+													? 'yellow'
+													: 'green',
+										}}
+									>
+										{passwordScore < 3
+											? 'Weak'
+											: passwordScore === 3
+											? 'Moderate'
+											: 'Strong'}
+									</span>
+								</p>
+							)}
+
+							{/* ✅ Toggle Password Requirements */}
+							<button
+								type="button"
+								onClick={() =>
+									setShowPasswordHint(!showPasswordHint)
+								}
+								style={{
+									background: 'none',
+									border: 'none',
+									color: '#007bff',
+									textDecoration: 'underline',
+									cursor: 'pointer',
+								}}
+							>
+								Password requirements
+							</button>
+
+							{showPasswordHint && (
+								<div
+									style={{
+										background: '#333',
+										color: 'white',
+										padding: '12px',
+										borderRadius: '6px',
+										marginTop: '6px',
+									}}
+								>
+									<p style={{ marginBottom: '6px' }}>
+										<strong>
+											Must be at least 8 characters & meet
+											3/4:
+										</strong>
+									</p>
+									<ul
+										style={{
+											margin: 0,
+											paddingLeft: '20px',
+										}}
+									>
+										<li
+											style={{
+												color: /[a-z]/.test(newPassword)
+													? 'lightgreen'
+													: 'inherit',
+											}}
+										>
+											Lowercase letter
+										</li>
+										<li
+											style={{
+												color: /[A-Z]/.test(newPassword)
+													? 'lightgreen'
+													: 'inherit',
+											}}
+										>
+											Uppercase letter
+										</li>
+										<li
+											style={{
+												color: /[0-9]/.test(newPassword)
+													? 'lightgreen'
+													: 'inherit',
+											}}
+										>
+											Number
+										</li>
+										<li
+											style={{
+												color: /[^A-Za-z0-9]/.test(
+													newPassword
+												)
+													? 'lightgreen'
+													: 'inherit',
+											}}
+										>
+											Special character
+										</li>
+									</ul>
+								</div>
+							)}
+						</div>
+
+						{/* CONFIRM PASSWORD INPUT (unchanged except visibility toggle kept) */}
+						<div className="mb-3">
+							<label className="form-label">
+								Confirm New Password:
+							</label>
+							<div style={{ position: 'relative' }}>
+								<input
+									className="form-control"
+									required
+									type={
+										showNewPasswordConfirm
+											? 'text'
+											: 'password'
+									}
+									value={newPasswordConfirm}
+									onChange={(e) =>
+										setNewPasswordConfirm(e.target.value)
+									}
+									style={{
+										marginBottom: '15px',
+										paddingRight: '40px',
+									}}
+								/>
+								<button
+									type="button"
+									disabled={!newPasswordConfirm}
+									onClick={toggleNewPasswordConfirmVisibility}
+									style={{
+										position: 'absolute',
+										right: '10px',
+										top: '50%',
+										transform: 'translateY(-50%)',
+										background: 'none',
+										border: 'none',
+									}}
+								>
+									{showNewPasswordConfirm ? '👁️‍🗨️' : '👁️'}
+								</button>
+							</div>
+						</div>
+
+						{newPasswordMismatch && (
+							<div className="alert alert-warning">
+								Your new passwords do not match!
+							</div>
+						)}
+
+						{passwordErrorMessage && (
+							<div style={{ color: 'red' }}>
+								{passwordErrorMessage}
+							</div>
+						)}
+
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'flex-end',
+							}}
+						>
+							<button type="submit" className="btn btn-primary">
+								Submit
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			{showSuccessMessage && (
+				<div
+					className="alert alert-success"
+					style={{
+						position: 'fixed',
+						bottom: '40px',
+						left: '50%',
+						transform: 'translateX(-50%)',
+						textAlign: 'center',
+					}}
+				>
+					<p>Your password has been successfully changed!</p>
+					<p>
+						You will be redirected in <strong>{countdown}</strong>{' '}
+						seconds.
+					</p>
+				</div>
+			)}
+		</div>
+	);
 };
 
 export default ForgotPasswordForm;
