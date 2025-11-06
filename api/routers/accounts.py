@@ -164,6 +164,31 @@ def humanize_timedelta(td: timedelta) -> str:
     return ", ".join(parts) if parts else "0 seconds"
 
 
+def password_check(
+    id: int,
+    new_password: str
+) -> int:
+    from api.authenticator import authenticator
+
+    with pool.connection() as conn:
+        with conn.cursor() as db:
+            db.execute(
+                """
+                    SELECT hashed_password
+                    FROM accounts_password_history
+                    WHERE account_id = %s
+                    """,
+                [id],
+            )
+            all_pw_rows = db.fetchall()
+            new_pw_used = any(authenticator.verify_password(new_password, row[0]) for row in all_pw_rows)
+
+            if new_pw_used:
+                return 0
+            else:
+                return 1
+
+
 @router.get("/api/accounts/validate_token/{token}")
 async def validate_token(token: str) -> dict[str, Any]:
     with pool.connection() as conn:
@@ -256,6 +281,13 @@ async def use_token(token: str, account_id: int, data: UpdatePasswordForm):
                             status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Your password strength is Weak. It must be at least Moderate to be accepted. Please add at least one of the following missing requirements: {missing}.",
                         )
+                result = password_check(account_id, data.new_password)
+
+                if not result:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Password could not be updated - the password you entered has been used before."
+                    )
 
                 email = row[0]
                 hashed_password = authenticator.hash_password(data.new_password)  # type: ignore
