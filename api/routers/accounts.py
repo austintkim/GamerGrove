@@ -68,19 +68,6 @@ def generate_unique_token(email: str, max_retries: int = 5) -> str:
                             """,
                             [email],
                         )
-                        updated_row = db.fetchone()
-                        if updated_row is None:
-                            db.execute(
-                                "SELECT EXISTS(SELECT 1 FROM accounts_password_tokens WHERE email = %s);",
-                                [email],
-                            )
-                            exists_row = db.fetchone()
-                            exists = bool(exists_row[0]) if exists_row is not None else False
-                            if exists:
-                                raise HTTPException(
-                                    status_code=status.HTTP_409_CONFLICT,
-                                    detail="Existing token could not be invalidated.",
-                                )
 
                         res = db.execute(
                             """
@@ -164,10 +151,7 @@ def humanize_timedelta(td: timedelta) -> str:
     return ", ".join(parts) if parts else "0 seconds"
 
 
-def password_check(
-    id: int,
-    new_password: str
-) -> int:
+def password_check(id: int, new_password: str) -> int:
     from api.authenticator import authenticator
 
     with pool.connection() as conn:
@@ -284,10 +268,7 @@ async def use_token(token: str, account_id: int, data: UpdatePasswordForm):
                 result = password_check(account_id, data.new_password)
 
                 if not result:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Password could not be updated - the password you entered has been used before."
-                    )
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password could not be updated - the password you entered has been used before.")
 
                 email = row[0]
                 hashed_password = authenticator.hash_password(data.new_password)  # type: ignore

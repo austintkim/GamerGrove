@@ -17,7 +17,6 @@ const ForgotPasswordForm = () => {
 	const [countdown, setCountdown] = useState(3);
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-	// ✅ NEW STATE FOR PASSWORD STRENGTH
 	const [passwordScore, setPasswordScore] = useState(null);
 	const [showPasswordHint, setShowPasswordHint] = useState(false);
 
@@ -58,7 +57,6 @@ const ForgotPasswordForm = () => {
 		}
 	}, [token]);
 
-	// ✅ PASSWORD STRENGTH CHECKER (copied from SignUpForm)
 	const checkPasswordStrength = (password) => {
 		let score = 0;
 		if (password.length >= 8 && /[A-Z]/.test(password)) score++;
@@ -78,7 +76,6 @@ const ForgotPasswordForm = () => {
 		setPasswordErrorMessage('');
 		setNewPasswordMismatch(false);
 
-		// Require strength >= moderate (same as signup)
 		if (passwordScore < 3) {
 			setPasswordErrorMessage(
 				'Password must be at least "Moderate" strength.'
@@ -102,7 +99,8 @@ const ForgotPasswordForm = () => {
 
 		try {
 			const response = await fetch(changeUrl, changeConfig);
-			if (response.ok) {
+			const data = await response.json();
+			if (response.ok && data) {
 				setNewPassword('');
 				setNewPasswordConfirm('');
 				setShowSuccessMessage(true);
@@ -117,9 +115,7 @@ const ForgotPasswordForm = () => {
 					navigate('/login');
 				}, 3000);
 			} else {
-				setPasswordErrorMessage(
-					'We could not change your password successfully.'
-				);
+				setPasswordErrorMessage(data.detail);
 			}
 		} catch {
 			setPasswordErrorMessage(
