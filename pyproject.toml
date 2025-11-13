@@ -18,7 +18,7 @@ httpx = "^0.26.0"
 starlette = "0.23.0"
 mailjet-rest = "^1.5.1"
 python-dotenv = "^1.1.1"
-apscheduler = ">=4.0.0"
+apscheduler = "^3.11.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
