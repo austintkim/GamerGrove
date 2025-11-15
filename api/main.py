@@ -1,5 +1,8 @@
 import os
+from datetime import datetime
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,6 +31,13 @@ app.include_router(votes.router, tags=["Votes"])
 def startup_event():
     seed_data()
 
+def my_daily_task():
+    print(f"Task is running at {datetime.now()}")
+
+scheduler = BackgroundScheduler()
+trigger = CronTrigger(hour=0, minute=0)
+scheduler.add_job(my_daily_task, trigger)  # type: ignore
+scheduler.start() # type: ignore
 
 origins = [
     "http://localhost",
