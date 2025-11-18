@@ -36,7 +36,7 @@ def my_daily_task():
 
 scheduler = BackgroundScheduler()
 trigger = CronTrigger(hour=0, minute=0)
-scheduler.add_job(my_daily_task, trigger)  # type: ignore
+scheduler.add_job(my_daily_task, trigger) # type: ignore
 scheduler.start() # type: ignore
 
 origins = [
