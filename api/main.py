@@ -6,12 +6,19 @@ from apscheduler.triggers.cron import CronTrigger
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from psycopg_pool import ConnectionPool
 
 from api.authenticator import authenticator
 from api.routers import accounts, boards, comments, games, icons, libraries, reviews, screenshots, stores, votes
 from api.seederfile import seed_data
 
 load_dotenv()
+
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+pool = ConnectionPool(conninfo=database_url)
 
 app = FastAPI()
 app.include_router(authenticator.router, tags=["AUTH"])
@@ -31,12 +38,12 @@ app.include_router(votes.router, tags=["Votes"])
 def startup_event():
     seed_data()
 
-def my_daily_task():
+def token_cleanup():
     print(f"Task is running at {datetime.now()}")
 
 scheduler = BackgroundScheduler()
 trigger = CronTrigger(hour=0, minute=0)
-scheduler.add_job(my_daily_task, trigger) # type: ignore
+scheduler.add_job(token_cleanup, trigger) # type: ignore
 scheduler.start() # type: ignore
 
 origins = [
