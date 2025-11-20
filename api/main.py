@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -38,13 +38,28 @@ app.include_router(votes.router, tags=["Votes"])
 def startup_event():
     seed_data()
 
+
 def token_cleanup():
-    print(f"Task is running at {datetime.now()}")
+    now = datetime.now()
+
+    with pool.connection() as conn:
+        with conn.cursor() as db:
+            with conn:
+                db.execute(
+                    """
+                    DELETE FROM accounts_password_tokens WHERE used = TRUE
+                    OR time_created >= %s
+                    """,
+                    [now - timedelta(minutes=20)]
+                )
+                deleted_rows = db.rowcount
+                return {f'message: ${deleted_rows} tokens were deleted.'}
+
 
 scheduler = BackgroundScheduler()
 trigger = CronTrigger(hour=0, minute=0)
-scheduler.add_job(token_cleanup, trigger) # type: ignore
-scheduler.start() # type: ignore
+scheduler.add_job(token_cleanup, trigger)  # type: ignore
+scheduler.start()  # type: ignore
 
 origins = [
     "http://localhost",
