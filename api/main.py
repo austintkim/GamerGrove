@@ -50,10 +50,10 @@ def token_cleanup():
                     DELETE FROM accounts_password_tokens WHERE used = TRUE
                     OR time_created >= %s
                     """,
-                    [now - timedelta(minutes=20)]
+                    [now - timedelta(minutes=20)],
                 )
                 deleted_rows = db.rowcount
-                return {f'message: ${deleted_rows} tokens were deleted.'}
+                return {f"message: ${deleted_rows} tokens were deleted."}
 
 
 scheduler = BackgroundScheduler()
@@ -65,7 +65,6 @@ origins = [
     "http://localhost",
     "http://localhost:5173",
     "https://gamergrove.gitlab.io",
-    # os.environ.get('CORS_HOST', ''),
     f"http://{os.getenv('EC2_IP_ADDRESS', '')}",
 ]
 
