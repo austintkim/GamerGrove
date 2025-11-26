@@ -40,6 +40,9 @@ def startup_event():
 
 
 def token_cleanup():
+    print('************************************')
+    print('Token cleanup service initiated')
+    print('************************************')
     now = datetime.now()
 
     with pool.connection() as conn:
@@ -50,10 +53,13 @@ def token_cleanup():
                     DELETE FROM accounts_password_tokens WHERE used = TRUE
                     OR time_created >= %s
                     """,
-                    [now - timedelta(minutes=20)]
+                    [now - timedelta(minutes=20)],
                 )
                 deleted_rows = db.rowcount
-                print(f"message: {deleted_rows} tokens were deleted.")
+                print('************************************')
+                print('Token cleanup service finished')
+                print(f"message: {deleted_rows} stale tokens were deleted.")
+                print('************************************')
 
 
 scheduler = BackgroundScheduler()
