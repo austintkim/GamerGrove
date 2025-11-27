@@ -61,6 +61,7 @@ def token_cleanup():
                 print(f"message: {deleted_rows} stale tokens were deleted.")
                 print("************************************")
 
+
 scheduler = BackgroundScheduler()
 trigger = CronTrigger(hour=0, minute=0)
 scheduler.add_job(token_cleanup, trigger)  # type: ignore
