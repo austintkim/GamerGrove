@@ -200,7 +200,6 @@ const ForgotPasswordForm = () => {
 				</div>
 				<div className="card-body">
 					<form onSubmit={handleReset}>
-						{/* NEW PASSWORD INPUT */}
 						<div className="mb-3">
 							<label className="form-label">New Password:</label>
 							<div style={{ position: 'relative' }}>
@@ -235,7 +234,6 @@ const ForgotPasswordForm = () => {
 								</button>
 							</div>
 
-							{/* ✅ Password Strength Meter */}
 							{newPassword.length >= 8 && (
 								<p>
 									Password Strength:{' '}
@@ -258,7 +256,6 @@ const ForgotPasswordForm = () => {
 								</p>
 							)}
 
-							{/* ✅ Toggle Password Requirements */}
 							<button
 								type="button"
 								onClick={() =>
@@ -340,7 +337,6 @@ const ForgotPasswordForm = () => {
 							)}
 						</div>
 
-						{/* CONFIRM PASSWORD INPUT (unchanged except visibility toggle kept) */}
 						<div className="mb-3">
 							<label className="form-label">
 								Confirm New Password:
