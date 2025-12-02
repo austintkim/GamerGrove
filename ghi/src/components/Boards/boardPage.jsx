@@ -40,10 +40,6 @@ async function fetchGamesForBoard(accountId) {
 		}
 
 		const libraryData = await response.json();
-		// Accounting for when the last game is removed from the board
-		// If a 404 status is returned from libraryData fetch (because there are no longer any games
-		// added to the board), return an empty array which allows the page to be re-rendered and
-		// show an empty board with no game cards
 		return Array.isArray(libraryData) ? libraryData : [];
 	} catch (error) {
 		console.error('Error fetching games data:', error);
@@ -133,10 +129,6 @@ function BoardPage() {
 
 			const libraryData = await fetchGamesForBoard(accountId, boardId);
 
-			// Accounting for when the last game is removed from the board
-			// If a 404 status is returned from libraryData fetch (because there are no longer any games
-			// added to the board), put an empty return which allows the page to be re-rendered and
-			// show an empty board with no game cards
 			if (!Array.isArray(libraryData)) {
 				console.error('Invalid library data received:', libraryData);
 				return;
@@ -165,8 +157,6 @@ function BoardPage() {
 	};
 
 	const handleGameRemoval = async (id, account_id) => {
-		// sending DELETE request to libraries endpoint to remove the instance of game being
-		// added to board in database
 		try {
 			const libUrl = `http://localhost:8000/api/libraries/${id}`;
 			const libResponse = await fetch(libUrl);
@@ -182,8 +172,6 @@ function BoardPage() {
 			const response = await fetch(url, fetchConfig);
 
 			if (response.ok) {
-				// Invoking fetchData so that once a game is successfully removed from the board
-				//the page re-renders to only populate the screen with games still added to the board
 				fetchData();
 			}
 		} catch (error) {
@@ -224,14 +212,9 @@ function BoardPage() {
 
 					<div className="board-game-card-container">
 						{gamesData.map((gameData) => (
-							// For each game saved to this particular board, all the details needed to created the game card showed on the board page
-							// is passed into the child BoardGameCard component which does the actual card rendering
 							<BoardGameCard
 								key={gameData.id}
 								gameData={gameData}
-								// Here we instantiate and pass in the callback function onGameRemoval into the child component BoardGameCard
-								// When triggered in BoardGameCard by a user clicking 'Remove Game', will call on handleGameRemoval
-								// within this parent component BoardPage to actually remove the game from the board and re-render page
 								onGameRemoval={(libraryId, accountId) =>
 									handleGameRemoval(libraryId, accountId)
 								}
