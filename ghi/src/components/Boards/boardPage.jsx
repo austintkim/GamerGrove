@@ -27,7 +27,9 @@ async function fetchBoardDetails(boardId) {
 }
 
 async function fetchGamesForBoard(accountId) {
-	const libraryUrl = `${import.meta.env.VITE_API_HOST}/api/users/libraries/${accountId}`;
+	const libraryUrl = `${
+		import.meta.env.VITE_API_HOST
+	}/api/users/libraries/${accountId}`;
 	const libraryConfig = {
 		credentials: 'include',
 	};
@@ -158,9 +160,6 @@ function BoardPage() {
 
 	const handleGameRemoval = async (id, account_id) => {
 		try {
-			const libUrl = `http://localhost:8000/api/libraries/${id}`;
-			const libResponse = await fetch(libUrl);
-			const libData = await libResponse.json();
 			const url = `http://localhost:8000/api/libraries/${id}/${account_id}`;
 			const fetchConfig = {
 				method: 'DELETE',
