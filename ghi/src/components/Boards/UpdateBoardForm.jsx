@@ -57,7 +57,9 @@ function UpdateBoardForm() {
 
 	const fetchAccount = async (user) => {
 		if (user !== undefined) {
-			const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/username/${user}`;
+			const accountUrl = `${
+				import.meta.env.VITE_API_HOST
+			}/api/accounts/username/${user}`;
 			const response = await fetch(accountUrl);
 			if (response.ok) {
 				const data = await response.json();
@@ -103,7 +105,9 @@ function UpdateBoardForm() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-		const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/${id}/${accountData.id}`;
+		const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/${id}/${
+			accountData.id
+		}`;
 
 		const fetchConfig = {
 			method: 'put',
