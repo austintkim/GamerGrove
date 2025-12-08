@@ -22,20 +22,9 @@ function BoardGameCard({ gameData, onGameRemoval }) {
 			</Link>
 			<div className="board-game-button">
 				<button
-					onClick={() =>
-						// User clicking 'Remove Game' button on the card of the game they wish to remove
-						// from their board will trigger a call back to onGameRemoval
-						///in the parent component BoardPage and pass into it the library id
-						//(instance of adding that game to a board) and account id
-						// (pass the built-in backend check that a user is removing a game from
-						// their own board and not another user's) associated with that game card
-						{
-							onGameRemoval(
-								gameData.library_id,
-								gameData.account_id
-							);
-						}
-					}
+					onClick={() => {
+						onGameRemoval(gameData.library_id, gameData.account_id);
+					}}
 				>
 					<b>Remove Game</b>
 				</button>
