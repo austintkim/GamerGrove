@@ -62,9 +62,9 @@ function HomeGameCard({ games, userCookie0, userData0 }) {
 		const libraryUrl = `${
 			import.meta.env.VITE_API_HOST
 		}/api/users/libraries/${userData0.id}`;
-		const boardUrl = `${
-			import.meta.env.VITE_API_HOST
-		}/api/boards/users/${userData0.id}`;
+		const boardUrl = `${import.meta.env.VITE_API_HOST}/api/boards/users/${
+			userData0.id
+		}`;
 
 		const [libraryResponse, boardResponse] = await Promise.all([
 			fetch(libraryUrl, config),
