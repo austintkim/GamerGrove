@@ -4,7 +4,6 @@ body {
 	background: #000000;
 	color: #000000;
 	font-family: 'K2D';
-	/* text-align: center; */
 }
 
 main {
@@ -47,19 +46,6 @@ p {
 	border-bottom: 5px solid #ffffff;
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
-
-/* #tabs::before {
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: -100;
-  width: 100%;
-  left: 0;
-  margin-top: calc(40px / 2);
-  height: 40px;
-  background: #2B2A28;
-  border-bottom: 5px solid #ffffff;
-} */
 
 #tabs::after {
 	content: '';
@@ -151,9 +137,7 @@ p {
 	transform: translateY(10px);
 	opacity: 0;
 	pointer-events: none;
-	transition:
-		transform 500ms,
-		opacity 500ms;
+	transition: transform 500ms, opacity 500ms;
 }
 
 #radio1:checked ~ #content #content1,
