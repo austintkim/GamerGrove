@@ -263,7 +263,6 @@ function Dashboard() {
 
 	const fetchLikeReviewGames = async (reviewData) => {
 		try {
-			// Fetch games using game_id from each review
 			const gameResponses = await Promise.all(
 				reviewData.map((review) =>
 					fetch(
