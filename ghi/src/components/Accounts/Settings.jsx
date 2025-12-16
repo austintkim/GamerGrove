@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Settings.css';
@@ -1308,5 +1309,28 @@ function Settings({ iconData, userData, onSettingsUpdate }) {
 		</div>
 	);
 }
+
+Settings.propTypes = {
+	iconData: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+				.isRequired,
+			name: PropTypes.string.isRequired,
+			icon_url: PropTypes.string.isRequired,
+		})
+	).isRequired,
+
+	userData: PropTypes.shape({
+		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+			.isRequired,
+		username: PropTypes.string.isRequired,
+		first_name: PropTypes.string,
+		last_name: PropTypes.string,
+		email: PropTypes.string,
+		icon_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	}).isRequired,
+
+	onSettingsUpdate: PropTypes.func.isRequired,
+};
 
 export default Settings;
