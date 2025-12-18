@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, MenuItem, SubMenu } from '@spaceymonk/react-radial-menu';
@@ -471,5 +472,29 @@ function AllGameCard({ games, userCookie1, userData1 }) {
 		);
 	}
 }
+
+AllGameCard.propTypes = {
+	games: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.number.isRequired,
+			name: PropTypes.string.isRequired,
+			description: PropTypes.string.isRequired,
+			background_img: PropTypes.string,
+			rawg_pk: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+				.isRequired,
+			xbox: PropTypes.bool,
+			playstation: PropTypes.bool,
+			nintendo: PropTypes.bool,
+			pc: PropTypes.bool,
+		})
+	).isRequired,
+
+	userCookie1: PropTypes.bool.isRequired,
+
+	userData1: PropTypes.shape({
+		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+			.isRequired,
+	}),
+};
 
 export default AllGameCard;
