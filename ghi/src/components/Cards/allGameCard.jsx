@@ -497,4 +497,9 @@ AllGameCard.propTypes = {
 	}),
 };
 
+AllGameCard.defaultProps = {
+	games: [],
+	userData1: null,
+};
+
 export default AllGameCard;
