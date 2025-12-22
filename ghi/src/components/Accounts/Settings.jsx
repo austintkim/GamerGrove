@@ -1333,4 +1333,8 @@ Settings.propTypes = {
 	onSettingsUpdate: PropTypes.func.isRequired,
 };
 
+Settings.defaultProps = {
+	iconData: [],
+};
+
 export default Settings;
