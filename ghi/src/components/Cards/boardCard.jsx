@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import './boardCard.css';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -112,5 +113,26 @@ function BoardCard({ boards }) {
 		</>
 	);
 }
+
+BoardCard.propTypes = {
+	boards: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.number.isRequired,
+			board_name: PropTypes.string.isRequired,
+			cover_photo: PropTypes.string,
+			game_count: PropTypes.number.isRequired,
+			alignment: PropTypes.string,
+			games: PropTypes.arrayOf(
+				PropTypes.shape({
+					game_id: PropTypes.oneOfType([
+						PropTypes.string,
+						PropTypes.number,
+					]),
+					background_img: PropTypes.string,
+				})
+			),
+		})
+	).isRequired,
+};
 
 export default BoardCard;
