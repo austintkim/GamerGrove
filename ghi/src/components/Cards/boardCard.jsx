@@ -134,5 +134,8 @@ BoardCard.propTypes = {
 		})
 	).isRequired,
 };
+BoardCard.defaultProps = {
+	boards: [],
+};
 
 export default BoardCard;
