@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import './boardGameCard.css';
 import parse from 'html-react-parser';
@@ -32,5 +33,19 @@ function BoardGameCard({ gameData, onGameRemoval }) {
 		</div>
 	);
 }
+BoardGameCard.propTypes = {
+	gameData: PropTypes.shape({
+		id: PropTypes.number.isRequired,
+		name: PropTypes.string.isRequired,
+		description: PropTypes.string.isRequired,
+		background_img: PropTypes.string,
+		library_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+			.isRequired,
+		account_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+			.isRequired,
+	}).isRequired,
+
+	onGameRemoval: PropTypes.func.isRequired,
+};
 
 export default BoardGameCard;
