@@ -47,5 +47,10 @@ BoardGameCard.propTypes = {
 
 	onGameRemoval: PropTypes.func.isRequired,
 };
+BoardGameCard.defaultProps = {
+	gameData: {
+		background_img: '',
+	},
+};
 
 export default BoardGameCard;
