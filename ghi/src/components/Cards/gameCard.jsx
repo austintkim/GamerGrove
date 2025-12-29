@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import parse from 'html-react-parser';
 import { Link } from 'react-router-dom';
 import './gameCard.css';
@@ -45,5 +46,16 @@ function GameCard({ games }) {
 		</div>
 	);
 }
+
+GameCard.propTypes = {
+	games: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.number.isRequired,
+			name: PropTypes.string.isRequired,
+			description: PropTypes.string.isRequired,
+			background_img: PropTypes.string,
+		})
+	).isRequired,
+};
 
 export default GameCard;
