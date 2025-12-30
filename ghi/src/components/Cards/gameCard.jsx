@@ -58,4 +58,8 @@ GameCard.propTypes = {
 	).isRequired,
 };
 
+GameCard.defaultProps = {
+	games: [],
+};
+
 export default GameCard;
