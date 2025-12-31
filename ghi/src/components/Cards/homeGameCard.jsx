@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
@@ -476,5 +477,29 @@ function HomeGameCard({ games, userCookie0, userData0 }) {
 		);
 	}
 }
+
+HomeGameCard.propTypes = {
+	games: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.number.isRequired,
+			rawg_pk: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+				.isRequired,
+			name: PropTypes.string.isRequired,
+			description: PropTypes.string.isRequired,
+			background_img: PropTypes.string,
+
+			xbox: PropTypes.bool,
+			playstation: PropTypes.bool,
+			nintendo: PropTypes.bool,
+			pc: PropTypes.bool,
+		})
+	).isRequired,
+
+	userCookie0: PropTypes.bool,
+
+	userData0: PropTypes.shape({
+		id: PropTypes.number.isRequired,
+	}),
+};
 
 export default HomeGameCard;
