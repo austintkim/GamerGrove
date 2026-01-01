@@ -502,4 +502,10 @@ HomeGameCard.propTypes = {
 	}),
 };
 
+HomeGameCard.defaultProps = {
+	games: [],
+	userCookie0: false,
+	userData0: null,
+};
+
 export default HomeGameCard;
