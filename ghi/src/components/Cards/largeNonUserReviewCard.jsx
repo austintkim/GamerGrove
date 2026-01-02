@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
@@ -141,5 +142,10 @@ function LargeNonUserReviewCard({ gameId }) {
 		</div>
 	);
 }
+
+LargeNonUserReviewCard.propTypes = {
+	gameId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+		.isRequired,
+};
 
 export default LargeNonUserReviewCard;
