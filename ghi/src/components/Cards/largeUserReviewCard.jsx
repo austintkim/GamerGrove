@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
@@ -488,5 +489,26 @@ function LargeUserReviewCard({
 		</div>
 	);
 }
+
+LargeUserReviewCard.propTypes = {
+	gameId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+		.isRequired,
+
+	accountId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+		.isRequired,
+
+	newReview: PropTypes.any, // used only as a re-fetch trigger
+
+	userVotes: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.number,
+			review_id: PropTypes.number.isRequired,
+			account_id: PropTypes.number.isRequired,
+			upvote: PropTypes.bool.isRequired,
+		})
+	).isRequired,
+
+	onVote: PropTypes.func.isRequired,
+};
 
 export default LargeUserReviewCard;
