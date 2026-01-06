@@ -511,4 +511,9 @@ LargeUserReviewCard.propTypes = {
 	onVote: PropTypes.func.isRequired,
 };
 
+LargeUserReviewCard.defaultProps = {
+	userVotes: [],
+	newReview: null,
+};
+
 export default LargeUserReviewCard;
