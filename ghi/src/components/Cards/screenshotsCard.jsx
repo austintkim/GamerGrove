@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './screenshotsCard.css';
 
 function ScreenshotsCard({ rawgPk }) {
@@ -46,5 +47,14 @@ function ScreenshotsCard({ rawgPk }) {
 		</div>
 	);
 }
+
+ScreenshotsCard.propTypes = {
+	rawgPk: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+		.isRequired,
+};
+
+ScreenshotsCard.defaultProps = {
+	rawgPk: null,
+};
 
 export default ScreenshotsCard;
