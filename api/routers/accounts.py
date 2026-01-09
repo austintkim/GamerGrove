@@ -70,11 +70,8 @@ def generate_unique_token(email: str, max_retries: int = 5) -> str:
                         row = db.fetchone()
                         count: int = row[0] if row is not None else 0
 
-                        if count >=5:
-                            raise HTTPException(
-                                status_code=status.HTTP_409_CONFLICT,
-                                detail="The daily limit for password reset tokens is 5 - please try again tomorrow!"
-                            )
+                        if count >= 5:
+                            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="The daily limit for password reset tokens is 5 - please try again tomorrow!")
 
                         db.execute(
                             """
