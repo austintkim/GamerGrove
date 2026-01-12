@@ -43,22 +43,17 @@ def token_cleanup():
     print("************************************")
     print("Token cleanup service initiated")
     print("************************************")
-    now = datetime.now()
 
     with pool.connection() as conn:
         with conn.cursor() as db:
             with conn:
                 db.execute(
                     """
-                    DELETE FROM accounts_password_tokens WHERE used = TRUE
-                    OR time_created >= %s
+                    TRUNCATE TABLE accounts_password_tokens;
                     """,
-                    [now - timedelta(minutes=20)],
                 )
-                deleted_rows = db.rowcount
                 print("************************************")
                 print("Token cleanup service finished")
-                print(f"message: {deleted_rows} stale tokens were deleted.")
                 print("************************************")
 
 
