@@ -84,13 +84,12 @@ const LoginForm = () => {
 
 		try {
 			const response = await fetch(resetUrl, resetConfig);
+			const data = await response.json();
 			if (response.ok) {
 				setShowSuccessMessage(true);
 			} else {
 				console.error('Failed to send reset email');
-				setError(
-					'We could not find an account associated with that email.'
-				);
+				setError(data.detail);
 			}
 		} catch (error) {
 			console.error('Network or unexpected error:', error);
