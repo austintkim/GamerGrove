@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Rows from './Rows';
-import SideMenu from './SideMenu';
+import SideMenu from './sideMenu';
 
 const ParentComponent = () => {
 	const [selectedGenre, setSelectedGenre] = useState(null);
