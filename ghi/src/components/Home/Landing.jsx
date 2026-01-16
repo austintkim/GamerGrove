@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import './Landing.css';
 import './sideMenu';
 import './Rows';
+import PropTypes from 'prop-types';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -53,6 +54,18 @@ const Landing = ({ carouselGames }) => {
 			</Slider>
 		</header>
 	);
+};
+
+Landing.propTypes = {
+	carouselGames: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+				.isRequired,
+			name: PropTypes.string.isRequired,
+			title: PropTypes.string, // used for alt text
+			background_img: PropTypes.string.isRequired,
+		})
+	).isRequired,
 };
 
 export default Landing;
