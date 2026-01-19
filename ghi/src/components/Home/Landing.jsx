@@ -68,4 +68,8 @@ Landing.propTypes = {
 	).isRequired,
 };
 
+Landing.defaultProps = {
+	carouselGames: [],
+};
+
 export default Landing;
