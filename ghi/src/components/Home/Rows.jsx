@@ -1,5 +1,6 @@
 import './Rows.css';
 import HomeGameCard from '../Cards/homeGameCard.jsx';
+import PropTypes from 'prop-types';
 
 const Rows = ({ selectedGenre, games, userCookie0, userData0 }) => {
 	const organizeGamesByGenre = () => {
@@ -34,6 +35,19 @@ const Rows = ({ selectedGenre, games, userCookie0, userData0 }) => {
 			))}
 		</div>
 	);
+};
+
+Rows.propTypes = {
+	selectedGenre: PropTypes.string,
+	games: PropTypes.arrayOf(
+		PropTypes.shape({
+			genre: PropTypes.string.isRequired,
+		})
+	).isRequired,
+	userCookie0: PropTypes.bool,
+	userData0: PropTypes.shape({
+		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	}),
 };
 
 export default Rows;
