@@ -50,4 +50,11 @@ Rows.propTypes = {
 	}),
 };
 
+Rows.defaultProps = {
+	selectedGenre: null,
+	games: [],
+	userCookie0: false,
+	userData0: null,
+};
+
 export default Rows;
