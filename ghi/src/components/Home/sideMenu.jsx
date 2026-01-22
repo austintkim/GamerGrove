@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './sideMenu.css';
 import { NavLink, Link } from 'react-router-dom';
+import PropTypes from 'prop-types;';
 
 const SideMenu = ({ genres: propGenres }) => {
 	const [genres, setGenres] = useState(propGenres || []);
@@ -68,7 +69,7 @@ const SideMenu = ({ genres: propGenres }) => {
 							console === 'pc'
 								? console.toUpperCase()
 								: console.charAt(0).toUpperCase() +
-									console.slice(1);
+								  console.slice(1);
 
 						return (
 							<li key={console} className="linkside">
@@ -94,6 +95,10 @@ const SideMenu = ({ genres: propGenres }) => {
 			</ul>
 		</div>
 	);
+};
+
+SideMenu.propTypes = {
+	genres: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default SideMenu;
