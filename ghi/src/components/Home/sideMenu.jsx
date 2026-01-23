@@ -101,4 +101,8 @@ SideMenu.propTypes = {
 	genres: PropTypes.arrayOf(PropTypes.string),
 };
 
+SideMenu.defaultProps = {
+	genres: null,
+};
+
 export default SideMenu;
