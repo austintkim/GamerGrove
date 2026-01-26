@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const Icon = ({
 	homeUserData,
@@ -66,6 +67,15 @@ const Icon = ({
 			)}
 		</div>
 	);
+};
+
+Icon.propTypes = {
+	homeUserData: PropTypes.object,
+	dashboardUserData: PropTypes.object,
+	allGamesUserData: PropTypes.object,
+	gamesDetailsUserData: PropTypes.object,
+	boardDetailsUserData: PropTypes.object,
+	searchResultsUserData: PropTypes.object,
 };
 
 export default Icon;
