@@ -78,4 +78,13 @@ Icon.propTypes = {
 	searchResultsUserData: PropTypes.object,
 };
 
+Icon.defaultProps = {
+	homeUserData: null,
+	dashboardUserData: null,
+	allGamesUserData: null,
+	gamesDetailsUserData: null,
+	boardDetailsUserData: null,
+	searchResultsUserData: null,
+};
+
 export default Icon;
