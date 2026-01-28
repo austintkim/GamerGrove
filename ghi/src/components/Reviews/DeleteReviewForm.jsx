@@ -72,7 +72,9 @@ const DeleteReviewForm = () => {
 	const handleDelete = async (event) => {
 		event.preventDefault();
 
-		const deleteUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/${id}/${accountId}`;
+		const deleteUrl = `${
+			import.meta.env.VITE_API_HOST
+		}/api/reviews/${id}/${accountId}`;
 
 		const deleteConfig = {
 			method: 'delete',
