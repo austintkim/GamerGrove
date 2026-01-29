@@ -59,7 +59,9 @@ function UpdateReviewForm() {
 
 	const fetchAccount = async (username) => {
 		if (username !== undefined) {
-			const accountUrl = `${import.meta.env.VITE_API_HOST}/api/accounts/username/${username}`;
+			const accountUrl = `${
+				import.meta.env.VITE_API_HOST
+			}/api/accounts/username/${username}`;
 			const response = await fetch(accountUrl);
 			if (response.ok) {
 				const data = await response.json();
@@ -113,7 +115,9 @@ function UpdateReviewForm() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-		const reviewsUrl = `${import.meta.env.VITE_API_HOST}/api/reviews/${review_id}/${accountData.id}`;
+		const reviewsUrl = `${
+			import.meta.env.VITE_API_HOST
+		}/api/reviews/${review_id}/${accountData.id}`;
 
 		const fetchConfig = {
 			method: 'put',
