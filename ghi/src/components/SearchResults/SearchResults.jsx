@@ -271,7 +271,7 @@ const SearchResults = () => {
 													? `${gameData.name.slice(
 															0,
 															20
-														)}..`
+													  )}..`
 													: gameData.name}
 											</h2>
 										</div>
@@ -506,7 +506,7 @@ const SearchResults = () => {
 													? `${gameData.name.slice(
 															0,
 															20
-														)}..`
+													  )}..`
 													: gameData.name}
 											</h2>
 										</div>
