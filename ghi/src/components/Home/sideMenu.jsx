@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './sideMenu.css';
 import { NavLink, Link } from 'react-router-dom';
-import PropTypes from 'prop-types;';
+import PropTypes from 'prop-types';
 
 const SideMenu = ({ genres: propGenres }) => {
 	const [genres, setGenres] = useState(propGenres || []);
