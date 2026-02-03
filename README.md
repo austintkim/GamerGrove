@@ -80,6 +80,7 @@ npm install @galvanize-inc/jwtdown-for-react
 npm install react-bootstrap
 npm install react-slick slick-carousel
 npm install date-fns
+npm install prop-types
 ```
 6. Exit out of the container's CLI
 
